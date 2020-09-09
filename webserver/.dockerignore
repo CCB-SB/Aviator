@@ -1,0 +1,7 @@
+.*
+!.coveragerc
+!.env
+!.pylintrc
+!.babelrc
+node_modules
+assets/bundles

@@ -1,0 +1,94 @@
+version: '3.4'
+
+volumes:
+  production_postgres_data: {}
+  production_postgres_data_backups: {}
+  media_content: {}
+  production_large_data: {}
+
+x-djangobase: &django-base
+  image: registry.ccb-gitlab.cs.uni-saarland.de/pascal/aviator/aviator_production_django
+  depends_on:
+    - postgres
+    - redis
+  env_file:
+    - ./.envs/.production/.django
+    - ./.envs/.production/.postgres
+  volumes:
+    - production_large_data:/large_data:ro
+    - media_content:/app/aviator/media
+  restart: unless-stopped
+
+
+services:
+  django:
+    <<: *django-base
+    build:
+      context: .
+      dockerfile: ./compose/production/django/Dockerfile
+      cache_from:
+        - registry.ccb-gitlab.cs.uni-saarland.de/pascal/aviator/aviator_production_django:latest
+    command: /start
+
+
+  postgres:
+    build:
+      context: .
+      dockerfile: ./compose/production/postgres/Dockerfile
+      cache_from:
+        - registry.ccb-gitlab.cs.uni-saarland.de/pascal/aviator/aviator_production_postgres:latest
+    image: registry.ccb-gitlab.cs.uni-saarland.de/pascal/aviator/aviator_production_postgres
+    volumes:
+      - production_postgres_data:/var/lib/postgresql/data
+      - production_postgres_data_backups:/backups
+    env_file:
+      - ./.envs/.production/.postgres
+    restart: unless-stopped
+
+  large_data_service:
+    build:
+      context: .
+      dockerfile: ./compose/production/large_data_service/Dockerfile
+      cache_from:
+        - registry.ccb-gitlab.cs.uni-saarland.de/pascal/aviator/aviator_large_data_service:latest
+    image: registry.ccb-gitlab.cs.uni-saarland.de/pascal/aviator/aviator_large_data_service
+    env_file:
+      - ./.git_env
+    volumes:
+      - production_large_data:/data
+
+  nginx:
+    build:
+      context: .
+      dockerfile: ./compose/production/nginx/Dockerfile
+      cache_from:
+        - registry.ccb-gitlab.cs.uni-saarland.de/pascal/aviator/aviator_production_nginx:latest
+    image: registry.ccb-gitlab.cs.uni-saarland.de/pascal/aviator/aviator_production_nginx
+    depends_on:
+      - django
+      - celeryworker
+      - flower
+    volumes:
+      - media_content:/media
+    restart: unless-stopped
+    ports:
+      - "11842:80"
+
+  redis:
+    image: redis:5.0
+    restart: unless-stopped
+
+  celeryworker:
+    <<: *django-base
+    command: /start-celeryworker
+
+  celerybeat:
+    <<: *django-base
+    command: /start-celerybeat
+
+  flower:
+    <<: *django-base
+    ports:
+      
+      - "11843:5555"
+    command: /start-flower

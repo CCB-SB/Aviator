@@ -1,0 +1,3 @@
+#!/bin/bash
+
+/entrypoint python manage.py create_superuser

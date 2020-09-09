@@ -1,0 +1,201 @@
+stages:
+ - build
+ - deploy-staging
+ - deploy-production
+ - managedb-staging
+ - managedb-production
+ - manage-env-staging
+ - manage-env-production
+
+services:
+  - docker:dind
+
+image: docker/compose:1.25.5
+
+variables:
+  GIT_SUBMODULE_STRATEGY: none
+
+before_script:
+  - apk add --update git
+  - mkdir -p webserver/.envs/.production
+  - echo "$DJANGO_ENV" > webserver/.envs/.production/.django
+  - echo "$POSTGRES_ENV" > webserver/.envs/.production/.postgres
+
+  - echo "CI_REPOSITORY_URL=${CI_REPOSITORY_URL}" > webserver/.git_env
+
+.staging_vars: &staging_vars
+  variables:
+    DOCKER_TLS_VERIFY: "1"
+    DOCKER_HOST: "tcp://ccb-test.cs.uni-saarland.de:2376"
+    DOCKER_CERT_PATH: "certs"
+    COMPOSE_HTTP_TIMEOUT: "180"
+
+.production_vars: &production_vars
+  variables:
+    DOCKER_TLS_VERIFY: "1"
+    DOCKER_HOST: "tcp://ccb-web.cs.uni-saarland.de:2376"
+    DOCKER_CERT_PATH: "certs"
+    IS_PROD: "1"
+    COMPOSE_HTTP_TIMEOUT: "180"
+
+.setup_docker_tls:
+  - &setup_docker_tls
+    mkdir $DOCKER_CERT_PATH;
+    if [ ! -z "$IS_PROD" ]; then CA="${CA_PROD}"; CLIENT_CERT="${CLIENT_CERT_PROD}"; CLIENT_KEY="${CLIENT_KEY_PROD}"; fi;
+    echo "$CA" > $DOCKER_CERT_PATH/ca.pem;
+    echo "$CLIENT_CERT" > $DOCKER_CERT_PATH/cert.pem;
+    echo "$CLIENT_KEY" > $DOCKER_CERT_PATH/key.pem;
+
+.check_newer_commit:
+  - &check_newer_commit
+    '[ "$(git rev-parse origin/$CI_COMMIT_REF_NAME)" != "$CI_COMMIT_SHA" ] && echo "A newer job is already running. Exiting..." && exit 0'
+
+.manage_only_master_remote: &manage_only_master_remote
+  after_script:
+    - rm -rf $DOCKER_CERT_PATH
+  tags:
+    - deployment
+  when: manual
+  only:
+    - master
+
+build:
+  stage: build
+  script:
+    - *check_newer_commit
+    - docker login -u gitlab-ci-token -p ${CI_JOB_TOKEN} ${CI_REGISTRY}
+    - docker-compose -f webserver/production.yml pull --ignore-pull-failures
+    - docker-compose -f webserver/production.yml build
+    - *check_newer_commit
+    - docker-compose -f webserver/production.yml push
+  after_script:
+    - docker logout ${CI_REGISTRY}
+    - *check_newer_commit
+  only:
+    - master
+  tags:
+    - registry-build
+
+.deploy: &deploy
+  script:
+    - *check_newer_commit
+    - *setup_docker_tls
+    - docker login -u gitlab-ci-token -p ${CI_JOB_TOKEN} ${CI_REGISTRY}
+    - docker-compose -f webserver/production.yml down --rmi all --remove-orphans
+    - *check_newer_commit
+    - docker-compose -f webserver/production.yml pull $(docker-compose -f webserver/production.yml config --services | grep -v -e celery -e flower)
+    - docker-compose -f webserver/production.yml run --rm large_data_service /update_data
+    - *check_newer_commit
+    - docker-compose -f webserver/production.yml up -d --force-recreate
+  only:
+    - master
+  after_script:
+    - docker logout ${CI_REGISTRY}
+    - rm -rf $DOCKER_CERT_PATH
+    - *check_newer_commit
+  tags:
+    - deployment
+
+deploy-staging:
+  stage: deploy-staging
+  <<: *deploy
+  <<: *staging_vars
+  environment:
+    name: staging
+    url: https://ccb-test.cs.uni-saarland.de/aviator
+
+deploy-production:
+  stage: deploy-production
+  <<: *deploy
+  <<: *production_vars
+  when: manual
+  environment:
+    name: production
+    url: https://ccb-web.cs.uni-saarland.de/aviator
+
+.filldb: &filldb
+  script:
+    - *setup_docker_tls
+    - docker-compose -f webserver/production.yml run --rm django python manage.py fill_db
+  <<: *manage_only_master_remote
+
+filldb-staging:
+  stage: managedb-staging
+  <<: *filldb
+  <<: *staging_vars
+
+filldb-production:
+  stage: managedb-production
+  <<: *filldb
+  <<: *production_vars
+
+.migrate: &migrate
+  script:
+    - *setup_docker_tls
+    - docker-compose -f webserver/production.yml run --rm django python manage.py migrate --noinput
+  <<: *manage_only_master_remote
+
+migrate-staging:
+  stage: managedb-staging
+  <<: *migrate
+  <<: *staging_vars
+
+migrate-production:
+  stage: managedb-production
+  <<: *migrate
+  <<: *production_vars
+
+.reset_db: &reset_db
+  script:
+    - *setup_docker_tls
+    - docker-compose -f webserver/production.yml down --volumes
+    - docker-compose -f webserver/production.yml run --rm django python manage.py migrate --noinput
+  <<: *manage_only_master_remote
+
+reset_db-staging:
+  stage: managedb-staging
+  <<: *reset_db
+  <<: *staging_vars
+
+reset_db-production:
+  stage: managedb-production
+  <<: *reset_db
+  <<: *production_vars
+
+.create_superuser: &create_superuser
+  script:
+    - *setup_docker_tls
+    - docker-compose -f webserver/production.yml run --rm django /create_superuser
+  <<: *manage_only_master_remote
+
+create_superuser-staging:
+  stage: managedb-staging
+  <<: *create_superuser
+  <<: *staging_vars
+
+create_superuser-production:
+  stage: managedb-production
+  <<: *create_superuser
+  <<: *production_vars
+
+.stop-environment: &stop-environment
+  variables:
+    GIT_STRATEGY: none
+  script:
+    - *setup_docker_tls
+    - docker-compose -f webserver/production.yml down --remove-orphans
+  <<: *manage_only_master_remote
+  environment:
+    name: stop-env
+    action: stop
+
+stop-staging:
+  stage: manage-env-staging
+  <<: *stop-environment
+  <<: *staging_vars
+
+stop-production:
+  stage: manage-env-production
+  <<: *stop-environment
+  <<: *production_vars
+

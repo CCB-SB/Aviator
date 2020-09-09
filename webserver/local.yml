@@ -1,0 +1,54 @@
+version: '3.4'
+volumes:
+  local_postgres_data: {}
+  local_postgres_data_backups: {}
+
+x-djangobase: &django-base
+  image: aviator_local_django
+  depends_on:
+    - postgres
+    - redis
+  env_file:
+    - ./.envs/.local/.django
+    - ./.envs/.local/.postgres
+  volumes:
+    - .:/app
+    - ../data:/large_data
+
+services:
+  django:
+    <<: *django-base
+    build:
+      context: .
+      dockerfile: ./compose/local/django/Dockerfile
+    ports:
+      - "8000:8000"
+    command: /start
+
+
+  postgres:
+    build:
+      context: .
+      dockerfile: ./compose/production/postgres/Dockerfile
+    image: aviator_production_postgres
+    volumes:
+      - local_postgres_data:/var/lib/postgres/data
+      - local_postgres_data_backups:/backups
+    env_file:
+      - ./.envs/.local/.postgres
+  redis:
+    image: redis:5.0
+
+  celeryworker:
+    <<: *django-base
+    command: python manage.py celery
+
+  celerybeat:
+    <<: *django-base
+    command: /start-celerybeat
+
+  flower:
+    <<: *django-base
+    ports:
+      - "5555:5555"
+    command: /start-flower

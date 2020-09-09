@@ -1,0 +1,21 @@
+#!/bin/bash
+
+if [ ! -d "/data/data" ] ; then
+    git clone --depth 1 $CI_REPOSITORY_URL /tmp_cl
+    git lfs install
+    mv /tmp_cl/.git /tmp_cl/data /data/ && rm -rf /tmp_cl
+    # remove unneeded git data
+    rm -rf /data/.git/objects/pack /data/.git/lfs/objects
+else
+    cd /data
+    git remote set-url origin $CI_REPOSITORY_URL
+    git fetch
+    git lfs fetch --prune
+    # only update the data folder
+    git checkout HEAD data
+    # remove unneeded git data
+    rm -rf /data/.git/objects/pack /data/.git/lfs/objects
+fi
+
+# make/update links for all files and folders in data
+ls /data/data | xargs -n1 -i ln -sfn "data/{}" "/data/{}"

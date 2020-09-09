@@ -1,0 +1,10 @@
+
+
+redis==2.10.6  # https://github.com/antirez/redis
+
+
+# Django
+# ------------------------------------------------------------------------------
+django==2.1.7  # pyup: < 2.1  # https://www.djangoproject.com/
+django-environ==0.4.5  # https://github.com/joke2k/django-environ
+django-redis==4.9.1  # https://github.com/niwinz/django-redis
