@@ -25,9 +25,10 @@ print("logs file identifier: "+logs_identifier)
 #variables
 folder_header = 'folder'
 html_title_header = 'html-title'
-google_analytics_header = 'google-analytics'
+analytics_header = 'analytics'
 result = {}
-columns = [folder_header, html_title_header, google_analytics_header]
+columns = [folder_header, html_title_header, analytics_header]
+analytics_names = ['google-analytics', 'matomo', 'woopra', 'gosquared', 'go-squared', 'foxmetrics', 'fox-metrics', 'mixpanel', 'heap', 'statcounter', 'stat-counter', 'chartbeat', 'clicky', 'leadfeeder']
 
 def handleInfo(filename, target):
     if filename[-3:] == '.gz':
@@ -68,7 +69,7 @@ def handleHTML(filename, target):
 
 
 def handleLogs(filename, target):
-    target[google_analytics_header] = 'NA'
+    target[analytics_header] = ''
     if filename[-3:] == '.gz':
         with gzip.open(filename, 'r') as file:
             data = json.load(file)
@@ -85,8 +86,11 @@ def iterateLogJSON(source, target):
             if isinstance(value, dict) or isinstance(value, list):
                 iterateLogJSON(value, target)
             elif isinstance(value, str):
-                if 'google-analytics' in value:
-                    target['google-analytics'] = 'true'
+                for name in analytics_names:
+                    if name in value and not  name in target[analytics_header]:
+                        if len(target[analytics_header]) > 0:
+                            target[analytics_header] = target[analytics_header] + ', '
+                        target[analytics_header] = target[analytics_header] + name
     elif isinstance(source, list):
         for value in source:
             iterateLogJSON(value, target)
