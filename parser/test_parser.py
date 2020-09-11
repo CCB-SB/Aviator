@@ -26,9 +26,23 @@ print("logs file identifier: "+logs_identifier)
 folder_header = 'folder'
 html_title_header = 'html-title'
 analytics_header = 'analytics'
+error_header = 'error'
 result = {}
-columns = [folder_header, html_title_header, analytics_header]
+columns = [folder_header, html_title_header, analytics_header, error_header]
 analytics_names = ['google-analytics', 'matomo', 'woopra', 'gosquared', 'go-squared', 'foxmetrics', 'fox-metrics', 'mixpanel', 'heap', 'statcounter', 'stat-counter', 'chartbeat', 'clicky', 'leadfeeder']
+
+error_phrases = ['Not Found', 'Server unavailable', 'Maintainance in progress', 'Out server is down temporarily', 'Out server is down', '503 Service Unavailable', 
+'Service Unavailable', 'No server is available to handle this request', 'has been discontinued', '502 Bad Gateway', 'The resource could not be found', '404 Not Found', 
+'decimalLongitude', 'This is the default web page for this server', 'The web server software is running but no content has been added, yet', 
+'The requested URL was not found on this server', 'The AlloPred web server is currently encountering some technical difficulties', 'Sorry, Page Not Found', 
+'403 Forbidden', 'Error 406 - Not Acceptable', '<Error><Code>NoSuchBucket</Code>', 'Server under maintenance', '503 Service Temporarily Unavailable',
+'Temporarily Unavailable', '502 Proxy Error', 'Proxy Erro', 'currently unavailable', 'invalid request', 'Service unavailable', 'The service is down due to technical issues', 
+'Site Maintenance', 'Service temporarily unavailable', 'Object not found!', '404 Page Not Found', 'The page you requested was not found', 'Error 404', 
+'ERROR 404: Seite nicht gefunden', 'Errore 404', 'ERROR 404', 'No longer supported webserver', 'This transfer is blocked', 
+'The transfer has triggered a Web Application Firewall', 'The resource cannot be found', '403 - Forbidden: Access is denied',
+'IP address could not be found', 'DNS_PROBE_FINISHED_NXDOMAIN', 'Your connection was interrupted', 'A network change was detected', 'ERR_NETWORK_CHANGED',
+'This site can’t provide a secure connection', 'sent an invalid response', 'ERR_SSL_PROTOCOL_ERROR',
+'This site can’t be reached', 'refused to connect', 'ERR_CONNECTION_REFUSED']
 
 def handleInfo(filename, target):
     if filename[-3:] == '.gz':
@@ -48,6 +62,10 @@ def iterateInfoJSON(source, target, name_prefix):
         else:
             name = name_prefix + str(key)
             target[name] = str(value).replace("\r\n", "").replace("\n", "")
+            if name == 'code' and value is not 200 and str(value).isnumeric():
+                if len(target[error_header]) > 0:
+                    target[error_header] = target[error_header] + ', '
+                target[error_header] = target[error_header] + str(value)
             if (not name in columns):
                 columns.append(name)
 
@@ -66,6 +84,12 @@ def handleHTML(filename, target):
         substr = text[:index]
         title = substr[substr.rfind(">") + 1:]
         target[html_title_header] = title
+    target[error_header] = ''
+    for error_phrase in error_phrases:
+        if error_phrase in text and not error_phrase in target[error_header]:
+            if len(target[error_header]) > 0:
+                target[error_header] = target[error_header] + ', '
+            target[error_header] = target[error_header] + error_phrase
 
 
 def handleLogs(filename, target):
