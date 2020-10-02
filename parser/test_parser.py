@@ -44,6 +44,10 @@ error_phrases = ['Not Found', 'Server unavailable', 'Maintainance in progress', 
 'This site can’t provide a secure connection', 'sent an invalid response', 'ERR_SSL_PROTOCOL_ERROR',
 'This site can’t be reached', 'refused to connect', 'ERR_CONNECTION_REFUSED']
 
+url_replacements = {
+  "∼": "~"
+}
+
 def handleInfo(filename, target):
     if filename[-3:] == '.gz':
         with gzip.open(filename, 'r') as file:
@@ -111,7 +115,7 @@ def iterateLogJSON(source, target):
                 iterateLogJSON(value, target)
             elif isinstance(value, str):
                 for name in analytics_names:
-                    if name in value and not  name in target[analytics_header]:
+                    if name in value and not name in target[analytics_header]:
                         if len(target[analytics_header]) > 0:
                             target[analytics_header] = target[analytics_header] + ', '
                         target[analytics_header] = target[analytics_header] + name
@@ -132,6 +136,11 @@ for subdir, dirs, files in os.walk(inputfolder):
             handleLogs(os.path.join(subdir, file), result[folder_name])
     for key, value in result.items():
         result[key][folder_header] = key
+        # replacements
+        if "url" in result[key]:
+            for replace in url_replacements:
+                result[key]["url"] = result[key]["url"].replace(replace, url_replacements[replace])
+
 try:
     with open(outputfile, 'w', newline='', encoding="utf-8") as csvfile:
         writer = csv.DictWriter(csvfile, fieldnames=columns, delimiter=';')
