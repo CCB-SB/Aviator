@@ -67,9 +67,10 @@ def iterateInfoJSON(source, target, name_prefix):
             name = name_prefix + str(key)
             target[name] = str(value).replace("\r\n", "").replace("\n", "")
             if name == 'code' and value is not 200 and str(value).isnumeric():
-                if len(target[error_header]) > 0:
-                    target[error_header] = target[error_header] + ', '
-                target[error_header] = target[error_header] + str(value)
+                if error_header in target:
+                    if len(target[error_header]) > 0:
+                        target[error_header] = target[error_header] + ', '
+                    target[error_header] = target[error_header] + str(value)
             if (not name in columns):
                 columns.append(name)
 
