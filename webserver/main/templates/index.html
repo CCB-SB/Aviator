@@ -1,0 +1,32 @@
+<html>
+<table>
+	<thead>
+		<tr>
+			<th>URL</th>
+			<th>Created At</th>
+			<th>Updated At</th>
+			<th>IP</th>
+			<th>Server</th>
+			<th>Analytics</th>
+			<th>Timezone</th>
+			<th>Framework</th>
+			<th>Script</th>
+			<th>Secure Certificate</th>
+		</tr>
+	</thead>
+    {% for website in websites %}
+        <tr>
+            <td>{{ website.url }}</td>
+            <td>{{ website.created_at }}</td>
+            <td>{{ website.updated_at }}</td>
+            <td>{{ website.ip }}</td>
+            <td>{{ website.server }}</td>
+            <td>{{ website.analytics }}</td>
+            <td>{{ website.timezone }}</td>
+            <td>{{ website.framework }}</td>
+            <td>{{ website.script }}</td>
+            <td>{{ website.certificate_secure }}</td>
+        </tr>
+    {% endfor %}
+</table>
+</html>

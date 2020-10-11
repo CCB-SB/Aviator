@@ -38,7 +38,13 @@ USE_TZ = True
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#databases
 DATABASES = {
-    'default': env.db('DATABASE_URL'),
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        # Or path to database file if using sqlite3.
+        'NAME': 'postgres',
+        'USER': 'postgres',
+        'PASSWORD': '',
+    }
 }
 DATABASES['default']['ATOMIC_REQUESTS'] = True
 DATABASES['default']['ENGINE'] = 'django.db.backends.postgresql'
@@ -67,6 +73,7 @@ THIRD_PARTY_APPS = [
 LOCAL_APPS = [
     # Your stuff: custom apps go here
     'aviator.admin_commands.apps.AdminConfig',
+    'main.apps.MainConfig',
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
@@ -168,20 +175,20 @@ MANAGERS = ADMINS
 
 # Celery
 # ------------------------------------------------------------------------------
-INSTALLED_APPS += ['aviator.taskapp.celery.CeleryAppConfig']
-if USE_TZ:
+#INSTALLED_APPS += ['aviator.taskapp.celery.CeleryAppConfig']
+#if USE_TZ:
     # http://docs.celeryproject.org/en/latest/userguide/configuration.html#std:setting-timezone
-    CELERY_TIMEZONE = TIME_ZONE
+    #CELERY_TIMEZONE = TIME_ZONE
 # http://docs.celeryproject.org/en/latest/userguide/configuration.html#std:setting-broker_url
-CELERY_BROKER_URL = env('CELERY_BROKER_URL')
+#CELERY_BROKER_URL = env('CELERY_BROKER_URL')
 # http://docs.celeryproject.org/en/latest/userguide/configuration.html#std:setting-result_backend
-CELERY_RESULT_BACKEND = CELERY_BROKER_URL
+#CELERY_RESULT_BACKEND = CELERY_BROKER_URL
 # http://docs.celeryproject.org/en/latest/userguide/configuration.html#std:setting-accept_content
-CELERY_ACCEPT_CONTENT = ['json']
+#CELERY_ACCEPT_CONTENT = ['json']
 # http://docs.celeryproject.org/en/latest/userguide/configuration.html#std:setting-task_serializer
-CELERY_TASK_SERIALIZER = 'json'
+#CELERY_TASK_SERIALIZER = 'json'
 # http://docs.celeryproject.org/en/latest/userguide/configuration.html#std:setting-result_serializer
-CELERY_RESULT_SERIALIZER = 'json'
+#CELERY_RESULT_SERIALIZER = 'json'
 
 # Your stuff...
 # ------------------------------------------------------------------------------
