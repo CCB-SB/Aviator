@@ -1,0 +1,19 @@
+body {
+  background-color: #000000;
+}
+
+table {
+  table-layout: fixed;
+  margin: 2rem;
+  width: calc(100% - 4rem) !important;
+}
+
+td {
+  word-wrap: break-word;
+}
+.navbar-login-container {
+    display: flex !important;
+    flex-basis: auto;
+    align-items: center;
+    flex-grow: 1;
+}

@@ -175,16 +175,13 @@ class Command(BaseCommand):
             call = WebsiteCall(website=website)
             if "response_headers_Date" in result[key]:
                 dt_string = result[key]["response_headers_Date"]
-                #dt_string = dt_string[5:25]
-                #dt_string = dt_string.replace(" Jan ", "-01-").replace(" Feb ", "-02-").replace(" Mar ", "-03-").replace(" Apr ", "-04-").replace(" May ", "-05-").replace(" Jun ", "-06-").replace(" Jul ", "-07-").replace(" Aug ", "-08-").replace(" Sep ", "-09-").replace(" Oct ", "-10-").replace(" Nov ", "-11-").replace(" Dec ", "-12-")
                 call.datetime = datetime.strptime(dt_string, "%a, %d %b %Y %H:%M:%S %Z").date()
             else:
-                call.datetime = datetime.now()
+                call.datetime  = datetime.now()
             call.ok = result[key]["ok"] == "Pass" if "ok" in result[key] else False
             call.error = result[key]["error"] if "error" in result[key] else ""
             call.msg = result[key]["msg"] if "msg" in result[key] else ""
             call.code = result[key]["code"] if "code" in result[key] and result[key]["code"] != "NA" else 0
             call.json_data = json.dumps(result[key])
-            #call.save()
+            call.save()
         self.stdout.write(self.style.SUCCESS('Successfully added ' + str(len(result)) + ' Website Calls'))
-#Sun, 06 Sep 2020 17:02:55 GMT

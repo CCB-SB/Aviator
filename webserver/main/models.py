@@ -26,7 +26,7 @@ class Website(models.Model):
     security_issuer = models.CharField(max_length=100)
 
 class WebsiteCall(models.Model):
-    website = models.ForeignKey(Website, on_delete=models.CASCADE)
+    website = models.ForeignKey(Website, related_name='calls', on_delete=models.CASCADE)
     datetime = models.DateTimeField()
     ok = models.BooleanField()
     error = models.CharField(max_length=200)

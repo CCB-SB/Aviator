@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+{% load staticfiles %}
+<html  lang="en">
+	<head>
+    <meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+		<title>Aviator</title>
+		<link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet" type="text/css">
+		<link href="{% static 'css/aviator.css' %}" rel="stylesheet" type="text/css">
+    <script src="{% static 'js/jquery.min.js' %}"></script>
+    <script src="{% static 'js/popper.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+	</head>
+	<body>
+    {% include "navbar.html" %}
+    <table class="table table-striped  table-dark">
+      <thead>
+        <tr>
+          <th>datetime</th>
+          <th>ok</th>
+          <th>error</th>
+          <th>msg</th>
+          <th>code</th>
+        </tr>
+      </thead>
+        {% for call in calls %}
+            <tr>
+                <td>{{ call.datetime }}</td>
+                <td>{{ call.ok }}</td>
+                <td>{{ call.error }}</td>
+                <td>{{ call.msg }}</td>
+                <td>{{ call.code }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+	</body>
+</html>

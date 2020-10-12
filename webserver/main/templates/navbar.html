@@ -1,0 +1,35 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <a class="navbar-brand">Aviator</a>
+  <div class="navbar-login-container" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto"><li class="nav-item active"></li></ul>
+    <button class="btn btn-outline-light my-2 my-sm-0" type="button" data-toggle="modal" data-target="#loginModal">Login</button>
+  </div>
+</nav>
+
+<div class="modal fade" role="dialog" tabindex="-1" id="loginModal">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Login</h3>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <input type="text" id="username" name="username" class="form-control" placeholder="Username">
+        </div>
+        <div class="form-group">
+          <input type="password" id="password" name="password" class="form-control" placeholder="Password">
+        </div>
+        <div class="form-group">
+          <div id="message"></div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline-dark">Sign in</button>
+      </div>
+    </div>
+  </div>
+</div>
+
