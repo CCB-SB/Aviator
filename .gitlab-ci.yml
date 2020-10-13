@@ -10,7 +10,7 @@ stages:
 services:
   - docker:dind
 
-image: docker/compose:1.27.4
+image: docker/compose:1.26.2
 
 variables:
   GIT_SUBMODULE_STRATEGY: none
