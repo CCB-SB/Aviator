@@ -17,17 +17,17 @@
     <table class="table table-striped  table-dark">
       <thead>
         <tr>
-          <th>datetime</th>
-          <th>ok</th>
-          <th>error</th>
-          <th>msg</th>
-          <th>code</th>
+          <th>Datetime</th>
+          <th>Status</th>
+          <th>Error</th>
+          <th>Message</th>
+          <th>Code</th>
         </tr>
       </thead>
         {% for call in calls %}
             <tr>
                 <td>{{ call.datetime }}</td>
-                <td>{{ call.ok }}</td>
+                <td><span class="{% if call.ok and call.error == "" and call.code == 200 %}green{% else %}red{% endif %}-circle"></span></td>
                 <td>{{ call.error }}</td>
                 <td>{{ call.msg }}</td>
                 <td>{{ call.code }}</td>

@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.postgres.fields import ArrayField
+from django.contrib.postgres.fields import JSONField
 
 # Create your models here.
 class Paper(models.Model):
@@ -15,6 +15,7 @@ class Website(models.Model):
     url = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    status = models.NullBooleanField(null=True, default=None)
     papers = models.ManyToManyField(Paper)
     ip = models.CharField(max_length=45)
     server = models.CharField(max_length=200)
@@ -32,7 +33,7 @@ class WebsiteCall(models.Model):
     error = models.CharField(max_length=200)
     msg = models.TextField()
     code = models.IntegerField()
-    json_data = models.TextField()
+    json_data = JSONField()
 
 class Tag(models.Model):
     name = models.CharField(max_length=50)

@@ -1,14 +1,15 @@
 from django.core.management.base import BaseCommand, CommandError
 from main.models import Website
 from main.models import WebsiteCall
-import os, json, gzip
+import os, csv, json, gzip
 from datetime import datetime
 
 class Command(BaseCommand):
-    help = 'Creates Websites and WebsiteCalls from a given source folder'
+    help = 'Creates the website / website calls model and a csv from a given source folder'
 
     def add_arguments(self, parser):
         parser.add_argument('folder')
+        parser.add_argument('csv_target')
 
     def handle(self, *args, **options):
         # variables
@@ -20,8 +21,9 @@ class Command(BaseCommand):
         html_title_header = 'html-title'
         analytics_header = 'analytics'
         error_header = 'error'
+        datetime_header = 'datetime'
         result = {}
-        columns = [folder_header, html_title_header, analytics_header, error_header]
+        columns = [folder_header, html_title_header, analytics_header, error_header, datetime_header]
         analytics_names = ['google-analytics', 'matomo', 'woopra', 'gosquared', 'go-squared', 'foxmetrics',
                            'fox-metrics', 'mixpanel', 'heap', 'statcounter', 'stat-counter', 'chartbeat', 'clicky',
                            'leadfeeder']
@@ -55,7 +57,16 @@ class Command(BaseCommand):
             "∼": "~"
         }
 
+        def winapi_path(dos_path, encoding=None):
+            if (not isinstance(dos_path, str) and encoding is not None):
+                dos_path = dos_path.decode(encoding)
+            path = os.path.abspath(dos_path)
+            if path.startswith(u"\\\\"):
+                return u"\\\\?\\UNC\\" + path[2:]
+            return u"\\\\?\\" + path
+
         def handleInfo(filename, target):
+            target[datetime_header] = filename[filename.rfind("\\") + 1:][0:19].replace("T", " ").replace("_", ":") #e.g. 2020-09-06T16_01_22 => 2020-09-06 16:01:22
             if filename[-3:] == '.gz':
                 with gzip.open(filename, 'r') as file:
                     data = json.load(file)
@@ -138,11 +149,11 @@ class Command(BaseCommand):
                 if len(folder_name) > 0 and not folder_name in result.keys():
                     result[folder_name] = {}
                 if info_identifier in file:
-                    handleInfo(os.path.join(subdir, file), result[folder_name])
+                    handleInfo(winapi_path(os.path.join(subdir, file)), result[folder_name])
                 elif html_identifier in file:
-                    handleHTML(os.path.join(subdir, file), result[folder_name])
+                    handleHTML(winapi_path(os.path.join(subdir, file)), result[folder_name])
                 elif logs_identifier in file:
-                    handleLogs(os.path.join(subdir, file), result[folder_name])
+                    handleLogs(winapi_path(os.path.join(subdir, file)), result[folder_name])
             for key, value in result.items():
                 result[key][folder_header] = key
                 # replacements
@@ -151,6 +162,8 @@ class Command(BaseCommand):
                         result[key]["url"] = result[key]["url"].replace(replace, url_replacements[replace])
 
         for key, value in result.items():
+            if "url" not in result[key]:
+                continue
             wp_url = result[key]["url"];
             #Check and create Webpage if there is none
             website = None
@@ -173,15 +186,37 @@ class Command(BaseCommand):
                 website = Website.objects.filter(url=wp_url)[0]
             #Create Website Call
             call = WebsiteCall(website=website)
-            if "response_headers_Date" in result[key]:
-                dt_string = result[key]["response_headers_Date"]
-                call.datetime = datetime.strptime(dt_string, "%a, %d %b %Y %H:%M:%S %Z").date()
+            if datetime_header in result[key]:
+                dt_string = result[key][datetime_header] #e.g. 2020-09-06 16:01:22
+                call.datetime = datetime.strptime(dt_string, "%Y-%m-%d %H:%M:%S").date()
             else:
-                call.datetime  = datetime.now()
+                call.datetime = datetime.now()
             call.ok = result[key]["ok"] == "Pass" if "ok" in result[key] else False
             call.error = result[key]["error"] if "error" in result[key] else ""
             call.msg = result[key]["msg"] if "msg" in result[key] else ""
             call.code = result[key]["code"] if "code" in result[key] and result[key]["code"] != "NA" else 0
             call.json_data = json.dumps(result[key])
             call.save()
+            #Set status of website
+            status = None
+            if "code" in result[key] and result[key]["code"] == "200":
+                status = True
+            elif "code" in result[key]:
+                status = False
+            if "ok" in result[key] and result[key]["ok"] == "Pass":
+                status = True
+            if "error" in result[key] and len(result[key]["error"]) > 0:
+                status = False
+            website.status = status
+            website.save()
+        #Save as csv
+        try:
+            outputfile = options['csv_target']
+            with open(outputfile, 'w', newline='', encoding="utf-8") as csvfile:
+                writer = csv.DictWriter(csvfile, fieldnames=columns, delimiter=';')
+                writer.writeheader()
+                for key, value in result.items():
+                    writer.writerow(value)
+        except:
+            self.stdout.write("CSV was not saved, no target file given or an IO Error occured")
         self.stdout.write(self.style.SUCCESS('Successfully added ' + str(len(result)) + ' Website Calls'))
