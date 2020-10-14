@@ -10,13 +10,14 @@ stages:
 services:
   - docker:dind
 
-image: docker/compose:1.25.5
+image: docker
 
 variables:
   GIT_SUBMODULE_STRATEGY: none
 
 before_script:
-  - apk add --update git
+  - apk add --update git py-pip
+  - pip install docker-compose==1.23.2
   - mkdir -p webserver/.envs/.production
   - echo "$DJANGO_ENV" > webserver/.envs/.production/.django
   - echo "$POSTGRES_ENV" > webserver/.envs/.production/.postgres
