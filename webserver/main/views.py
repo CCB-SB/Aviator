@@ -14,18 +14,19 @@ def index(request):
 
 def overview(request):
     context = {}
-    context['websites'] = Website.objects.all()
+    context['websites'] = Website.objects.all().prefetch_related('papers')
     return render(request, 'overview.html', context)
 
 def papers(request):
     context = {}
-    context['papers'] = Paper.objects.all()
+    context['papers'] = Paper.objects.all().prefetch_related('websites')
     return render(request, 'papers.html', context)
 
 def details(request, pk):
     context = {}
     website = get_object_or_404(Website, pk=pk)
     context['calls'] = website.calls.all()
+    context['website'] = website
     return render(request, 'details.html', context)
 
 def author(request):

@@ -1,6 +1,7 @@
 from django.core.management.base import BaseCommand, CommandError
 from main.models import Website
 from main.models import WebsiteCall
+from main.models import Paper
 import os, csv, json, gzip
 from datetime import datetime
 
@@ -66,7 +67,7 @@ class Command(BaseCommand):
             return u"\\\\?\\" + path
 
         def handleInfo(filename, target):
-            target[datetime_header] = filename[filename.rfind("\\") + 1:][0:19].replace("T", " ").replace("_", ":") #e.g. 2020-09-06T16_01_22 => 2020-09-06 16:01:22
+            target[datetime_header] = filename[filename.rfind("\\") + 1:][0:19].replace("_", ":") #e.g. 2020-09-06T16_01_22 => 2020-09-06T16:01:22
             if filename[-3:] == '.gz':
                 with gzip.open(filename, 'r') as file:
                     data = json.load(file)
@@ -161,6 +162,9 @@ class Command(BaseCommand):
                     for replace in url_replacements:
                         result[key]["url"] = result[key]["url"].replace(replace, url_replacements[replace])
 
+        new_websites = 0
+        new_websitecalls = 0
+        new_paper_connections = 0
         for key, value in result.items():
             if "url" not in result[key]:
                 continue
@@ -182,13 +186,18 @@ class Command(BaseCommand):
                     if "JSESSIONID" in result[key]["response_headers_Set-Cookie"]:
                         website.script += "Java"
                 website.save()
+                new_websites += 1
+                papers = Paper.objects.filter(url=wp_url)
+                for paper in papers:
+                    website.papers.add(paper)
+                    new_paper_connections += 1
             else:
                 website = Website.objects.filter(url=wp_url)[0]
             #Create Website Call
             call = WebsiteCall(website=website)
             if datetime_header in result[key]:
-                dt_string = result[key][datetime_header] #e.g. 2020-09-06 16:01:22
-                call.datetime = datetime.strptime(dt_string, "%Y-%m-%d %H:%M:%S").date()
+                dt_string = result[key][datetime_header] #e.g. 2020-09-06T16:01:22
+                call.datetime = datetime.strptime(dt_string, "%Y-%m-%dT%H:%M:%S")
             else:
                 call.datetime = datetime.now()
             call.ok = result[key]["ok"] == "Pass" if "ok" in result[key] else False
@@ -197,6 +206,7 @@ class Command(BaseCommand):
             call.code = result[key]["code"] if "code" in result[key] and result[key]["code"] != "NA" else 0
             call.json_data = json.dumps(result[key])
             call.save()
+            new_websitecalls += 1
             #Set status of website
             status = None
             if "code" in result[key] and result[key]["code"] == "200":
@@ -219,4 +229,4 @@ class Command(BaseCommand):
                     writer.writerow(value)
         except:
             self.stdout.write("CSV was not saved, no target file given or an IO Error occured")
-        self.stdout.write(self.style.SUCCESS('Successfully added ' + str(len(result)) + ' Website Calls'))
+        self.stdout.write(self.style.SUCCESS('Successfully added ' + str(new_websitecalls) + ' website calls with ' + str(new_websites) + ' new websites with ' + str(new_paper_connections) + ' new connections to papers '))

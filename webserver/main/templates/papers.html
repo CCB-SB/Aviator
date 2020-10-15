@@ -30,18 +30,22 @@
             <th>year</th>
             <th>journal</th>
             <th>pubmed_id</th>
-            <th>doi</th>
+            <th>Websites</th>
           </tr>
         </thead>
           {% for paper in papers %}
               <tr>
-                  <td>{{ paper.titel }}</td>
+                  <td>{{ paper.title }}</td>
                   <td>{{ paper.authors }}</td>
                   <td><button class="btn btn-outline-light my-2 my-sm-0" type="button" data-toggle="modal" onclick="abstract('{{ paper.abstract }}')" data-target="#abstractModal">Abstract</button></td>
                   <td>{{ paper.year }}</td>
                   <td>{{ paper.journal }}</td>
                   <td>{{ paper.pubmed_id }}</td>
-                  <td>{{ paper.doi }}</td>
+                  <td>
+                    {% for website in paper.websites.all %}
+                    <a href="details/{{ website.pk }}">Link</a>&nbsp;
+                    {% endfor %}
+                  </td>
               </tr>
           {% endfor %}
       </table>
