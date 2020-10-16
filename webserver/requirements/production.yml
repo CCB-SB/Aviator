@@ -1,3 +1,3 @@
 dependencies:
   - gunicorn=19.9.0  # https://github.com/benoitc/gunicorn
-  - psycopg2=2.7.5  # https://github.com/psycopg/psycopg2
+  - psycopg2=2.8.6  # https://github.com/psycopg/psycopg2
