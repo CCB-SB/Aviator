@@ -1,6 +1,7 @@
 dependencies:
   - python=3.6.9
   - wheel=0.33.1
+  - psycopg2=2.7.6.1  # https://github.com/psycopg/psycopg2
 
   - pip:
     - django==2.1.15
