@@ -1,6 +1,6 @@
 dependencies:
-  - python=3.7.9
-  - wheel=0.33.6
+  - python=3.6.9
+  - wheel=0.33.1
 
   - pip:
     - django==2.1.15

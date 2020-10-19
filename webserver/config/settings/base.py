@@ -38,13 +38,7 @@ USE_TZ = True
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#databases
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        # Or path to database file if using sqlite3.
-        'NAME': 'postgres',
-        'USER': 'postgres',
-        'PASSWORD': '',
-    }
+    'default': env.db('DATABASE_URL'),
 }
 DATABASES['default']['ATOMIC_REQUESTS'] = True
 DATABASES['default']['ENGINE'] = 'django.db.backends.postgresql'

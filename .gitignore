@@ -324,3 +324,12 @@ tags
 aviator/media/
 
 .pytest_cache/
+
+# IDE specific files
+.idea/
+
+# Celery specific files
+celerybeat-schedule.bak
+celerybeat-schedule.dat
+celerybeat-schedule.dir
+
