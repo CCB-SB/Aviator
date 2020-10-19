@@ -7,7 +7,7 @@ dependencies:
     - django-environ==0.4.5
     - django-redis==4.10.0
     - redis==3.2.0
- #   - celery==4.2.1  # pyup: <5.0  # https://github.com/celery/celery
- #   - flower==0.9.2  # https://github.com/mher/flower
- #   - tornado<6.0.0  # needed for flower because they don't fix it to a version in their 0.9.2 version
+    - celery==4.2.1  # pyup: <5.0  # https://github.com/celery/celery
+    - flower==0.9.2  # https://github.com/mher/flower
+    - tornado<6.0.0  # needed for flower because they don't fix it to a version in their 0.9.2 version
 # Your custom requirements go here
