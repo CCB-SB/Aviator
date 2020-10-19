@@ -27,7 +27,7 @@ before_script:
 .staging_vars: &staging_vars
   variables:
     DOCKER_TLS_VERIFY: "1"
-    DOCKER_HOST: "tcp://ccb-test.cs.uni-saarland.de:2376"
+    DOCKER_HOST: "tcp://anathema.cs.uni-saarland.de:2376"
     DOCKER_CERT_PATH: "certs"
     COMPOSE_HTTP_TIMEOUT: "180"
 
@@ -103,7 +103,7 @@ deploy-staging:
   <<: *staging_vars
   environment:
     name: staging
-    url: https://ccb-test.cs.uni-saarland.de/aviator
+    url: https://anathema.cs.uni-saarland.de/aviator
 
 deploy-production:
   stage: deploy-production
