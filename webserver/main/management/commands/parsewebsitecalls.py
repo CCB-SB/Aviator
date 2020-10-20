@@ -169,6 +169,11 @@ class Command(BaseCommand):
             if "url" not in result[key]:
                 continue
             wp_url = result[key]["url"];
+            wp_url = wp_url.replace("http://", "")
+            wp_url = wp_url.replace("https://", "")
+            wp_url = wp_url.replace("www.", "")
+            if wp_url.endswith("/"):
+                wp_url = wp_url[:-1]
             #Check and create Webpage if there is none
             website = None
             websites = Website.objects.filter(url=wp_url)
@@ -187,6 +192,7 @@ class Command(BaseCommand):
                         website.script += "Java"
                 website.save()
                 new_websites += 1
+
                 papers = Paper.objects.filter(url=wp_url)
                 for paper in papers:
                     website.papers.add(paper)
@@ -215,6 +221,8 @@ class Command(BaseCommand):
                 status = False
             if "ok" in result[key] and result[key]["ok"] == "Pass":
                 status = True
+            if "ok" in result[key] and result[key]["ok"] != "Pass":
+                status = False
             if "error" in result[key] and len(result[key]["error"]) > 0:
                 status = False
             website.status = status

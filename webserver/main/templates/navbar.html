@@ -1,6 +1,6 @@
 {% url 'main:index' as index %}
 {% url 'main:overview' as overview %}
-{% url 'main:papers' as papers %}
+{% url 'main:publications' as publications %}
 {% url 'main:author' as author %}
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
   <a class="navbar-brand" href="/">Aviator</a>
@@ -12,8 +12,8 @@
       <li class="nav-item {% if request.path == overview %}active{% endif %}">
         <a class="nav-link" href="{{ overview }}">Overview</a>
       </li>
-      <li class="nav-item {% if request.path == papers %}active{% endif %}">
-        <a class="nav-link" href="{{ papers }}">Papers</a>
+      <li class="nav-item {% if request.path == publications %}active{% endif %}">
+        <a class="nav-link" href="{{ publications }}">Publications</a>
       </li>
       <li class="nav-item {% if request.path == author %}active{% endif %}">
         <a class="nav-link" href="{{ author }}">Contact</a>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+{% load staticfiles %}
+<html  lang="en">
+	<head>
+    <meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+		<title>Aviator</title>
+		<link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet" type="text/css">
+		<link href="{% static 'css/dataTables.bootstrap.min.css' %}" rel="stylesheet" type="text/css">
+		<link href="{% static 'css/aviator.css' %}" rel="stylesheet" type="text/css">
+
+    <script src="{% static 'js/jquery.min.js' %}"></script>
+    <script src="{% static 'js/popper.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/jquery.dataTables.js' %}"></script>
+    <script src="{% static 'js/dataTables.bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/dataTables.fixedHeader.min.js' %}"></script>
+	</head>
+	<body>
+    {% include "navbar.html" %}
+    <div class="content-container">
+      <table id="table" class="table table-striped table-dark" style="display:block;">
+        <tbody>
+          <tr>
+            <tr><th>Titel</th><td>{{ paper.title }}</td></tr>
+            <tr><th>Authors</th><td>{{ paper.authors }}</td></tr>
+            <tr><th>Year</th><td>{{ paper.year }}</td></tr>
+            <tr><th>Journal</th><td>{{ paper.journal }}</td></tr>
+            <tr><th>Pubmed</th><td>{{ paper.pubmed_id }}</td></tr>
+            <tr><th>Webpages</th><td>
+            {% for website in websites %}
+                <a class='btn btn-outline-light' href='/details/{{ website.pk }}'>{{ website.url }}</a>
+            {% endfor %}
+            </td></tr>
+            <tr><th>Abstract</th><td>{{ paper.abstract }}</td></tr>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+	</body>
+</html>

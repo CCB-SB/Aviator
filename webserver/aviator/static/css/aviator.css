@@ -1,18 +1,33 @@
-body {
-  background-color: #000000;
+:root {
+  --main-bg-color-light: #5df2d6;
+  --bg-color: #141a20;
+  --font-color: #dee2e6;
+  --hover-font-color: #eef2f6;
+  --border-color: #454d55;
+  --hover-border-color: #dee2e6;
+
+  --primary: #454d55;
+  --secondary: #343a40;
 }
+
+body {
+  background-color: #141a20;
+}
+
 
 .content-container {
     width: calc(100% - 2rem);
     margin: 1rem;
 }
-/* Author Info */
-.contact-container {
-    width: calc(100% - 4rem);
-    margin: 2rem;
-}
-.contact-container > form > div > label {
-    color: white;
+/* Index */
+.center-box {
+  margin: 20vh 35vw 0vh 35vw;
+  padding: 1vh 0vw 1vh 0vw;
+  background-color: var(--primary);
+  width: 30vw;
+  text-align:center;
+  color:var(--font-color);
+  font-size:2vw;
 }
 /* Tables */
 content-container > table {
@@ -35,10 +50,52 @@ td {
 
 /* Login */
 .navbar-login-container {
-    display: flex !important;
-    flex-basis: auto;
-    align-items: center;
-    flex-grow: 1;
+  display: flex !important;
+  flex-basis: auto;
+  align-items: center;
+  flex-grow: 1;
+}
+/* Datatables */
+.dataTables_length > label {
+  color: var(--font-color);
+}
+.page-item .page-link {
+  background-color: var(--primary);
+  border-color: var(--border-color);
+  color: var(--font-color);
+}
+.page-item.active .page-link {
+    color: var(--hover-font-color);
+    background-color: var(--primary);
+    border-color: var(--hover-border-color);
+}
+.page-link:hover {
+    color: var(--hover-font-color);
+    background-color: var(--primary);
+    border-color: var(--hover-border-color);
+}
+.page-item.disabled .page-link {
+  color: var(--font-color);
+  pointer-events: none;
+  border-color: var(--primary);
+  background-color: var(--secondary);
+}
+.form-control {
+  background-color: var(--primary);
+  border-color: var(--border-color);
+  color: var(--font-color);
+  box-shadow: 0 0 0 0 rgba(0,0,0,0);
+}
+.form-control:focus {
+  background-color: var(--primary);
+  border-color: var(--border-color);
+  color: var(--font-color);
+}
+.form-control::placeholder {
+  color: var(--font-color);
+}
+.dataTables_info {
+  color: var(--font-color);
 }
 /* On/Offline Circles*/
 .red-circle {
@@ -54,4 +111,24 @@ td {
   background-color: green;
   border-radius: 50%;
   display: inline-block;
+}
+/* Author Info */
+.contact-container {
+    width: calc(100% - 4rem);
+    margin: 2rem;
+}
+.contact-container > form > div > label {
+    color: white;
+}
+@media only screen and (min-width: 80rem) and (max-width: 120rem) {
+	.contact-container {
+    width: calc(100% - 40vw);
+    margin: 2rem 20vw 2rem 20vw;
+  }
+}
+@media only screen and (min-width: 120rem) {
+	.contact-container {
+    width: calc(100% - 60vw);
+    margin: 2rem 30vw 2rem 30vw;
+  }
 }

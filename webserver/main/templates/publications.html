@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+{% load staticfiles %}
+{% url 'main:details' as details %}
+<html  lang="en">
+	<head>
+    <meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+		<title>Aviator</title>
+		<link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet" type="text/css">
+		<link href="{% static 'css/dataTables.bootstrap.min.css' %}" rel="stylesheet" type="text/css">
+		<link href="{% static 'css/aviator.css' %}" rel="stylesheet" type="text/css">
+
+    <script src="{% static 'js/jquery.min.js' %}"></script>
+    <script src="{% static 'js/popper.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/jquery.dataTables.js' %}"></script>
+    <script src="{% static 'js/dataTables.bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/dataTables.fixedHeader.min.js' %}"></script>
+	</head>
+	<body>
+    {% include "navbar.html" %}
+    <div class="content-container">
+      <table id="table" class="table table-striped  table-dark">
+        <thead>
+          <tr>
+            <th>Titel</th>
+            <th>Authors</th>
+            <!--<th>Abstract</th>-->
+            <th>Year</th>
+            <th>Journal</th>
+            <th>Pubmed</th>
+            <th>Websites</th>
+          </tr>
+        </thead>
+        <tbody>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="modal fade" role="dialog" tabindex="-1" id="abstractModal">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h3 class="modal-title">Abstract</h3>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="form-group">
+              <div id="abstract-text"></div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-outline-dark" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+	</body>
+</html>
+<script>
+  function abstract(text) {
+    document.getElementById("abstract-text").innerHTML = text;
+  }
+
+  $(document).ready( function () {
+    var table = $('#table').DataTable( {
+      scrollResize: true,
+      orderCellsTop: true,
+      scrollY:        "72vh",
+      scrollX: true,
+      scrollCollapse: true,
+      paging:         true,
+      //serverSide: true,
+      columnDefs : [ {'type' : 'natural', 'targets' : '_all' } ],
+      language: {
+        searchPlaceholder: "Search"
+      },
+      ajax: {
+          url: '/paperData'
+      },
+      columns: [
+        { data: "title" },
+        { data: "authors" },
+        /*
+        { data: "abstract",
+          render: function ( data ) {
+            return "<button class=\"btn btn-outline-light my-2 my-sm-0\" type=\"button\" data-toggle=\"modal\" onclick=\"abstract('"+data+"')\" data-target=\"#abstractModal\">Abstract</button>";
+          }
+        },
+         */
+        { data: "year" },
+        { data: "journal" },
+        { data: "pubmed_id" },
+        { data: "websites",
+          render: function ( data ) {
+          var str = "";
+          if (data != null) {
+            var i = 0;
+            for (i=0; i < data.length; i++) {
+              str += "<a class='btn btn-outline-light' href='/details/"+data[i]+"'>Website</a>"
+            }
+            if(i == 0) {
+              return "<a class='btn btn-outline-light' href='/details/"+data+"'>Website</a>"
+            }
+          }
+          return str;
+          }
+        }
+      ]
+    });
+  });
+</script>

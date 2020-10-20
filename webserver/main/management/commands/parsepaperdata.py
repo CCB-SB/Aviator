@@ -64,6 +64,11 @@ class Command(BaseCommand):
                             break
                         if header[counter] == 'URL':
                             url = str(entry).encode('unicode-escape').decode('utf-8')
+                            url = url.replace("http://", "")
+                            url = url.replace("https://", "")
+                            url = url.replace("www.", "")
+                            if url.endswith("/"):
+                                url = url[:-1]
                             paper.url = url
                     counter += 1
                 if ok:
@@ -79,6 +84,7 @@ class Command(BaseCommand):
                             continue
                     num += 1
                     paper.save()
+                    #websites = Website.objects.filter(url=url)
                     websites = Website.objects.filter(url=url)
                     for website in websites:
                         website.papers.add(paper)

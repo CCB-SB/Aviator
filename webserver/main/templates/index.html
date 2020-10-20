@@ -15,8 +15,11 @@
 	</head>
 	<body>
     {% include "navbar.html" %}
-    <div style="color:grey;">
-      This website includes {{ paper_count }} papers with {{ website_count }} websites of which are {{ online_count }} online and {{ offline_count }} offline
+    <div class="center-box">
+      Publications: {{ paper_count }}<br>
+      Websites: {{ website_count }}<br>
+      Online: {{ online_count }}<br>
+      Offline: {{ offline_count }}
     </div>
 	</body>
 </html>

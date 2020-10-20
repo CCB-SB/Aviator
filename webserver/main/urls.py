@@ -6,6 +6,9 @@ urlpatterns = [
     path('', views.index, name='index'),
     path('details/<int:pk>/', views.details, name="details"),
     path('overview', views.overview, name='overview'),
-    path('papers', views.papers, name='papers'),
+    path('publications', views.publications, name='publications'),
+    path('publication/<int:pk>/', views.publication, name='publication'),
     path('author', views.author, name='author'),
+    path('paperData', views.paperData, name='paperData'),
+    path('websiteData', views.websiteData, name='websiteData'),
 ]
