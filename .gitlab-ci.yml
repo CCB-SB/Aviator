@@ -149,7 +149,7 @@ migrate-production:
 .parsewebsitecalls: &parsewebsitecalls
   script:
     - *setup_docker_tls
-    - docker-compose -f webserver/production.yml run --rm django python manage.py parsewebsitecalls ${TELEMETRY_PATH}
+    - docker-compose -f webserver/production.yml run --rm django python manage.py parsewebsitecalls ${TELEMETRY_PATH} ${FILTER_PATH}
   <<: *manage_only_master_remote
 
 parsewebsitecalls-staging:
@@ -165,7 +165,7 @@ parsewebsitecalls-production:
 .parsepaperdata: &parsepaperdata
   script:
     - *setup_docker_tls
-    - docker-compose -f webserver/production.yml run --rm django python manage.py parsepaperdata ${PUBLICATIONS_PATH}
+    - docker-compose -f webserver/production.yml run --rm django python manage.py parsepaperdata ${PUBLICATIONS_PATH} ${FILTER_PATH}
   <<: *manage_only_master_remote
 
 parsepaperdata-staging:

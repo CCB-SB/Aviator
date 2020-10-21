@@ -12,6 +12,7 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument('folder')
+        parser.add_argument('url_filter')
         #parser.add_argument('csv_target')
 
     def handle(self, *args, **options):
@@ -165,6 +166,33 @@ class Command(BaseCommand):
                     target1[id_url] = original_url
                     target2[id_url] = derived_url
 
+        #handle filter
+        filter = False
+        filter_ids = []
+        filter_original = []
+        try:
+            filename = options['url_filter']
+            with open(filename, 'r', encoding='utf-8') as csvfile:
+                csv_reader = csv.reader(csvfile, delimiter='\t')
+                filter = True
+                for row in csv_reader:
+                    counter = 0
+                    id_url = ""
+                    original_url = ""
+                    for entry in row:
+                        if counter == 0:
+                            id_url = str(entry).encode('unicode-escape').decode('utf-8')
+                        elif counter == 1:
+                            original_url = str(entry).encode('unicode-escape').decode('utf-8')
+                        elif counter > 1:
+                            break
+                        counter += 1
+                    filter_ids.append(id_url)
+                    filter_original.append(original_url)
+            self.stdout.write("Filter applied")
+        except:
+            self.stdout.write("No Filter applied")
+
         #Iterate New data
         try:
             inputfolder = options['folder']
@@ -205,9 +233,12 @@ class Command(BaseCommand):
         for key, value in tqdm(result.items()):
             if "url" not in result[key]:
                 continue
-            wp_url = result[key]["url"]
-            derived_url = derived_urls[wp_url] if wp_url in derived_urls else ""
-            wp_url = original_urls[wp_url] if wp_url in original_urls else wp_url
+            ip_url = result[key]["url"]
+            derived_url = derived_urls[ip_url] if ip_url in derived_urls else ""
+            wp_url = original_urls[ip_url] if ip_url in original_urls else ip_url
+            if(filter):
+                if ip_url not in filter_ids and wp_url not in filter_original:
+                    continue
             #Check and create Webpage if there is none
             website = None
             status = None
@@ -257,8 +288,11 @@ class Command(BaseCommand):
         for key, value in tqdm(result.items()):
             if "url" not in result[key]:
                 continue
-            wp_url = result[key]["url"]
-            wp_url = original_urls[wp_url] if wp_url in original_urls else wp_url
+            ip_url = result[key]["url"]
+            wp_url = original_urls[ip_url] if ip_url in original_urls else ip_url
+            if(filter):
+                if ip_url not in filter_ids and wp_url not in filter_original:
+                    continue
             website = Website.objects.filter(url=wp_url)[0]
             #Create Website Call
             call = WebsiteCall(website=website)

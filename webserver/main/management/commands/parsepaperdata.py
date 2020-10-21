@@ -8,6 +8,7 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument('csv_file')
+        parser.add_argument('url_filter')
 
     def handle(self, *args, **options):
         try:
@@ -18,6 +19,37 @@ class Command(BaseCommand):
         num = 0
         num2 = 0
         header = dict()
+
+        #handle filter
+        filter = False
+        filter_ids = []
+        filter_original = []
+        filter_derived = []
+        try:
+            filename = options['url_filter']
+            with open(filename, 'r', encoding='utf-8') as csvfile:
+                csv_reader = csv.reader(csvfile, delimiter='\t')
+                filter = True
+                for row in csv_reader:
+                    counter = 0
+                    id_url = ""
+                    original_url = ""
+                    for entry in row:
+                        if counter == 0:
+                            id_url = str(entry).encode('unicode-escape').decode('utf-8')
+                        elif counter == 1:
+                            original_url = str(entry).encode('unicode-escape').decode('utf-8')
+                        elif counter == 2:
+                            derived_url = str(entry).encode('unicode-escape').decode('utf-8')
+                        elif counter > 2:
+                            break
+                        counter += 1
+                    filter_ids.append(id_url)
+                    filter_original.append(original_url)
+                    filter_derived.append(derived_url)
+            self.stdout.write("Filter applied")
+        except:
+            self.stdout.write("No Filter applied")
 
         with open(csv_file, 'r', encoding='utf-8') as csvfile:
             csv_reader = csv.reader(csvfile, delimiter='\t')
@@ -64,6 +96,10 @@ class Command(BaseCommand):
                             break
                         if header[counter] == 'URL':
                             url = str(entry).encode('unicode-escape').decode('utf-8')
+                            if(filter):
+                                if url not in filter_ids and url not in filter_original not in filter_derived:
+                                    ok = False
+                                    break
                             paper.url = url
                     counter += 1
                 if ok:
