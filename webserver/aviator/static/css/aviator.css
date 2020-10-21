@@ -64,6 +64,39 @@ td {
   word-break: break-word;
 }
 
+table tfoot {
+  display: table-header-group;
+  }
+  
+input.form-control {
+  padding: 16px .5rem
+}
+
+div.dataTables_wrapper thead tr {
+  height: auto;
+  max-height: 175px;
+}
+
+div.dataTables_wrapper li.paginate_button a {
+  height: 100%;
+  padding-top: 0.7rem;
+}
+
+.pagination-input {
+  width: 70px !important;
+  height: 30px !important;
+  display: inline-block !important;
+}
+
+#properties td,
+#properties th{
+  width: auto !important;
+  white-space: normal;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+
 /* dataTables adjustments */
 .dataTable {
     width: 100% !important;
