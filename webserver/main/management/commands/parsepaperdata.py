@@ -23,9 +23,8 @@ class Command(BaseCommand):
 
         #handle filter
         filter = False
-        filter_ids = []
-        filter_original = []
-        filter_derived = []
+        filter_ids = set()
+        filter_original = set()
         try:
             filename = options['url_filter']
             with open(filename, 'r', encoding='utf-8') as csvfile:
@@ -40,14 +39,11 @@ class Command(BaseCommand):
                             id_url = str(entry).encode('unicode-escape').decode('utf-8')
                         elif counter == 1:
                             original_url = str(entry).encode('unicode-escape').decode('utf-8')
-                        elif counter == 2:
-                            derived_url = str(entry).encode('unicode-escape').decode('utf-8')
-                        elif counter > 2:
+                        elif counter > 1:
                             break
                         counter += 1
-                    filter_ids.append(id_url)
-                    filter_original.append(original_url)
-                    filter_derived.append(derived_url)
+                    filter_ids.add(id_url)
+                    filter_original.add(original_url)
             self.stdout.write("Filter applied")
         except:
             self.stdout.write("No Filter applied")
@@ -100,7 +96,7 @@ class Command(BaseCommand):
                             if(filter):
                                 remove = []
                                 for url in urls:
-                                    if url not in filter_ids and url not in filter_original and url not in filter_derived:
+                                    if url not in filter_ids and url not in filter_original:
                                         remove.append(url)
                                 for url in remove:
                                     urls.remove(url)
@@ -110,7 +106,7 @@ class Command(BaseCommand):
                             paper.url = url
                     counter += 1
                 if ok:
-                    papers = Paper.objects.filter(title=title)
+                    papers = Paper.objects.filter(pubmed_id=pubmed_id)
                     if papers.count() > 0:
                         for old_paper in papers:
                             old_paper.pubmed_id = pubmed_id
@@ -130,4 +126,5 @@ class Command(BaseCommand):
                             website.save()
                             num2 += 1
                     #websites = Website.objects.filter(url=url)
+
             self.stdout.write(self.style.SUCCESS('Successfully added ' + str(num) + ' new Papers and updated ' + str(num_updated) + ' Papers with ' + str(num2) + ' connections to webpages'))
