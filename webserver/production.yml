@@ -17,6 +17,7 @@ x-djangobase: &django-base
   volumes:
     - production_large_data:/large_data:ro
     - media_content:/app/aviator/media
+    - /data/aviator_telemetry:/app/aviator_telemetry
   restart: unless-stopped
 
 
@@ -89,6 +90,5 @@ services:
   flower:
     <<: *django-base
     ports:
-      
       - "11843:5555"
     command: /start-flower
