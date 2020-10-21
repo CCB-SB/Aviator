@@ -64,7 +64,7 @@ class Command(BaseCommand):
                     continue
                 counter = 0
                 ok = True
-                url = ""
+                urls = []
                 title = ""
                 pubmed_id = ""
                 abstract = ""
@@ -96,15 +96,22 @@ class Command(BaseCommand):
                         #    ok = False
                         #    break
                         if header[counter] == 'URL':
-                            url = str(entry).encode('unicode-escape').decode('utf-8')
+                            urls = str(entry).encode('unicode-escape').decode('utf-8').split(';')
                             if(filter):
-                                if url not in filter_ids and url not in filter_original and url not in filter_derived:
+                                for url in urls:
+                                    if url not in filter_ids and url not in filter_original and url not in filter_derived:
+                                        urls.remove(url)
+                                if len(urls) == 0:
                                     ok = False
                                     break
                             paper.url = url
                     counter += 1
                 if ok:
-                    papers = Paper.objects.filter(url=url, title=title)
+                    new_url = ""
+                    for url in urls:
+                        new_url += (url + ", ")
+                    new_url[:-2]
+                    papers = Paper.objects.filter(url=new_url, title=title)
                     if papers.count() > 0:
                         for old_paper in papers:
                             old_paper.pubmed_id = pubmed_id
@@ -118,7 +125,7 @@ class Command(BaseCommand):
                     num += 1
                     paper.save()
                     #websites = Website.objects.filter(url=url)
-                    websites = Website.objects.filter(url=url)
+                    websites = Website.objects.filter(url=new_url)
                     for website in websites:
                         website.papers.add(paper)
                         website.save()

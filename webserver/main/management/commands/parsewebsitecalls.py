@@ -242,12 +242,12 @@ class Command(BaseCommand):
                     continue
             #Check and create Webpage if there is none
             website = None
-            status = None
+            status = True
             if "code" in result[key] and result[key]["code"] == "200":
                 status = True
             elif "code" in result[key]:
                 status = False
-            if "ok" in result[key] and result[key]["ok"] == "Pass":
+            if status and "ok" in result[key] and result[key]["ok"] == "Pass":
                 status = True
             if "ok" in result[key] and result[key]["ok"] != "Pass":
                 status = False
