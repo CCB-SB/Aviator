@@ -230,6 +230,7 @@ class Command(BaseCommand):
         update_websites = []
         #Create new Websites
         self.stdout.write("Creating new websites:")
+        already_done = []
         for key, value in tqdm(result.items()):
             if "url" not in result[key]:
                 continue
@@ -253,7 +254,6 @@ class Command(BaseCommand):
             if "error" in result[key] and len(result[key]["error"]) > 0:
                 status = False
             websites = Website.objects.filter(url=wp_url)
-            already_done = []
             if websites.count() == 0 and wp_url not in already_done:
                 website = Website(url=wp_url)
                 already_done.append(wp_url)
