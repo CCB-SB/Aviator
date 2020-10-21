@@ -18,6 +18,7 @@ class Command(BaseCommand):
         header_line = True
         num = 0
         num2 = 0
+        num_updated = 0
         header = dict()
 
         #handle filter
@@ -91,9 +92,9 @@ class Command(BaseCommand):
                         if header[counter] == 'journal':
                             journal = str(entry).encode('unicode-escape').decode('utf-8')
                             paper.journal = journal
-                        if header[counter] == 'comment' and entry == 'delete':
-                            ok = False
-                            break
+                        #if header[counter] == 'comment' and entry == 'delete':
+                        #    ok = False
+                        #    break
                         if header[counter] == 'URL':
                             url = str(entry).encode('unicode-escape').decode('utf-8')
                             if(filter):
@@ -103,7 +104,7 @@ class Command(BaseCommand):
                             paper.url = url
                     counter += 1
                 if ok:
-                    papers = Paper.objects.filter(url=url).filter(title=title)
+                    papers = Paper.objects.filter(url=url, title=title)
                     if papers.count() > 0:
                         for old_paper in papers:
                             old_paper.pubmed_id = pubmed_id
@@ -112,6 +113,7 @@ class Command(BaseCommand):
                             old_paper.year = year
                             old_paper.journal = journal
                             old_paper.save()
+                            num_updated += 1
                             continue
                     num += 1
                     paper.save()
@@ -121,4 +123,4 @@ class Command(BaseCommand):
                         website.papers.add(paper)
                         website.save()
                         num2 += 1
-            self.stdout.write(self.style.SUCCESS('Successfully added ' + str(num) + ' Papers with ' + str(num2) + ' connections to webpages'))
+            self.stdout.write(self.style.SUCCESS('Successfully added ' + str(num) + ' new Papers and updated ' + str(num_updated) + ' Papers with ' + str(num2) + ' connections to webpages'))
