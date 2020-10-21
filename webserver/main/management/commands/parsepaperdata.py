@@ -104,21 +104,23 @@ class Command(BaseCommand):
                                         remove.append(url)
                                 for url in remove:
                                     urls.remove(url)
+                                if len(urls) > 1:
+                                    self.stdout.write("********************************")
+                                    for url in urls:
+                                        self.stdout.write("********************************")
+                                    self.stdout.write(url)
                                 if len(urls) == 0:
                                     ok = False
                                     break
                             paper.url = url
                     counter += 1
                 if ok:
-                    new_url = ""
                     for url in urls:
-                        new_url += (url + "; ")
                         websites = Website.objects.filter(url=url)
                         for website in websites:
                             website.papers.add(paper)
                             website.save()
                             num2 += 1
-                    new_url[:-2]
                     papers = Paper.objects.filter(title=title)
                     if papers.count() > 0:
                         for old_paper in papers:
