@@ -873,8 +873,6 @@ http...ceumass.eps.uspceu.es	http://ceumass.eps.uspceu.es	http://ceumass.eps.usp
 http...varq.qb.fcen.uba.ar	http://varq.qb.fcen.uba.ar/	http://varq.qb.fcen.uba.ar/	Pass	""	200	insecure	1266029	157.92.19.169	2020-09-14T11:44:54.601420	varq.qb.fcen.uba.ar
 http...www.jci-bioinfo.cn.pLoc_bal-mEuk	http://www.jci-bioinfo.cn/pLoc_bal-mEuk/	http://www.jci-bioinfo.cn/pLoc_bal-mEuk/	Pass	""	200	insecure	1990	218.87.171.204	2020-09-14T11:45:01.478945	www.jci-bioinfo.cn
 www.oncomine.org	www.oncomine.org	https://www.oncomine.org/resource/login.html	Pass	""	200	secure	494426	52.3.121.51	2020-09-14T11:45:06.595482	www.oncomine.org
-http...www.w3.org.1998.Math.MathML....mml.mo.×..mml.mo...mml.math	"http://www.w3.org/1998/Math/MathML""""""""><mml:mo>×</mml:mo></mml:math>"	http://www.w3.org/1998/Math/MathML%22%22%3E%3Cmml:mo%3E%C3%97%3C/mml:mo%3E%3C/mml:math%3E	Pass	""	403	insecure	6518	128.30.52.100	2020-09-14T11:45:12.944966	www.w3.org
-http...statgen.snu.ac.kr.software.hiscom-ggi	http://statgen.snu.ac.kr/software/hiscom-ggi	http://statgen.snu.ac.kr/software/hiscom-ggi/	Pass	""	200	insecure	141918	147.46.26.92	2020-09-14T11:45:19.367286	statgen.snu.ac.kr
 http...drugtargetprofiler.fimm.fi	http://drugtargetprofiler.fimm.fi/	http://drugtargetprofiler.fimm.fi/	Pass	""	500	insecure	4169	128.214.64.122	2020-09-14T11:45:28.028329	drugtargetprofiler.fimm.fi
 http...www.fgvis.com.expressvis.PPIExp	http://www.fgvis.com/expressvis/PPIExp	http://www.fgvis.com/expressvis/PPIExp	Pass	""	200	insecure	1852680	47.75.152.113	2020-09-14T11:45:34.846180	www.fgvis.com
 http...www.unimd.org.RDAD	http://www.unimd.org/RDAD/	http://119.3.41.228:8080/RDAD/	Pass	""	200	insecure	146015	119.3.41.228	2020-09-14T11:45:53.581826	119.3.41.228
@@ -1115,7 +1113,6 @@ www.diadigital.de	www.diadigital.de	https://www.diadigital.de/	Pass	""	200	secur
 www.garuda-alliance.org	www.garuda-alliance.org	http://www.garuda-alliance.org/	Pass	""	200	insecure	742911	52.218.181.42	2020-09-14T12:25:28.389568	www.garuda-alliance.org
 http...ec2-54-150-223-65.ap-northeast-1.compute.amazonaws.com	http://ec2-54-150-223-65.ap-northeast-1.compute.amazonaws.com	http://ec2-54-150-223-65.ap-northeast-1.compute.amazonaws.com/	Pass	""	200	insecure	52058	54.150.223.65	2020-09-14T12:25:34.901044	ec2-54-150-223-65.ap-northeast-1.compute.amazonaws.com
 https...tictrainer.com	https://tictrainer.com/	https://tictrainer.com/	Pass	""	200	secure	32375	34.201.43.139	2020-09-14T12:25:40.405578	tictrainer.com
-https...ncsde.shinyapps.io.NCSDE	"https://ncsde.shinyapps.io/NCSDE"""""""""	https://ncsde.shinyapps.io/NCSDE%22%22	Pass	""	404	secure	312599	52.3.3.11	2020-09-14T12:25:49.753556	ncsde.shinyapps.io
 http...server.malab.cn.Sc_ncDNAPred.index.jsp	http://server.malab.cn/Sc_ncDNAPred/index.jsp	http://server.malab.cn/Sc_ncDNAPred/index.jsp	Pass	""	200	insecure	520807	121.42.167.206	2020-09-14T12:26:03.648032	server.malab.cn
 http...bioinfo.iconcologia.net.SNPstats	http://bioinfo.iconcologia.net/SNPstats	https://eris.odap-ico.org/SNPstats	Pass	""	404	secure	217	83.247.130.153	2020-09-14T12:26:12.819139	eris.odap-ico.org
 http...www.iprox.org	http://www.iprox.org	https://www.iprox.org/	Pass	""	200	secure	1926521	106.38.63.139	2020-09-14T12:26:19.567469	www.iprox.org
@@ -1206,8 +1203,6 @@ http...proteins.plus	http://proteins.plus	https://proteins.plus/	Pass	""	200	sec
 http...www.zbh.uni-hamburg.de.structureprofiler	http://www.zbh.uni-hamburg.de/structureprofiler	https://www.zbh.uni-hamburg.de/forschung/amd/software/structureprofiler.html	Pass	""	200	secure	3639273	134.100.36.5	2020-09-14T12:45:16.720269	www.zbh.uni-hamburg.de
 http...proteinsplus.zbh.uni-hamburg.de.#structureprofiler	http://proteinsplus.zbh.uni-hamburg.de/#structureprofiler	https://proteins.plus/#structureprofiler	Pass	""	200	secure	1558913	134.100.209.234	2020-09-14T12:45:23.402749	proteins.plus
 http...bioinformatics.cing.ac.cy.PathwayConnector	http://bioinformatics.cing.ac.cy/PathwayConnector	http://bioinformatics.cing.ac.cy/PathwayConnector/	Pass	""	200	insecure	1381741	82.116.205.49	2020-09-14T12:45:28.850849	bioinformatics.cing.ac.cy
-https...romainfr.github.io.CX-Functional-Website....website..ext-link	"https://romainfr.github.io/CX-Functional-Website/"""""""">website</ext-link>"	https://romainfr.github.io/CX-Functional-Website/%22%22%3Ewebsite%3C/ext-link%3E	Pass	""	404	secure	0	185.199.110.153	2020-09-14T12:45:34.342387	romainfr.github.io
-https...romainfr.github.io.CX-Functional-Website	https://romainfr.github.io/CX-Functional-Website/	https://romainfr.github.io/CX-Functional-Website/	Pass	""	200	secure	23318848	185.199.110.153	2020-09-14T12:45:38.321821	romainfr.github.io
 http...www.surveymonkey.com	http://www.surveymonkey.com	https://www.surveymonkey.com/	Pass	""	200	secure	1432908	143.204.94.107	2020-09-14T12:45:46.331650	www.surveymonkey.com
 http...pdumbase.gdcb.iastate.edu	http://pdumbase.gdcb.iastate.edu	http://pdumbase.gdcb.iastate.edu/platynereis/controller.php?action=home	Pass	""	200	insecure	752797	129.186.138.28	2020-09-14T12:46:01.301013	pdumbase.gdcb.iastate.edu
 http...bioinformin.cesnet.cz.flowIO	http://bioinformin.cesnet.cz/flowIO/	http://bioinformin.cesnet.cz/flowIO/	Pass	""	200	insecure	160551	78.128.211.120	2020-09-14T12:46:06.417459	bioinformin.cesnet.cz
@@ -1564,8 +1559,6 @@ http...www.chunglab.io.ddnet	http://www.chunglab.io/ddnet/	http://www.chunglab.i
 http...crdd.osdd.net.raghava.topicalpdb	http://crdd.osdd.net/raghava/topicalpdb/	http://crdd.osdd.net/raghava/topicalpdb/	Pass	""	200	insecure	7121020	14.139.234.84	2020-09-14T11:54:18.048280	crdd.osdd.net
 http...selenzyme.synbiochem.co.uk	http://selenzyme.synbiochem.co.uk	http://selenzyme.synbiochem.co.uk/	Pass	""	200	insecure	1129648	35.230.148.173	2020-09-14T11:54:31.244101	selenzyme.synbiochem.co.uk
 www.sciforum.net.conference.ecmc-3	www.sciforum.net/conference/ecmc-3	https://sciforum.net/conference/ecmc-3	Pass	""	200	secure	3726663	104.18.14.161	2020-09-14T11:54:40.125257	sciforum.net
-https...greenelab.github.io.scihub...https...greenelab.github.io.scihub..ext-link	"https://greenelab.github.io/scihub"""""""">https://greenelab.github.io/scihub</ext-link>"	https://greenelab.github.io/scihub%22%22%3Ehttps://greenelab.github.io/scihub%3C/ext-link%3E	Pass	""	404	secure	0	185.199.111.153	2020-09-14T11:54:45.915515	greenelab.github.io
-https...greenelab.github.io.scihub	https://greenelab.github.io/scihub	https://greenelab.github.io/scihub/#/	Pass	""	200	secure	653472	185.199.109.153	2020-09-14T11:54:49.934568	greenelab.github.io
 https...upload.umin.ac.jp.cgi-open-bin.ctr_e.ctr_view.cgi.recptno=R000029121	https://upload.umin.ac.jp/cgi-open-bin/ctr_e/ctr_view.cgi?recptno=R000029121	https://upload.umin.ac.jp/cgi-open-bin/ctr_e/ctr_view.cgi?recptno=R000029121	Pass	""	200	secure	15644	130.69.92.29	2020-09-14T11:54:55.789627	upload.umin.ac.jp
 http...gcpred.com	http://gcpred.com	http://gcpred.com/	Pass	""	200	insecure	1247461	45.33.61.78	2020-09-14T11:55:03.196780	gcpred.com
 https...www.aap.org	https://www.aap.org	https://www.aap.org/en-us/Pages/Default.aspx	Pass	""	200	secure	2988898	99.198.127.76	2020-09-14T11:55:15.045388	www.aap.org
@@ -2934,7 +2927,6 @@ www.foldatlas.com	www.foldatlas.com	http://www.foldatlas.com/	Pass	""	200	insecu
 www.infirmiers.com	www.infirmiers.com	https://www.infirmiers.com/	Pass	""	200	secure	1454636	87.98.133.139	2020-09-14T13:57:02.919424	www.infirmiers.com
 http...antioxidant.weka.cc	http://antioxidant.weka.cc	http://antioxidant.weka.cc/	Pass	""	200	insecure	61696	115.28.174.51	2020-09-14T13:57:08.390281	antioxidant.weka.cc
 www.imngs.org	www.imngs.org	https://www.imngs.org/	Pass	""	200	secure	1015086	129.187.44.105	2020-09-14T13:57:20.598473	www.imngs.org
-http...rna.physics.missouri.edu.vfoldCPX	"http://rna.physics.missouri.edu/vfoldCPX"""""""""	http://rna.physics.missouri.edu/vfoldCPX%22%22	Pass	""	404	insecure	299	128.206.9.113	2020-09-14T13:57:25.148203	rna.physics.missouri.edu
 http...www.birmingham.ac.uk.cpro0r	http://www.birmingham.ac.uk/cpro0r	https://www.birmingham.ac.uk/cpro0r	Pass	""	404	secure	235039	185.18.139.213	2020-09-14T13:57:45.850673	www.birmingham.ac.uk
 http...www.nii.ac.in.modPDZpep.html	http://www.nii.ac.in/modPDZpep.html	http://202.54.226.235/modPDZpep.html/	Pass	""	200	insecure	778614	202.54.226.235	2020-09-14T13:57:52.705149	202.54.226.235
 http...202.54.226.235.modPDZpep.html	http://202.54.226.235/modPDZpep.html	http://202.54.226.235/modPDZpep.html/	Pass	""	200	insecure	778326	202.54.226.235	2020-09-14T13:57:59.170838	202.54.226.235
@@ -8150,8 +8142,6 @@ https...ldlink.nci.nih.gov..tab=ldtrait	https://ldlink.nci.nih.gov/?tab=ldtrait	
 www.fetaldose.org	www.fetaldose.org	https://www.fetaldose.org/	Pass	""	200	secure	458544	92.42.187.73	2020-09-14T12:04:42.211132	www.fetaldose.org
 www.umdf.org	www.umdf.org	https://www.umdf.org/	Pass	""	200	secure	1820473	162.144.192.126	2020-09-14T12:04:47.217787	www.umdf.org
 www.namdc.org	www.namdc.org	https://www.namdc.org/default.aspx	Pass	""	200	secure	1294465	67.221.180.201	2020-09-14T12:04:56.489181	www.namdc.org
-https...covidkop.renci.org....https...covidkop.renci.org...a	"https://covidkop.renci.org/"""""""">https://covidkop.renci.org/</a>"	https://covidkop.renci.org/%22%22%3Ehttps://covidkop.renci.org/%3C/a%3E	Pass	""	404	secure	232	152.54.4.157	2020-09-14T12:05:02.385894	covidkop.renci.org
-https...covidkop.renci.org	https://covidkop.renci.org/	https://covidkop.renci.org/	Pass	""	200	secure	1193990	152.54.4.157	2020-09-14T12:05:06.923084	covidkop.renci.org
 https...fdblab.csie.ncu.edu.tw.kmalo.home.html	https://fdblab.csie.ncu.edu.tw/kmalo/home.html	https://fdblab.csie.ncu.edu.tw/kmalo/home.html	Pass	""	200	insecure	1248268	140.115.51.41	2020-09-14T12:05:12.802417	fdblab.csie.ncu.edu.tw
 www.mytalasemia.net.my	www.mytalasemia.net.my	https://www.mytalasemia.net.my/	Pass	""	200	secure	1761686	81.137.127.25	2020-09-14T12:05:20.093802	www.mytalasemia.net.my
 http...nasqar.abudhabi.nyu.edu	http://nasqar.abudhabi.nyu.edu/	http://nasqar.abudhabi.nyu.edu/	Pass	""	200	insecure	3742319	91.230.41.41	2020-09-14T12:05:28.005198	nasqar.abudhabi.nyu.edu
@@ -8215,7 +8205,6 @@ www.chictr.org.cn	www.chictr.org.cn	http://www.chictr.org.cn/index.aspx	Pass	""	
 http...bioinfo.life.hust.edu.cn.web.CCLA	http://bioinfo.life.hust.edu.cn/web/CCLA/	http://bioinfo.life.hust.edu.cn/web/CCLA/	Pass	""	200	insecure	1825646	211.67.31.242	2020-09-14T12:19:27.304776	bioinfo.life.hust.edu.cn
 https...idrblab.org.metafs	https://idrblab.org/metafs/	http://idrblab.cn/metafs/	Pass	""	200	insecure	4249693	47.99.36.124	2020-09-14T12:19:35.338403	idrblab.cn
 https...webs.iiitd.edu.in.raghava.denvind	https://webs.iiitd.edu.in/raghava/denvind/	https://webs.iiitd.edu.in/raghava/denvind/	Pass	""	200	secure	123488	103.25.231.42	2020-09-14T12:19:53.097313	webs.iiitd.edu.in
-http...www.vitiligoinfores.com	"http://www.vitiligoinfores.com/"""""""""	https://www.vitiligoinfores.com/%22%22	Pass	""	404	secure	131434	81.16.28.157	2020-09-14T12:19:59.646670	www.vitiligoinfores.com
 https...rnaprobe.genesilico.pl	https://rnaprobe.genesilico.pl	https://rnaprobe.genesilico.pl/	Pass	""	200	secure	525827	46.41.136.1	2020-09-14T12:20:10.715038	rnaprobe.genesilico.pl
 http...www.graphpad.com.quickcalcs.index.cfm	http://www.graphpad.com/quickcalcs/index.cfm	https://www.graphpad.com/quickcalcs/index.cfm	Pass	""	200	secure	767399	3.226.62.238	2020-09-14T12:20:15.203158	www.graphpad.com
 https...freilich-lab-tools.com	https://freilich-lab-tools.com/	https://freilich-lab-tools.com/	Pass	""	200	secure	805906	194.88.108.217	2020-09-14T12:20:20.389635	freilich-lab-tools.com
@@ -8258,7 +8247,6 @@ https...coronavirus3d.org	https://coronavirus3d.org	https://coronavirus3d.org/	P
 http...pinet-server.org	http://pinet-server.org	http://www.pinet-server.org/pinet/peptideToProtein	Pass	""	200	insecure	4351062	129.137.6.227	2020-09-14T12:27:29.036000	www.pinet-server.org
 http...biosig.unimelb.edu.au.mcsm_membrane	http://biosig.unimelb.edu.au/mcsm_membrane	http://biosig.unimelb.edu.au/mcsm_membrane/	Pass	""	200	insecure	2851422	128.250.89.201	2020-09-14T12:27:35.682344	biosig.unimelb.edu.au
 http...fatcat.godziklab.org	http://fatcat.godziklab.org/	http://fatcat.godziklab.org/	Pass	""	200	insecure	237585	208.82.136.227	2020-09-14T12:27:43.576355	fatcat.godziklab.org
-http...bit.ly.2Z121hX	"http://bit.ly/2Z121hX"""""""""	https://github.com/bdrad/clinical_ml_integration	Pass	""	200	secure	393223	140.82.121.3	2020-09-14T12:27:48.825436	github.com
 http...www.AlphaGenes.roslin.ed.ac.uk.AlphaFamImpute	http://www.AlphaGenes.roslin.ed.ac.uk/AlphaFamImpute	https://alphagenes.roslin.ed.ac.uk/wp/software-2/alphafamimpute/	Pass	""	200	secure	4696275	129.215.10.97	2020-09-14T12:27:58.827906	alphagenes.roslin.ed.ac.uk
 http...bioinfo.henu.edu.cn.Melanoma.MelanomaList.jsp	http://bioinfo.henu.edu.cn/Melanoma/MelanomaList.jsp	http://bioinfo.henu.edu.cn/Melanoma/MelanomaList.jsp	Pass	""	200	insecure	231682	202.196.96.216	2020-09-14T12:28:08.094666	bioinfo.henu.edu.cn
 www.vision-research.co.uk	www.vision-research.co.uk	https://www.liverpool.ac.uk/population-health-sciences/departments/health-services-research/research/vision/	Pass	""	200	secure	1309765	138.253.13.50	2020-09-14T12:28:16.984434	www.liverpool.ac.uk
@@ -8348,8 +8336,6 @@ https...www.ccb.uni-saarland.de.mieaa2	https://www.ccb.uni-saarland.de/mieaa2	ht
 http...orthology.benchmarkservice.org	http://orthology.benchmarkservice.org	https://orthology.benchmarkservice.org/proxy/	Pass	""	200	secure	129339	192.42.198.43	2020-09-14T12:41:51.730927	orthology.benchmarkservice.org
 http...server.malab.cn.Deep4mcPred	http://server.malab.cn/Deep4mcPred	http://server.malab.cn/Deep4mcPred/	Pass	""	200	insecure	223725	121.42.167.206	2020-09-14T12:41:55.919041	server.malab.cn
 http...www.phylotastic.org	http://www.phylotastic.org	http://phylotastic.org/	Pass	""	200	insecure	36713	185.199.109.153	2020-09-14T12:42:03.307451	phylotastic.org
-http...www.w3.org.1998.Math.MathML	"http://www.w3.org/1998/Math/MathML"""""""">"	http://www.w3.org/1998/Math/MathML%22%22%3E	Pass	""	403	insecure	6518	128.30.52.100	2020-09-14T12:42:07.669372	www.w3.org
-http...www.w3.org.1998.Math.MathML	http://www.w3.org/1998/Math/MathML	https://www.w3.org/1998/Math/MathML/	Pass	""	200	secure	10484	128.30.52.100	2020-09-14T12:42:14.308362	www.w3.org
 www.pride-endodonticguidelines.org	www.pride-endodonticguidelines.org	http://pride-endodonticguidelines.org/	Pass	""	200	insecure	1953444	192.185.158.86	2020-09-14T12:42:36.728036	pride-endodonticguidelines.org
 https...www.istituto-besta.it.in-deep-risonanza-magnetica2	https://www.istituto-besta.it/in-deep-risonanza-magnetica2	https://www.istituto-besta.it/in-deep-risonanza-magnetica2	Pass	""	200	secure	3268295	156.54.234.56	2020-09-14T12:42:46.307872	www.istituto-besta.it
 https...uroweb.org.guideline.bladder-cancer-muscle-invasive-and-metastatic	https://uroweb.org/guideline/bladder-cancer-muscle-invasive-and-metastatic/	https://uroweb.org/guideline/bladder-cancer-muscle-invasive-and-metastatic/	Pass	""	200	secure	1354187	87.213.168.34	2020-09-14T12:42:52.275426	uroweb.org
@@ -9251,7 +9237,6 @@ http...jjwanglab.hku.hk.ChIP-Array	http://jjwanglab.hku.hk/ChIP-Array	http://jjw
 http...jjwanglab.org.chip-array	http://jjwanglab.org/chip-array/	http://jjwanglab.org/chip-array/	Pass	""	200	insecure	300851	147.8.193.36	2020-09-14T13:27:21.169341	jjwanglab.org
 http...www.dsimb.inserm.fr.dsimb_tools.ipba	http://www.dsimb.inserm.fr/dsimb_tools/ipba/	https://www.dsimb.inserm.fr/dsimb_tools/ipba/	Pass	""	200	secure	204927	193.52.219.46	2020-09-14T13:27:29.157147	www.dsimb.inserm.fr
 www.cure4kids.org	www.cure4kids.org	https://www.cure4kids.org/	Pass	""	200	secure	1144043	192.55.208.132	2020-09-14T13:27:41.343139	www.cure4kids.org
-http...type3pks.in.tsvm.pks3	"http://type3pks.in/tsvm/pks3"""""""""	http://type3pks.in/tsvm/pks3%22%22	Pass	""	404	insecure	236	209.182.203.32	2020-09-14T13:27:49.863029	type3pks.in
 http...bioinfo.bgu.ac.il.respnet	http://bioinfo.bgu.ac.il/respnet	http://bioinfo.bgu.ac.il/respnet/	Pass	""	403	insecure	3638	132.72.89.8	2020-09-14T13:27:57.823097	bioinfo.bgu.ac.il
 http...metaldetector.dsi.unifi.it.v2.0	http://metaldetector.dsi.unifi.it/v2.0/	http://metaldetector.dsi.unifi.it/v2.0/	Pass	""	200	insecure	47540	150.217.15.30	2020-09-14T13:28:32.694249	metaldetector.dsi.unifi.it
 http...disulfind.dsi.unifi.it	http://disulfind.dsi.unifi.it/	http://disulfind.dsi.unifi.it/	Pass	""	200	insecure	5857	150.217.15.30	2020-09-14T13:28:37.552392	disulfind.dsi.unifi.it
@@ -10403,7 +10388,6 @@ http...bioinformatics.bc.edu.clotelab.RNApathfinder	http://bioinformatics.bc.edu
 https...ruby.chem.indiana.edu.scorenfl.srn_results.lookup0.php	https://ruby.chem.indiana.edu/scorenfl/srn_results/lookup0.php	https://ruby.chem.indiana.edu/scorenfl/srn_results/lookup0.php	Fail	"unknown error: net::ERR_NAME_NOT_RESOLVED
   (Session info: chrome=85.0.4183.83)"					2020-09-14T13:15:52.986307	ruby.chem.indiana.edu
 http...www.gestaltrevision.be.sources.gaboroutlines	http://www.gestaltrevision.be/sources/gaboroutlines	http://gestaltrevision.be/sources/gaboroutlines/	Pass	""	200	insecure	38133	134.58.64.11	2020-09-14T13:15:57.304211	gestaltrevision.be
-www.health.gov.on.ca.mas...www.health.gov.on.ca.mas	"www.health.gov.on.ca/mas"""""""">www.health.gov.on.ca/mas"	http://www.health.gov.on.ca/mas%22%22%3Ewww.health.gov.on.ca/mas	Pass	""	404	insecure	1245	204.41.1.239	2020-09-14T13:16:01.445046	www.health.gov.on.ca
 www.health.gov.on.ca.english.providers.program.mas.mas_about.htmlSINGLE	www.health.gov.on.ca/english/providers/program/mas/mas_about.htmlSINGLE	http://www.health.gov.on.ca/english/providers/program/mas/mas_about.htmlSINGLE	Pass	""	404	insecure	1245	204.41.1.239	2020-09-14T13:16:35.723008	www.health.gov.on.ca
 http...theta.utoronto.ca.reports..id=7	http://theta.utoronto.ca/reports/?id=7	https://theta.utoronto.ca/reports/?id=7	Pass	""	404	secure	519601	192.75.165.100	2020-09-14T13:17:10.115581	theta.utoronto.ca
 www.health.gov.on.ca.mas	www.health.gov.on.ca/mas	http://www.health.gov.on.ca/mas	Pass	""	404	insecure	1245	204.41.1.239	2020-09-14T13:17:18.410627	www.health.gov.on.ca
