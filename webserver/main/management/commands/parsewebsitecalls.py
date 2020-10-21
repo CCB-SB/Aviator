@@ -294,8 +294,9 @@ class Command(BaseCommand):
             #Create connections to paper
             papers = Paper.objects.filter(url=wp_url)
             for paper in papers:
-                website.papers.add(paper)
-                new_paper_connections += 1
+                if paper not in website.papers:
+                    website.papers.add(paper)
+                    new_paper_connections += 1
             #Create Website Call
             call = WebsiteCall(website=website)
             if datetime_header in result[key]:
