@@ -89,7 +89,7 @@ class Command(BaseCommand):
                 else:
                     name = name_prefix + str(key)
                     target[name] = str(value).replace("\r\n", "").replace("\n", "")
-                    if name == 'code' and value is not 200 and str(value).isnumeric():
+                    if name == 'code' and value != 200 and str(value).isnumeric():
                         if error_header in target:
                             if len(target[error_header]) > 0:
                                 target[error_header] = target[error_header] + ', '
@@ -245,7 +245,7 @@ class Command(BaseCommand):
                 website.status = status
                 update_websites.append(website)
 
-        Website.objects.bulk_update(update_websites)
+        Website.objects.bulk_update(update_websites, ["status"])
         Website.objects.bulk_create(create_websites)
         #Create new WebsiteCalls
         self.stdout.write("Creating new website calls:")
