@@ -253,8 +253,10 @@ class Command(BaseCommand):
             if "error" in result[key] and len(result[key]["error"]) > 0:
                 status = False
             websites = Website.objects.filter(url=wp_url)
-            if websites.count() == 0:
+            already_done = []
+            if websites.count() == 0 and wp_url not in already_done:
                 website = Website(url=wp_url)
+                already_done.append(wp_url)
                 website.ip = result[key]["ip"] if "ip" in result[key] else 0
                 website.server = result[key]["response_headers_server"] if "response_headers_server" in result[key] else ""
                 website.analytics = result[key]["analytics"] if "analytics" in result[key] else ""
