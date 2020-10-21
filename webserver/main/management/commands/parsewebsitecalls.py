@@ -242,13 +242,11 @@ class Command(BaseCommand):
                     continue
             #Check and create Webpage if there is none
             website = None
-            status = True
+            status = False
             if "code" in result[key] and result[key]["code"] == "200":
                 status = True
             elif "code" in result[key]:
                 status = False
-            if status and "ok" in result[key] and result[key]["ok"] == "Pass":
-                status = True
             if "ok" in result[key] and result[key]["ok"] != "Pass":
                 status = False
             if "error" in result[key] and len(result[key]["error"]) > 0:
@@ -259,6 +257,7 @@ class Command(BaseCommand):
                     continue
                 website = Website(url=wp_url)
                 already_done.append(wp_url)
+                website.status = status
                 website.ip = result[key]["ip"] if "ip" in result[key] else 0
                 website.server = result[key]["response_headers_server"] if "response_headers_server" in result[key] else ""
                 website.analytics = result[key]["analytics"] if "analytics" in result[key] else ""
@@ -271,14 +270,12 @@ class Command(BaseCommand):
                     if "JSESSIONID" in result[key]["response_headers_Set-Cookie"]:
                         website.script += "Java"
                 website.derived_url = derived_url
-                create_websites.append(website)
-                new_websites += 1
-
                 papers = Paper.objects.filter(url=wp_url)
                 for paper in papers:
                     website.papers.add(paper)
                     new_paper_connections += 1
-                website.status = status
+                new_websites += 1
+                create_websites.append(website)
             else:
                 website = Website.objects.filter(url=wp_url)[0]
                 website.status = status
