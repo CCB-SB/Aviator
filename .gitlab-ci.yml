@@ -146,6 +146,22 @@ migrate-production:
   <<: *migrate
   <<: *production_vars
 
+.parsewebsitecalls: &parsewebsitecalls
+  script:
+    - *setup_docker_tls
+    - docker-compose -f webserver/production.yml run --rm django python manage.py parsewebsitecalls ${TELEMETRY_PATH}
+  <<: *manage_only_master_remote
+
+parsewebsitecalls-staging:
+  stage: managedb-staging
+  <<: *parsewebsitecalls
+  <<: *staging_vars
+
+parsewebsitecalls-production:
+  stage: managedb-production
+  <<: *parsewebsitecalls
+  <<: *production_vars
+  
 .reset_db: &reset_db
   script:
     - *setup_docker_tls
