@@ -177,13 +177,17 @@ class Command(BaseCommand):
                 if len(folder_name) > 0 and not folder_name in result.keys():
                     result[folder_name] = {}
                 if info_identifier in file:
-                    handleInfo(winapi_path(os.path.join(subdir, file)), result[folder_name])
+                    handleInfo((os.path.join(subdir, file)), result[folder_name])
+                    #handleInfo(winapi_path(os.path.join(subdir, file)), result[folder_name])
                 elif html_identifier in file:
-                    handleHTML(winapi_path(os.path.join(subdir, file)), result[folder_name])
+                    handleHTML((os.path.join(subdir, file)), result[folder_name])
+                    #handleHTML((os.path.join(subdir, file)), result[folder_name])
                 elif logs_identifier in file:
-                    handleLogs(winapi_path(os.path.join(subdir, file)), result[folder_name])
+                    handleLogs((os.path.join(subdir, file)), result[folder_name])
+                    #handleLogs(winapi_path(os.path.join(subdir, file)), result[folder_name])
                 elif csv_identifier in file:
-                    handleCSV(winapi_path(os.path.join(subdir, file)), original_urls, derived_urls)
+                    handleCSV((os.path.join(subdir, file)), original_urls, derived_urls)
+                    #handleCSV(winapi_path(os.path.join(subdir, file)), original_urls, derived_urls)
             for key, value in result.items():
                 result[key][folder_header] = key
                 # replacements
