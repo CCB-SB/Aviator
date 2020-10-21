@@ -254,7 +254,9 @@ class Command(BaseCommand):
             if "error" in result[key] and len(result[key]["error"]) > 0:
                 status = False
             websites = Website.objects.filter(url=wp_url)
-            if websites.count() == 0 and wp_url not in already_done:
+            if websites.count() == 0:
+                if wp_url in already_done:
+                    continue
                 website = Website(url=wp_url)
                 already_done.append(wp_url)
                 website.ip = result[key]["ip"] if "ip" in result[key] else 0
