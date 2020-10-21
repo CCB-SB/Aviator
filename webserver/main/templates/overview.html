@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 {% load staticfiles %}
 {% url 'main:publication' as publication %}
+{% url 'main:websiteData' as websiteData %}
 <html  lang="en">
 	<head>
     <meta charset="utf-8">
@@ -29,7 +30,7 @@
             <th>Created At</th>
             <th>Updated At</th>
             <th>Show Details</th>
-            <th>Papers</th>
+            <th>Publications</th>
           </tr>
         </thead>
         <tbody>
@@ -56,7 +57,7 @@
         searchPlaceholder: "Filter"
       },
       ajax: {
-          url: '/websiteData'
+          url: "{% url 'main:websiteData' %}"
       },
       columns: [
         { data: "url" },
@@ -90,10 +91,10 @@
           if (data != null) {
             var i = 0;
             for (i=0; i < data.length; i++) {
-              str += "<a class='btn btn-outline-light' href='/publication/"+data[i]+"'>Publication</a>"
+              str += "<a class='btn btn-outline-light' href='publication/"+data[i]+"'>Publication</a>"
             }
             if(i == 0) {
-              return "<a class='btn btn-outline-light' href='/publication/"+data+"'>Publication</a>"
+              return "<a class='btn btn-outline-light' href='publication/"+data+"'>Publication</a>"
             }
           }
           return str;
