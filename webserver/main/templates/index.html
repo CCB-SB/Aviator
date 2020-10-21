@@ -19,12 +19,56 @@
     {% include "navbar.html" %}
     <div class="center-box">
       Aviator - Online Webtool Database<br><br>
+
+
+
+      <form id="form1" class="form-inline my-2 my-lg-0" action="{% url 'main:overview' %}" method="post" style="display:flex;width:100%;">
+        {% csrf_token %}
+        <div class="dropdown">
+          <button class="btn btn-secondary dropdown-toggle" type="button" id="ddBtn1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Webpages&nbsp;&nbsp;
+          </button>
+          <div class="dropdown-menu" aria-labelledby="ddBtn1">
+            <a class="dropdown-item" onclick="search_dropdown(1, 'Webpages&nbsp;&nbsp;';return false;">Webpages</a>
+            <a class="dropdown-item" onclick="search_dropdown(2, 'Publications');return false;">Publications</a>
+          </div>
+        </div>&nbsp;
+        <input id="search1" name="search" class="index-search form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" style="background-color: var(--secondary);width: 22rem;">
+        <button class="btn btn-outline-light my-2 my-sm-0" type="submit" onclick="">Search</button>
+      </form>
+      <form id="form2" class="form-inline my-2 my-lg-0" action="{% url 'main:publications' %}" method="post" style="display:none;width:100%;">
+        {% csrf_token %}
+        <div class="dropdown">
+          <button class="btn btn-secondary dropdown-toggle" type="button" id="ddBtn2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Webpages&nbsp;&nbsp;
+          </button>
+          <div class="dropdown-menu" aria-labelledby="ddBtn2">
+            <a class="dropdown-item" onclick="search_dropdown(1, 'Webpages&nbsp;&nbsp;');return false;">Webpages</a>
+            <a class="dropdown-item" onclick="search_dropdown(2, 'Publications');return false;">Publications</a>
+          </div>
+        </div>&nbsp;
+
+        <input id="search2" name="search" class="index-search form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" style="background-color: var(--secondary);width: 22rem;">
+        <button class="btn btn-outline-light my-2 my-sm-0" type="submit" onclick="">Search</button>
+      </form>
+      <br><br>
       <canvas id="myChart" width="400" height="300"></canvas>
     </div><
 	</body>
 </html>
 
 <script>
+var last_form = 1;
+function search_dropdown(num, text) {
+  document.getElementById("ddBtn1").innerHTML = text;
+  document.getElementById("ddBtn2").innerHTML = text;
+  document.getElementById("form"+num).style.display = "flex";
+  document.getElementById("form"+(num == 1 ? 2 : 1)).style.display = "none";;
+  if (last_form != num) {
+    document.getElementById("search"+num).value = document.getElementById("search"+(num == 1 ? 2 : 1)).value;
+  }
+  last_form = num;
+}
 var ctx = document.getElementById('myChart').getContext('2d');
 Chart.defaults.global.defaultFontColor = "#dee2e6";
 //Chart.defaults.global.defaultFontSize = "14";

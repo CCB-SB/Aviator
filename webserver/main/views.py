@@ -22,7 +22,9 @@ def overview(request):
     return render(request, 'overview.html', context)
 
 def publications(request):
-    context = {}
+    context = {'search':''}
+    if request.method == 'POST':
+        context['search'] = request.POST['search']
     return render(request, 'publications.html', context)
 
 def details(request, pk):

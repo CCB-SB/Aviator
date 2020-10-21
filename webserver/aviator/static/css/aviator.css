@@ -37,6 +37,10 @@ body {
   font-size:2vw;
 }
 /* Index */
+.index-search {
+  background-color: var(--secondary);
+  width: 20rem;
+}
 .center-box {
   margin: 4rem auto;
   padding: 2rem;
