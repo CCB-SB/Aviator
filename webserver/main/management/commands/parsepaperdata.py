@@ -115,12 +115,6 @@ class Command(BaseCommand):
                             paper.url = url
                     counter += 1
                 if ok:
-                    for url in urls:
-                        websites = Website.objects.filter(url=url)
-                        for website in websites:
-                            website.papers.add(paper)
-                            website.save()
-                            num2 += 1
                     papers = Paper.objects.filter(title=title)
                     if papers.count() > 0:
                         for old_paper in papers:
@@ -134,5 +128,11 @@ class Command(BaseCommand):
                             continue
                     num += 1
                     paper.save()
+                    for url in urls:
+                        websites = Website.objects.filter(url=url)
+                        for website in websites:
+                            website.papers.add(paper)
+                            website.save()
+                            num2 += 1
                     #websites = Website.objects.filter(url=url)
             self.stdout.write(self.style.SUCCESS('Successfully added ' + str(num) + ' new Papers and updated ' + str(num_updated) + ' Papers with ' + str(num2) + ' connections to webpages'))
