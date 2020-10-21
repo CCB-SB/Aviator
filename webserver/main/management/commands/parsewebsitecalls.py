@@ -294,7 +294,7 @@ class Command(BaseCommand):
             #Create connections to paper
             papers = Paper.objects.filter(url=wp_url)
             for paper in papers:
-                if paper not in website.papers:
+                if website.papers.filter(title=paper.title).count() == 0:
                     website.papers.add(paper)
                     new_paper_connections += 1
             #Create Website Call
