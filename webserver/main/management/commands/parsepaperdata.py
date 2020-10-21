@@ -104,11 +104,6 @@ class Command(BaseCommand):
                                         remove.append(url)
                                 for url in remove:
                                     urls.remove(url)
-                                if len(urls) > 1:
-                                    self.stdout.write("********************************")
-                                    for url in urls:
-                                        self.stdout.write("********************************")
-                                    self.stdout.write(url)
                                 if len(urls) == 0:
                                     ok = False
                                     break
