@@ -168,8 +168,8 @@ class Command(BaseCommand):
 
         #handle filter
         filter = False
-        filter_ids = []
-        filter_original = []
+        filter_ids = set()
+        filter_original = set()
         try:
             filename = options['url_filter']
             with open(filename, 'r', encoding='utf-8') as csvfile:
@@ -187,8 +187,8 @@ class Command(BaseCommand):
                         elif counter > 1:
                             break
                         counter += 1
-                    filter_ids.append(id_url)
-                    filter_original.append(original_url)
+                    filter_ids.add(id_url)
+                    filter_original.add(original_url)
             self.stdout.write("Filter applied")
         except:
             self.stdout.write("No Filter applied")
