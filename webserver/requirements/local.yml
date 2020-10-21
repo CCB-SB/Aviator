@@ -1,13 +1,8 @@
 dependencies:
-  - Werkzeug=0.14.1  # https://github.com/pallets/werkzeug
-  - conda-forge::ipdb=0.11  # https://github.com/gotcha/ipdb
-  - conda-forge::prompt_toolkit=2.0.10 # Required to fix implicit dependency updates in ipdb: https://github.com/ipython/ipython/issues/11962
-  - Sphinx=1.7.5  # https://github.com/sphinx-doc/sphinx
-
-# Django
-# ------------------------------------------------------------------------------
-  - conda-forge::django-debug-toolbar=1.9.1  # https://github.com/jazzband/django-debug-toolbar
-  - conda-forge::django-extensions=2.0.7  # https://github.com/django-extensions/django-extensions
-
   - pip:
-    - django-debug-toolbar-request-history==0.0.7  # allows to track ajax requests
+    - Werkzeug==1.0.1
+    - ipdb==0.13.4
+    - prompt-toolkit==3.0.8
+    - django-debug-toolbar-request-history==0.1.3  # allows to track ajax requests
+    - django-debug-toolbar==3.1.1
+    - django-extensions==3.0.9
