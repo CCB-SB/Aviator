@@ -8358,11 +8358,6 @@ https...esbl.nhlbi.nih.gov.KTEA	https://esbl.nhlbi.nih.gov/KTEA/	https://esbl.nh
 https...www.ccb.uni-saarland.de.mirswitch	https://www.ccb.uni-saarland.de/mirswitch/	https://ccb-compute.cs.uni-saarland.de/mirswitch/	Pass	""	200	secure	3055200	134.96.226.14	2020-09-14T12:43:18.956352	ccb-compute.cs.uni-saarland.de
 http...shiny.maths.usyd.edu.au.CiteFuse	http://shiny.maths.usyd.edu.au/CiteFuse/	http://shiny.maths.usyd.edu.au/CiteFuse/	Pass	""	200	insecure	654043	129.78.68.1	2020-09-14T12:43:25.157797	shiny.maths.usyd.edu.au
 https...list-s2.msl.ubc.ca	https://list-s2.msl.ubc.ca/	https://list-s2.msl.ubc.ca/;jsessionid=DA0C7BD89FC7ECD5289A898B517F816A?session=DA0C7BD89FC7ECD5289A898B517F816A	Pass	""	200	secure	227497	137.82.176.43	2020-09-14T12:43:49.864294	list-s2.msl.ubc.ca
-http...www.ncbi.nim.nih.gov.genebank	http://www.ncbi.nim.nih.gov/genebank/	http://www.ncbi.nim.nih.gov/genebank/	Fail	"unknown error: net::ERR_NAME_NOT_RESOLVED
-  (Session info: chrome=85.0.4183.83)"					2020-09-14T12:43:55.303567	www.ncbi.nim.nih.gov
-https...www.genome.jp.tools-bin.clustalw	https://www.genome.jp/tools-bin/clustalw	https://www.genome.jp/tools-bin/clustalw	Pass	""	200	secure	9079	133.103.200.20	2020-09-14T12:43:57.725891	www.genome.jp
-http...www.ncbi.nim.nih.gov.genebank.)	http://www.ncbi.nim.nih.gov/genebank/):	http://www.ncbi.nim.nih.gov/genebank/):	Fail	"unknown error: net::ERR_NAME_NOT_RESOLVED
-  (Session info: chrome=85.0.4183.83)"					2020-09-14T12:44:02.776338	www.ncbi.nim.nih.gov
 http...predictor.nchu.edu.tw.QUATgo	http://predictor.nchu.edu.tw/QUATgo	http://predictor.nchu.edu.tw/QUATgo	Fail	"timeout: Timed out receiving message from renderer: -0.000
   (Session info: chrome=85.0.4183.83)"					2020-09-14T12:44:05.016741	predictor.nchu.edu.tw
 https...mapps.lums.edu.pk	https://mapps.lums.edu.pk	https://mapps.lums.edu.pk/tool/	Pass	""	200	secure	1488798	203.135.62.57	2020-09-14T12:45:16.135769	mapps.lums.edu.pk
