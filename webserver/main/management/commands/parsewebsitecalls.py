@@ -270,10 +270,6 @@ class Command(BaseCommand):
                     if "JSESSIONID" in result[key]["response_headers_Set-Cookie"]:
                         website.script += "Java"
                 website.derived_url = derived_url
-                papers = Paper.objects.filter(url=wp_url)
-                for paper in papers:
-                    website.papers.add(paper)
-                    new_paper_connections += 1
                 new_websites += 1
                 create_websites.append(website)
             else:
@@ -295,6 +291,11 @@ class Command(BaseCommand):
                 if ip_url not in filter_ids and wp_url not in filter_original:
                     continue
             website = Website.objects.filter(url=wp_url)[0]
+            #Create connections to paper
+            papers = Paper.objects.filter(url=wp_url)
+            for paper in papers:
+                website.papers.add(paper)
+                new_paper_connections += 1
             #Create Website Call
             call = WebsiteCall(website=website)
             if datetime_header in result[key]:

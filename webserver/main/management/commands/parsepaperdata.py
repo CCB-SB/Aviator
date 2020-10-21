@@ -98,10 +98,12 @@ class Command(BaseCommand):
                         if header[counter] == 'URL':
                             urls = str(entry).encode('unicode-escape').decode('utf-8').split('; ')
                             if(filter):
+                                once = False
                                 for url in urls:
                                     if url not in filter_ids and url not in filter_original and url not in filter_derived:
+                                        once = True
                                         urls.remove(url)
-                                if len(urls) == 0:
+                                if once or len(urls) == 0:
                                     ok = False
                                     break
                             paper.url = url
