@@ -97,7 +97,7 @@ class Command(BaseCommand):
                         if header[counter] == 'URL':
                             url = str(entry).encode('unicode-escape').decode('utf-8')
                             if(filter):
-                                if url not in filter_ids and url not in filter_original not in filter_derived:
+                                if url not in filter_ids and url not in filter_original and url not in filter_derived:
                                     ok = False
                                     break
                             paper.url = url
