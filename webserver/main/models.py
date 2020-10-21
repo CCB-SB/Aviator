@@ -13,6 +13,7 @@ class Paper(models.Model):
 
 class Website(models.Model):
     url = models.TextField()
+    derived_url = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     status = models.NullBooleanField(null=True, default=None)

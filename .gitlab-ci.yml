@@ -161,6 +161,22 @@ parsewebsitecalls-production:
   stage: managedb-production
   <<: *parsewebsitecalls
   <<: *production_vars
+
+.parsepaperdata: &parsepaperdata
+  script:
+    - *setup_docker_tls
+    - docker-compose -f webserver/production.yml run --rm django python manage.py parsepaperdata ${PUBLICATIONS_PATH}
+  <<: *manage_only_master_remote
+
+parsepaperdata-staging:
+  stage: managedb-staging
+  <<: *parsepaperdata
+  <<: *staging_vars
+
+parsepaperdata-production:
+  stage: managedb-production
+  <<: *parsepaperdata
+  <<: *production_vars
   
 .reset_db: &reset_db
   script:

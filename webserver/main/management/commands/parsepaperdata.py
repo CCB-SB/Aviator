@@ -64,11 +64,6 @@ class Command(BaseCommand):
                             break
                         if header[counter] == 'URL':
                             url = str(entry).encode('unicode-escape').decode('utf-8')
-                            url = url.replace("http://", "")
-                            url = url.replace("https://", "")
-                            url = url.replace("www.", "")
-                            if url.endswith("/"):
-                                url = url[:-1]
                             paper.url = url
                     counter += 1
                 if ok:
