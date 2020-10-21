@@ -73,7 +73,7 @@ class Command(BaseCommand):
             return u"\\\\?\\" + path
 
         def handleInfo(filename, target):
-            target[datetime_header] = filename[filename.rfind("\\") + 1:][0:19].replace("_", ":") #e.g. 2020-09-06T16_01_22 => 2020-09-06T16:01:22
+            target[datetime_header] = os.path.basename(filename)[0:19].replace("_", ":") #e.g. 2020-09-06T16_01_22 => 2020-09-06T16:01:22
             if filename[-3:] == '.gz':
                 with gzip.open(filename, 'r') as file:
                     data = json.load(file)
