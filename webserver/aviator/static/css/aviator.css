@@ -2,6 +2,7 @@
   --main-bg-color-light: #5df2d6;
   --bg-color: #141a20;
   --font-color: #dee2e6;
+  --placeholder-font-color: #9ea2a6;
   --hover-font-color: #eef2f6;
   --border-color: #454d55;
   --hover-border-color: #dee2e6;
@@ -14,17 +15,33 @@ body {
   background-color: #141a20;
 }
 
-
 .content-container {
     width: calc(100% - 2rem);
     margin: 1rem;
 }
+/* Details Chart Box */
+.chart-box {
+  width: 40rem;
+  margin: 0 auto;
+  background-color: var(--primary);
+  padding: 2rem 2rem 2rem 2rem;
+}
+/* Statistics Box */
+.statistics-box {
+  margin: 2rem auto;
+  padding: 2rem;
+  background-color: var(--primary);
+  width: 40rem;
+  text-align:center;
+  color:var(--font-color);
+  font-size:2vw;
+}
 /* Index */
 .center-box {
-  margin: 20vh 35vw 0vh 35vw;
-  padding: 1vh 0vw 1vh 0vw;
+  margin: 4rem auto;
+  padding: 2rem;
   background-color: var(--primary);
-  width: 30vw;
+  width: 40rem;
   text-align:center;
   color:var(--font-color);
   font-size:2vw;
@@ -90,9 +107,18 @@ td {
   background-color: var(--primary);
   border-color: var(--border-color);
   color: var(--font-color);
+  box-shadow: 0 0 0 0 rgba(0,0,0,0);
 }
+/*
+input[type="search"]::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+   height: 13px;
+   width: 13px;
+   background: url("data:image/svg+xml;charset=UTF-8,%3csvg viewPort='0 0 12 12' version='1.1' xmlns='http://www.w3.org/2000/svg'%3e%3cline x1='1' y1='11' x2='11' y2='1' stroke='red' stroke-width='2'/%3e%3cline x1='1' y1='1' x2='11' y2='11' stroke='red' stroke-width='2'/%3e%3c/svg%3e");
+}
+*/
 .form-control::placeholder {
-  color: var(--font-color);
+  color: var(--placeholder-font-color);
 }
 .dataTables_info {
   color: var(--font-color);

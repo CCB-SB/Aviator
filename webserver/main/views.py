@@ -3,6 +3,7 @@ from django.shortcuts import get_object_or_404, render
 from .models import Website, WebsiteCall, Paper
 from django.core import serializers
 from django.core.paginator import Paginator
+from datetime import timedelta, date, datetime
 
 # Create your views here.
 def index(request):
@@ -15,13 +16,13 @@ def index(request):
     return render(request, 'index.html', context)
 
 def overview(request):
-    context = {}
-    context['websites'] = Website.objects.all().prefetch_related('papers')
+    context = {'search':''}
+    if request.method == 'POST':
+        context['search'] = request.POST['search']
     return render(request, 'overview.html', context)
 
 def publications(request):
     context = {}
-    #context['papers'] = serializers.serialize('json', Paper.objects.all().prefetch_related('websites'))
     return render(request, 'publications.html', context)
 
 def details(request, pk):
@@ -44,18 +45,36 @@ def author(request):
     return render(request, 'author.html', context)
 
 def websiteData(request):
-    return JsonResponse({"data": list(Website.objects.all().values('url', 'status', 'created_at', 'updated_at', 'pk', 'papers'))})#, 'ip', 'certificate_secure'
+    return JsonResponse({"data": list(Website.objects.all().values('url', 'status', 'created_at', 'updated_at', 'pk', 'papers'))})
 
 def paperData(request):
-    search_values = []
-    #fields = ['title', 'authors', 'year', 'journal', 'pubmed_id']
-    #papers = Paper.objects.all()#filter(reduce(AND, (Q(**{fields[i]+'__icontains': value} ) for i, value in enumerate(search_values)))).values('title', 'authors', 'year', 'journal', 'pubmed_id')
-
     return JsonResponse({"data": list(Paper.objects.all().values('title', 'authors', 'abstract', 'year', 'journal', 'pubmed_id', 'websites'))})
-    #paginator = Paginator(Paper.objects.all().values('title', 'authors', 'year', 'journal', 'pubmed_id'), 25)
-    #page = request.GET.get('page')
-    #context = {"data": list(paginator.get_page(page).object_list)}
-    #context["draw"] = paginator.num_pages
-    #context["recordsTotal"] = paginator.count
-    #context["recordsFiltered"] = paginator.count
-    #return JsonResponse(context)
+
+def statistics(request):
+    context = {}
+    context['website_count'] = Website.objects.count()
+    context['paper_count'] = Paper.objects.count()
+    online = Website.objects.filter(status=True)
+    context['online_count'] = online.count()
+    context['offline_count'] = Website.objects.count() - online.count()
+
+    current_date = date.today() - timedelta(days=14)
+    #current_date = current_date - timedelta(days=40)
+    stat_names = ""
+    stat_online = ""
+    stat_offline = ""
+    for i in range(0, 14):
+        current_date = current_date + timedelta(days=1)
+        if i > 0:
+            stat_online += ", "
+            stat_offline += ", "
+            stat_names += ", "
+        stat_names += '"' + str(current_date.day) + "." + str(current_date.month) + "." + str(current_date.year) + '"'
+        ws = WebsiteCall.objects.filter(datetime__date=current_date, ok=True, error="", code=200)
+        stat_online += '"'+str(ws.count())+'"'
+        ws = WebsiteCall.objects.filter(datetime__date=current_date).exclude(ok=True, error="", code=200)
+        stat_offline += '"'+str(+ws.count())+'"'
+    context['stat1_names'] = stat_names
+    context['stat1_online'] = stat_online
+    context['stat1_offline'] = stat_offline
+    return render(request, 'statistics.html', context)

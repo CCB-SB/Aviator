@@ -2,6 +2,7 @@
 {% url 'main:overview' as overview %}
 {% url 'main:publications' as publications %}
 {% url 'main:author' as author %}
+{% url 'main:statistics' as statistics %}
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
   <a class="navbar-brand" href="/">Aviator</a>
   <div class="navbar-login-container" id="navbarSupportedContent">
@@ -18,35 +19,35 @@
       <li class="nav-item {% if request.path == author %}active{% endif %}">
         <a class="nav-link" href="{{ author }}">Contact</a>
       </li>
+      <li class="nav-item {% if request.path == statistics %}active{% endif %}">
+        <a class="nav-link" href="{{ statistics }}">Statistics</a>
+      </li>
     </ul>
-    <!--<button class="btn btn-outline-light my-2 my-sm-0" type="button" data-toggle="modal" data-target="#loginModal">Login</button>-->
+  <!--
+    <form class="form-inline my-2 my-lg-0" action="" method="post" onsubmit="document.getElementById('category').value = document.getElementById('ddBtn').innerHTML;return true;" >
+      {% csrf_token %}
+
+      <div class="dropdown">
+        <button class="btn btn-secondary dropdown-toggle" type="button" id="ddBtn" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Webpage URL
+        </button>
+        <div class="dropdown-menu" aria-labelledby="ddBtn">
+          <a class="dropdown-item" onclick="document.getElementById('ddBtn').innerHTML = 'Webpage URL';return false;">Webpage URL</a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" onclick="document.getElementById('ddBtn').innerHTML = 'Publication';return false;">Paper</a>
+          <a class="dropdown-item" onclick="document.getElementById('ddBtn').innerHTML = 'Publication Title';return false;">Paper Title</a>
+          <a class="dropdown-item" onclick="document.getElementById('ddBtn').innerHTML = 'Publication Abstract';return false;">Paper Abstract</a>
+          <a class="dropdown-item" onclick="document.getElementById('ddBtn').innerHTML = 'Publication Journal';return false;">Paper Journal</a>
+        </div>
+      </div>&nbsp;
+      <input id="search" name="search" class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+      <input id="category" name="category" type="hidden">
+      <button class="btn btn-outline-light my-2 my-sm-0" type="submit" onclick="">Search</button>-->
+    <form class="form-inline my-2 my-lg-0" action="{% url 'main:overview' %}" method="post">
+      {% csrf_token %}
+      <input id="search" name="search" class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+      <button class="btn btn-outline-light my-2 my-sm-0" type="submit" onclick="">Search</button>
+    </form>
   </div>
 </nav>
-
-<div class="modal fade" role="dialog" tabindex="-1" id="loginModal">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h3 class="modal-title">Login</h3>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <div class="form-group">
-          <input type="text" id="username" name="username" class="form-control" placeholder="Username">
-        </div>
-        <div class="form-group">
-          <input type="password" id="password" name="password" class="form-control" placeholder="Password">
-        </div>
-        <div class="form-group">
-          <div id="message"></div>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button class="btn btn-outline-dark">Sign in</button>
-      </div>
-    </div>
-  </div>
-</div>
 

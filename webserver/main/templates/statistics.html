@@ -17,18 +17,20 @@
 	</head>
 	<body>
     {% include "navbar.html" %}
-    <div class="center-box">
-      Aviator - Online Webtool Database<br><br>
-      <canvas id="myChart" width="400" height="300"></canvas>
-    </div><
+    <div class="statistics-box">
+      <canvas id="overview" width="400" height="200"></canvas>
+      <br>
+      <canvas id="c1" width="400" height="300"></canvas>
+    </div>
 	</body>
 </html>
 
 <script>
-var ctx = document.getElementById('myChart').getContext('2d');
 Chart.defaults.global.defaultFontColor = "#dee2e6";
 //Chart.defaults.global.defaultFontSize = "14";
-var myChart = new Chart(ctx, {
+
+var ctx1 = document.getElementById('overview').getContext('2d');
+var myChart = new Chart(ctx1, {
     type: 'bar',
     data: {
         labels: ['Publications', 'Websites', 'Online', 'Offline'],
@@ -51,9 +53,55 @@ var myChart = new Chart(ctx, {
         }]
     },
     options: {
+    title: {
+        display: true,
+        text: 'Database'
+    },
     legend: {
         display: false
     },
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero: true
+                }
+            }]
+        }
+    }
+});
+var ctx2 = document.getElementById('c1').getContext('2d');
+
+var myChart = new Chart(ctx2, {
+    type: 'line',
+    data: {
+        labels: [{{ stat1_names|safe }}],
+        datasets: [{
+            label: 'Online',
+            data: [{{ stat1_online|safe }}],
+            backgroundColor: [
+                'rgba(75, 192, 192, 0.2)'
+            ],
+            borderColor: [
+                'rgba(75, 192, 192, 1)'
+            ],
+            borderWidth: 2
+        }, {
+            label: 'Offline',
+            data: [{{ stat1_offline|safe }}],
+            backgroundColor: [
+                'rgba(255, 99, 132, 0.2)'
+            ],
+            borderColor: [
+                'rgba(255, 99, 132, 1)'
+            ],
+            borderWidth: 2
+        }]
+    },
+    options: {
+        title: {
+            display: true,
+            text: 'Online/Offline'
+        },
         scales: {
             yAxes: [{
                 ticks: {

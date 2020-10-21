@@ -28,8 +28,6 @@
             <th>Status</th>
             <th>Created At</th>
             <th>Updated At</th>
-            <!--<th>IP</th>-->
-            <!--<th>Secure Certificate</th>-->
             <th>Show Details</th>
             <th>Papers</th>
           </tr>
@@ -38,53 +36,9 @@
         </tbody>
       </table>
     </div>
-    <div class="modal fade" role="dialog" tabindex="-1" id="paperModal">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h3 class="modal-title">Paper</h3>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            <div class="form-group">
-              <div id="paper-title"></div>
-            </div>
-            <div class="form-group">
-              <div id="paper-pubmed_id"></div>
-            </div>
-            <div class="form-group">
-              <div id="paper-journal"></div>
-            </div>
-            <div class="form-group">
-              <div id="paper-year"></div>
-            </div>
-            <div class="form-group">
-              <div id="paper-authors"></div>
-            </div>
-            <div class="form-group">
-              <div id="paper-abstract"></div>
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button class="btn btn-outline-dark" data-dismiss="modal">Close</button>
-          </div>
-        </div>
-      </div>
-    </div>
 	</body>
 </html>
 <script>
-  function paper(title, authors, abstract, year, journal, pubmed_id) {
-    document.getElementById("paper-title").innerHTML = "<b>" + title + "</b>";
-    document.getElementById("paper-authors").innerHTML = authors;
-    document.getElementById("paper-abstract").innerHTML = abstract;
-    document.getElementById("paper-year").innerHTML = year;
-    document.getElementById("paper-journal").innerHTML = journal;
-    document.getElementById("paper-pubmed_id").innerHTML = pubmed_id;
-  }
-
   $(document).ready( function () {
     var table = $('#table').DataTable( {
       scrollResize: true,
@@ -92,11 +46,14 @@
       scrollY:        "72vh",
       scrollX: true,
       scrollCollapse: true,
+      search: {
+        search: "{{ search }}"
+      },
       paging:         true,
       //serverSide: true,
       columnDefs : [ {'type' : 'natural', 'targets' : '_all' } ],
       language: {
-        searchPlaceholder: "Search"
+        searchPlaceholder: "Filter"
       },
       ajax: {
           url: '/websiteData'
@@ -122,16 +79,6 @@
               return data.substring(0, 10) + " " + data.substring(11, 19);
           }
         },
-        //{ data: "ip" },
-        /*{ data: "certificate_secure",
-          render: function ( data ) {
-            if(data) {
-              return "Yes";
-            } else {
-              return "No";
-            }
-          }
-        },*/
         { data: "pk",
           render: function ( data ) {
             return "<a class='btn btn-outline-light' href='details/"+data+"'>Details</a>"
@@ -151,12 +98,7 @@
           }
           return str;
           }
-        }/*,
-        { data: "papers",
-          render: function ( data ) {
-            return "";
-          }
-        }*/
+        }
       ]
     });
   });
