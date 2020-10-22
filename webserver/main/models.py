@@ -9,7 +9,7 @@ class Paper(models.Model):
     year = models.CharField(max_length=4)
     journal = models.TextField()
     pubmed_id = models.CharField(max_length=50)
-    url = models.TextField()
+    url = JSONField()
 
 class Website(models.Model):
     url = models.TextField()

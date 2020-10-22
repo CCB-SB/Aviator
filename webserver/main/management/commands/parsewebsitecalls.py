@@ -10,17 +10,19 @@ import pytz
 class Command(BaseCommand):
     help = 'Creates the website / website calls model and a csv from a given source folder'
 
+
     def add_arguments(self, parser):
         parser.add_argument('folder')
         parser.add_argument('url_filter')
         #parser.add_argument('csv_target')
 
     def handle(self, *args, **options):
+
         # variables
         info_identifier = '.info.json'
         html_identifier = '.html'
         logs_identifier = '.logs.json.gz'
-        csv_identifier = '.logs.json.gz'
+        csv_identifier = '.csv'
 
         folder_header = 'folder'
         html_title_header = 'html-title'
@@ -234,7 +236,7 @@ class Command(BaseCommand):
         for key, value in tqdm(result.items()):
             if "url" not in result[key]:
                 continue
-            ip_url = result[key]["url"]
+            ip_url = key
             derived_url = derived_urls[ip_url] if ip_url in derived_urls else ""
             wp_url = original_urls[ip_url] if ip_url in original_urls else ip_url
             if(filter):
@@ -276,7 +278,6 @@ class Command(BaseCommand):
                 website = Website.objects.filter(url=wp_url)[0]
                 website.status = status
                 update_websites.append(website)
-
         Website.objects.bulk_update(update_websites, ["status"])
         Website.objects.bulk_create(create_websites)
         #Create new WebsiteCalls
@@ -285,14 +286,14 @@ class Command(BaseCommand):
         for key, value in tqdm(result.items()):
             if "url" not in result[key]:
                 continue
-            ip_url = result[key]["url"]
+            ip_url = key
             wp_url = original_urls[ip_url] if ip_url in original_urls else ip_url
             if(filter):
                 if ip_url not in filter_ids and wp_url not in filter_original:
                     continue
             website = Website.objects.filter(url=wp_url)[0]
             #Create connections to paper
-            papers = Paper.objects.filter(url=wp_url)
+            papers = Paper.objects.filter(url__contains=wp_url)
             for paper in papers:
                 if website.papers.filter(title=paper.title).count() == 0:
                     website.papers.add(paper)

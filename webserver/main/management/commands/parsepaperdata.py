@@ -93,6 +93,14 @@ class Command(BaseCommand):
                         #    break
                         if header[counter] == 'URL':
                             urls = str(entry).encode('unicode-escape').decode('utf-8').split('; ')
+                            new_urls = str(entry).encode('unicode-escape').decode('utf-8').split('; ')
+                            for i in range(len(urls)):
+                                if urls[i].endswith("/"):
+                                    new_urls.append(urls[i][:-1])
+                                else:
+                                    new_urls.append(urls[i]+"/")
+                                new_urls.append(urls[i])
+                            urls = new_urls
                             if(filter):
                                 remove = []
                                 for url in urls:
@@ -103,7 +111,18 @@ class Command(BaseCommand):
                                 if len(urls) == 0:
                                     ok = False
                                     break
-                            paper.url = url
+                            new_urls = str(entry).encode('unicode-escape').decode('utf-8').split('; ')
+                            for i in range(len(urls)):
+                                if urls[i].endswith("/"):
+                                    if urls[i][:-1] not in new_urls:
+                                        new_urls.append(urls[i][:-1])
+                                else:
+                                    if urls[i]+"/" not in new_urls:
+                                        new_urls.append(urls[i]+"/")
+                                if urls[i] not in new_urls:
+                                    new_urls.append(urls[i])
+                            urls = new_urls
+                            paper.url = urls
                     counter += 1
                 if ok:
                     papers = Paper.objects.filter(pubmed_id=pubmed_id)
