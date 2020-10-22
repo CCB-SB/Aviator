@@ -1,23 +1,28 @@
 from django.core.management.base import BaseCommand, CommandError
 from main.models import Website
 from main.models import WebsiteCall
-from main.models import Paper
-import os, csv, json, gzip
+from main.models import Publication
+import os, csv, gzip
+import orjson as json
 from datetime import datetime
 from tqdm import tqdm
 import pytz
+import pandas as pd
+from glob import glob
+from os.path import join, basename
+from collections import defaultdict
+import ahocorasick
 
 class Command(BaseCommand):
     help = 'Creates the website / website calls model and a csv from a given source folder'
 
-
     def add_arguments(self, parser):
         parser.add_argument('folder')
+        parser.add_argument('origurl2folder')
         parser.add_argument('url_filter')
-        #parser.add_argument('csv_target')
+        # parser.add_argument('csv_target')
 
     def handle(self, *args, **options):
-
         # variables
         info_identifier = '.info.json'
         html_identifier = '.html'
@@ -32,76 +37,85 @@ class Command(BaseCommand):
         result = {}
         original_urls = {}
         derived_urls = {}
-        columns = [folder_header, html_title_header, analytics_header, error_header, datetime_header]
-        analytics_names = ['google-analytics', 'matomo', 'woopra', 'gosquared', 'go-squared', 'foxmetrics',
-                           'fox-metrics', 'mixpanel', 'heap', 'statcounter', 'stat-counter', 'chartbeat', 'clicky',
-                           'leadfeeder']
+        columns = [folder_header, html_title_header, analytics_header, error_header,
+                   datetime_header]
+        analytics_names = ['google-analytics', 'matomo', 'woopra', 'gosquared', 'go-squared',
+                           'foxmetrics',
+                           'fox-metrics', 'mixpanel', 'heap', 'statcounter', 'stat-counter',
+                           'chartbeat', 'clicky',
+                           'leadfeeder', 'piwik']
+
+        def make_automaton(words, idx_only=False):
+            result = ahocorasick.Automaton()
+            for i, w in enumerate(words):
+                if idx_only:
+                    result.add_word(w, i)
+                else:
+                    result.add_word(w, w)
+            result.make_automaton()
+            return result
+
+        analytics_automaton = make_automaton(analytics_names)
 
         error_phrases = ['Not Found', 'Server unavailable', 'Maintainance in progress',
-                         'Out server is down temporarily', 'Out server is down', '503 Service Unavailable',
+                         'Out server is down temporarily', 'Out server is down',
+                         '503 Service Unavailable',
                          'Service Unavailable', 'No server is available to handle this request',
-                         'has been discontinued', '502 Bad Gateway', 'The resource could not be found', '404 Not Found',
+                         'has been discontinued', '502 Bad Gateway',
+                         'The resource could not be found', '404 Not Found',
                          'decimalLongitude', 'This is the default web page for this server',
                          'The web server software is running but no content has been added, yet',
                          'The requested URL was not found on this server',
                          'The AlloPred web server is currently encountering some technical difficulties',
                          'Sorry, Page Not Found',
-                         '403 Forbidden', 'Error 406 - Not Acceptable', '<Error><Code>NoSuchBucket</Code>',
+                         '403 Forbidden', 'Error 406 - Not Acceptable',
+                         '<Error><Code>NoSuchBucket</Code>',
                          'Server under maintenance', '503 Service Temporarily Unavailable',
-                         'Temporarily Unavailable', '502 Proxy Error', 'Proxy Erro', 'currently unavailable',
-                         'invalid request', 'Service unavailable', 'The service is down due to technical issues',
+                         'Temporarily Unavailable', '502 Proxy Error', 'Proxy Erro',
+                         'currently unavailable',
+                         'invalid request', 'Service unavailable',
+                         'The service is down due to technical issues',
                          'Site Maintenance', 'Service temporarily unavailable', 'Object not found!',
                          '404 Page Not Found', 'The page you requested was not found', 'Error 404',
-                         'ERROR 404: Seite nicht gefunden', 'Errore 404', 'ERROR 404', 'No longer supported webserver',
+                         'ERROR 404: Seite nicht gefunden', 'Errore 404', 'ERROR 404',
+                         'No longer supported webserver',
                          'This transfer is blocked',
-                         'The transfer has triggered a Web Application Firewall', 'The resource cannot be found',
+                         'The transfer has triggered a Web Application Firewall',
+                         'The resource cannot be found',
                          '403 - Forbidden: Access is denied',
                          'IP address could not be found', 'DNS_PROBE_FINISHED_NXDOMAIN',
-                         'Your connection was interrupted', 'A network change was detected', 'ERR_NETWORK_CHANGED',
+                         'Your connection was interrupted', 'A network change was detected',
+                         'ERR_NETWORK_CHANGED',
                          'This site can’t provide a secure connection', 'sent an invalid response',
                          'ERR_SSL_PROTOCOL_ERROR',
-                         'This site can’t be reached', 'refused to connect', 'ERR_CONNECTION_REFUSED']
+                         'This site can’t be reached', 'refused to connect',
+                         'ERR_CONNECTION_REFUSED']
 
+        error_phrases_automaton = make_automaton(error_phrases)
         url_replacements = {
             "∼": "~"
         }
 
-        def winapi_path(dos_path, encoding=None):
-            if (not isinstance(dos_path, str) and encoding is not None):
-                dos_path = dos_path.decode(encoding)
-            path = os.path.abspath(dos_path)
-            if path.startswith(u"\\\\"):
-                return u"\\\\?\\UNC\\" + path[2:]
-            return u"\\\\?\\" + path
-
         def handleInfo(filename, target):
-            target[datetime_header] = os.path.basename(filename)[0:19].replace("_", ":") #e.g. 2020-09-06T16_01_22 => 2020-09-06T16:01:22
+            target[datetime_header] = os.path.basename(filename)[0:19].replace("_",
+                                                                               ":")  # e.g. 2020-09-06T16_01_22 => 2020-09-06T16:01:22
             if filename[-3:] == '.gz':
                 with gzip.open(filename, 'r') as file:
-                    data = json.load(file)
-                    iterateInfoJSON(data, target, '')
+                    data = json.loads(file.read())
+                    target.update(data)
             else:
                 with open(filename, 'r', encoding="utf-8") as file:
-                    data = json.load(file)
-                    iterateInfoJSON(data, target, '')
-
-        def iterateInfoJSON(source, target, name_prefix):
-            for key, value in source.items():
-                if isinstance(value, dict):
-                    iterateInfoJSON(value, target, name_prefix + key + '_')
-                else:
-                    name = name_prefix + str(key)
-                    target[name] = str(value).replace("\r\n", "").replace("\n", "")
-                    if name == 'code' and value != 200 and str(value).isnumeric():
+                    data = json.loads(file.read())
+                    target.update(data)
+                    code_val = target.get("code", None)
+                    if code_val is not None and code_val != 200 and str(code_val).isnumeric():
                         if error_header in target:
                             if len(target[error_header]) > 0:
-                                target[error_header] = target[error_header] + ', '
-                            target[error_header] = target[error_header] + str(value)
-                    if (not name in columns):
-                        columns.append(name)
+                                target[error_header] = f"{target[error_header]}, {code_val}"
+                            else:
+                                target[error_header] = f"{code_val}"
 
         def handleHTML(filename, target):
-            text = ""
             if filename[-3:] == '.gz':
                 with gzip.open(filename, 'r') as file:
                     text = file.read().replace('\n', '')
@@ -110,27 +124,37 @@ class Command(BaseCommand):
                     text = file.read().replace('\n', '')
 
             index = text.find("</title>")
-            if (index > 0):
+            if index > 0:
                 substr = text[:index]
                 title = substr[substr.rfind(">") + 1:]
                 target[html_title_header] = title
-            target[error_header] = ''
-            for error_phrase in error_phrases:
-                if error_phrase in text and not error_phrase in target[error_header]:
-                    if len(target[error_header]) > 0:
-                        target[error_header] = target[error_header] + ', '
-                    target[error_header] = target[error_header] + error_phrase
+
+            error_phrase_hits = set()
+            for end_index, error_phrase in error_phrases_automaton.iter(text):
+                error_phrase_hits.add(error_phrase)
+            target[error_header] = ", ".join(sorted(error_phrase_hits))
+
 
         def handleLogs(filename, target):
             target[analytics_header] = ''
             if filename[-3:] == '.gz':
-                with gzip.open(filename, 'r') as file:
-                    data = json.load(file)
-                    iterateLogJSON(data, target)
+                with gzip.open(filename, 'rt') as file:
+                    analytics_hits = set()
+                    #for l in file:
+                    for _, a in analytics_automaton.iter(file.read()):
+                        analytics_hits.add(a)
+                    target[analytics_header] = ", ".join(sorted(analytics_hits))
+                    #data = json.loads(file.read())
+                    #iterateLogJSON(data, target)
             else:
                 with open(filename, 'r', encoding="utf-8") as file:
-                    data = json.load(file)
-                    iterateLogJSON(data, target)
+                    analytics_hits = set()
+                    for l in file:
+                        for _, a in analytics_automaton.iter(l):
+                            analytics_hits.add(a)
+                    target[analytics_header] = ", ".join(sorted(analytics_hits))
+                    #data = json.loads(file.read())
+                    #iterateLogJSON(data, target)
 
         def iterateLogJSON(source, target):
             if isinstance(source, dict):
@@ -147,186 +171,214 @@ class Command(BaseCommand):
                 for value in source:
                     iterateLogJSON(value, target)
 
-        def handleCSV(filename, target1, target2):
-            with open(filename, 'r', encoding='utf-8') as csvfile:
-                csv_reader = csv.reader(csvfile, delimiter='\t')
-                for row in csv_reader:
-                    counter = 0
-                    id_url = ""
-                    original_url = ""
-                    derived_url = ""
-                    for entry in row:
-                        if counter == 0:
-                            id_url = str(entry).encode('unicode-escape').decode('utf-8')
-                        elif counter == 1:
-                            original_url = str(entry).encode('unicode-escape').decode('utf-8')
-                        elif counter == 2:
-                            derived_url = str(entry).encode('unicode-escape').decode('utf-8')
-                        elif counter > 2:
-                            break
-                        counter += 1
-                    target1[id_url] = original_url
-                    target2[id_url] = derived_url
-
-        #handle filter
-        filter = False
-        filter_ids = set()
-        filter_original = set()
-        try:
-            filename = options['url_filter']
-            with open(filename, 'r', encoding='utf-8') as csvfile:
-                csv_reader = csv.reader(csvfile, delimiter='\t')
-                filter = True
-                for row in csv_reader:
-                    counter = 0
-                    id_url = ""
-                    original_url = ""
-                    for entry in row:
-                        if counter == 0:
-                            id_url = str(entry).encode('unicode-escape').decode('utf-8')
-                        elif counter == 1:
-                            original_url = str(entry).encode('unicode-escape').decode('utf-8')
-                        elif counter > 1:
-                            break
-                        counter += 1
-                    filter_ids.add(id_url)
-                    filter_original.add(original_url)
+        filter_orig_urls = set()
+        if options["url_filter"] is not None:
+            filter_tbl = pd.read_csv(options['url_filter'], sep='\t')
+            filter_orig_urls = set(filter_tbl["Original URL"])
             self.stdout.write("Filter applied")
-        except:
+        else:
             self.stdout.write("No Filter applied")
 
-        #Iterate New data
+        # Iterate New data
         try:
             inputfolder = options['folder']
         except:
             raise CommandError('Please provide an input folder')
         self.stdout.write("Starting to iterate and parse data:")
-        for subdir, dirs, files in tqdm(os.walk(inputfolder)):
-            for file in files:
-                folder_name = subdir[subdir.rfind("\\") + 1:]
-                if len(folder_name) > 0 and not folder_name in result.keys():
-                    result[folder_name] = {}
-                if info_identifier in file:
-                    handleInfo((os.path.join(subdir, file)), result[folder_name])
-                    #handleInfo(winapi_path(os.path.join(subdir, file)), result[folder_name])
-                elif html_identifier in file:
-                    handleHTML((os.path.join(subdir, file)), result[folder_name])
-                    #handleHTML((os.path.join(subdir, file)), result[folder_name])
-                elif logs_identifier in file:
-                    handleLogs((os.path.join(subdir, file)), result[folder_name])
-                    #handleLogs(winapi_path(os.path.join(subdir, file)), result[folder_name])
-                elif csv_identifier in file:
-                    handleCSV((os.path.join(subdir, file)), original_urls, derived_urls)
-                    #handleCSV(winapi_path(os.path.join(subdir, file)), original_urls, derived_urls)
-            for key, value in result.items():
-                result[key][folder_header] = key
-                # replacements
-                if "url" in result[key]:
-                    for replace in url_replacements:
-                        result[key]["url"] = result[key]["url"].replace(replace, url_replacements[replace])
+
+        origurl2folder = pd.read_csv(options["origurl2folder"], sep='\t')
+        folder2orig_urls = origurl2folder.groupby("ID")["URL"].apply(set).to_dict()
+
+        # either we get multiple telemetry folders or just one
+        telemetry_folders = glob(join(inputfolder, "20*-*-*T*"))
+        if len(telemetry_folders) == 0:
+            telemetry_folders = [inputfolder]
+        self.stdout.write(f"Found {len(telemetry_folders)} telemetry folders")
 
         new_websites = 0
         new_websitecalls = 0
         new_paper_connections = 0
-        create_websites = []
-        update_websites = []
-        #Create new Websites
-        self.stdout.write("Creating new websites:")
-        already_done = []
-        for key, value in tqdm(result.items()):
-            if "url" not in result[key]:
-                continue
-            ip_url = key
-            derived_url = derived_urls[ip_url] if ip_url in derived_urls else ""
-            wp_url = original_urls[ip_url] if ip_url in original_urls else ip_url
-            if(filter):
-                if ip_url not in filter_ids and wp_url not in filter_original:
+        for tf in tqdm(telemetry_folders):
+            all_tbls = pd.concat((pd.read_csv(f, sep='\t') for f in glob(join(tf, "*.csv"))))
+            all_tbls.set_index("Original URL", inplace=True)
+            orig_urls = set(all_tbls.index)
+            all_dict = all_tbls.to_dict()
+            # update websites
+            websites_to_update = list(Website.objects.filter(original_url__in=orig_urls))
+            websites_to_update_final = []
+            for w in websites_to_update:
+                new_url = all_dict["Derived URL"][w.original_url]
+                if w.derived_url != all_dict["Derived URL"][w.original_url]:
+                    w.derived_url = new_url
+                websites_to_update_final.append(w)
+
+            Website.objects.bulk_update(websites_to_update_final, fields=["derived_url"])
+
+            for subdir, dirs, files in tqdm(os.walk(tf)):
+                for file in files:
+                    folder_name = subdir[subdir.rfind("\\") + 1:]
+                    if len(folder_name) > 0 and folder_name not in result.keys():
+                        result[folder_name] = {}
+                    if info_identifier in file:
+                        handleInfo((os.path.join(subdir, file)), result[folder_name])
+                    elif html_identifier in file:
+                        handleHTML((os.path.join(subdir, file)), result[folder_name])
+                    elif logs_identifier in file:
+                        handleLogs((os.path.join(subdir, file)), result[folder_name])
+                for key, value in result.items():
+                    result[key][folder_header] = key
+                    # replacements
+                    if "url" in result[key]:
+                        for replace in url_replacements:
+                            result[key]["url"] = result[key]["url"].replace(replace,
+                                                                            url_replacements[
+                                                                                replace])
+
+
+            create_websites = []
+            update_websites = []
+            # Create new Websites
+            self.stdout.write("Creating new websites:")
+            already_done = set()
+
+            orig_url_2_website = {w.original_url: w for w in Website.objects.all()}
+            for key, value in tqdm(result.items()):
+                if "url" not in value:
                     continue
-            #Check and create Webpage if there is none
-            website = None
-            status = False
-            if "code" in result[key] and result[key]["code"] == "200":
-                status = True
-            elif "code" in result[key]:
-                status = False
-            if "ok" in result[key] and result[key]["ok"] != "Pass":
-                status = False
-            if "error" in result[key] and len(result[key]["error"]) > 0:
-                status = False
-            websites = Website.objects.filter(url=wp_url)
-            if websites.count() == 0:
-                if wp_url in already_done:
+                # get original url(s) for this folder
+                orig_urls = folder2orig_urls.get(basename(value[folder_header]), None)
+                if orig_urls is None:
+                    self.stderr.write(f"No folder 2 original url mapping found for folder {basename(value[folder_header])}")
                     continue
-                website = Website(url=wp_url)
-                already_done.append(wp_url)
-                website.status = status
-                website.ip = result[key]["ip"] if "ip" in result[key] else 0
-                website.server = result[key]["response_headers_server"] if "response_headers_server" in result[key] else ""
-                website.analytics = result[key]["analytics"] if "analytics" in result[key] else ""
-                website.timezone = result[key]["response_headers_Pragma"] if "response_headers_Pragma" in result[key] else ""
-                website.certificate_secure = result[key]["certificateSecurityState"] == "secure" if "certificateSecurityState" in result[key] else False
-                website.script = ""
-                if "response_headers_Set-Cookie" in result[key]:
-                    if "PHPSESSID" in result[key]["response_headers_Set-Cookie"]:
-                        website.script += "PHP"
-                    if "JSESSIONID" in result[key]["response_headers_Set-Cookie"]:
-                        website.script += "Java"
-                website.derived_url = derived_url
-                new_websites += 1
-                create_websites.append(website)
-            else:
-                website = Website.objects.filter(url=wp_url)[0]
-                website.status = status
-                update_websites.append(website)
-        Website.objects.bulk_update(update_websites, ["status"])
-        Website.objects.bulk_create(create_websites)
-        #Create new WebsiteCalls
-        self.stdout.write("Creating new website calls:")
-        create_websitecalls = []
-        for key, value in tqdm(result.items()):
-            if "url" not in result[key]:
-                continue
-            ip_url = key
-            wp_url = original_urls[ip_url] if ip_url in original_urls else ip_url
-            if(filter):
-                if ip_url not in filter_ids and wp_url not in filter_original:
+
+                if filter_orig_urls:
+                    orig_urls = set(u for u in orig_urls if u in filter_orig_urls)
+                if not orig_urls:
                     continue
-            website = Website.objects.filter(url=wp_url)[0]
-            #Create connections to paper
-            papers = Paper.objects.filter(url__contains=wp_url)
-            for paper in papers:
-                if website.papers.filter(title=paper.title).count() == 0:
-                    website.papers.add(paper)
-                    new_paper_connections += 1
-            #Create Website Call
-            call = WebsiteCall(website=website)
-            if datetime_header in result[key]:
-                dt_string = result[key][datetime_header] #e.g. 2020-09-06T16:01:22
-                utc = pytz.timezone('UTC')
-                dt = datetime.strptime(dt_string, "%Y-%m-%dT%H:%M:%S")
-                dt = utc.localize(dt, is_dst=True)
-                call.datetime = dt
-            else:
-                call.datetime = datetime.now(tzinfo=pytz.UTC)
-            call.ok = result[key]["ok"] == "Pass" if "ok" in result[key] else False
-            call.error = result[key]["error"] if "error" in result[key] else ""
-            call.msg = result[key]["msg"] if "msg" in result[key] else ""
-            call.code = result[key]["code"] if "code" in result[key] and result[key]["code"] != "NA" else 0
-            call.json_data = json.dumps(result[key])
-            create_websitecalls.append(call)
-            new_websitecalls += 1
-            #Set status of website
-            website.status = status
-            website.save()
-        WebsiteCall.objects.bulk_create(create_websitecalls)
-        #Save as csv
-        #try:
+
+                # Check and create Webpage if there is none
+                website = None
+                status = False
+                if "code" in value and value["code"] == 200:
+                    status = True
+                elif "code" in value:
+                    status = False
+                if "ok" in value and value["ok"] != "Pass":
+                    status = False
+                if "error" in value and len(value["error"]) > 0:
+                    status = False
+
+                for o in orig_urls:
+                    if o not in orig_url_2_website and o not in already_done:
+                        already_done.add(o)
+                        ip = value.get("ip", None)
+                        if ip == "NA":
+                            ip = None
+                        website = Website(original_url=o,
+                                          status=status,
+                                          ip=ip,
+                                          derived_url=value["url"]
+                                          )
+                        website.server = value.get("response_headers_server", "")
+                        website.analytics = value.get("analytics", "")
+                        website.timezone = value.get("response_headers_Pragma", "")
+                        website.certificate_secure = value.get("certificateSecurityState", "unknown") == "secure"
+                        website.script = ""
+                        if "response_headers_Set-Cookie" in value:
+                            if "PHPSESSID" in value["response_headers_Set-Cookie"]:
+                                website.script += "PHP"
+                            if "JSESSIONID" in value["response_headers_Set-Cookie"]:
+                                website.script += "Java"
+                        new_websites += 1
+                        create_websites.append(website)
+                    elif o in orig_url_2_website:
+                        website = orig_url_2_website[o]
+                        website.status = status
+                        update_websites.append(website)
+
+            Website.objects.bulk_update(update_websites, ["status"])
+            create_websites = Website.objects.bulk_create(create_websites)
+
+            # connect new websites to publications
+            origurl2paper = defaultdict(list)
+            for p in Publication.objects.all():
+                for u in p.url:
+                    origurl2paper[u].append(p)
+
+            # Create connections to paper
+            for website in create_websites:
+                pubs = origurl2paper.get(website.original_url, None)
+                if pubs is None:
+                    self.stderr.write(f"No publications could be found for URL {website.original_url}!")
+                else:
+                    website.papers.set(pubs)
+                    new_paper_connections += len(pubs)
+
+            # update mapping to latest
+            orig_url_2_website = {w.original_url: w for w in Website.objects.all()}
+
+            # Create new WebsiteCalls
+            self.stdout.write("Creating new website calls:")
+            create_websitecalls = []
+            for key, value in tqdm(result.items()):
+                if "url" not in value:
+                    continue
+
+                # get original url(s) for this folder
+                orig_urls = folder2orig_urls.get(basename(value[folder_header]), None)
+                if orig_urls is None:
+                    self.stderr.write(
+                        f"No folder 2 original url mapping found for folder {basename(value[folder_header])}")
+                    continue
+
+                if filter_orig_urls:
+                    orig_urls = set(u for u in orig_urls if u in filter_orig_urls)
+                if not orig_urls:
+                    continue
+
+                websites = {orig_url_2_website[u] for u in orig_urls}
+
+                # Create Website Call(s)
+                for w in websites:
+                    call = WebsiteCall(website=w)
+                    if datetime_header in value:
+                        dt_string = value[datetime_header]  # e.g. 2020-09-06T16:01:22
+                        utc = pytz.timezone('UTC')
+                        dt = datetime.strptime(dt_string, "%Y-%m-%dT%H:%M:%S")
+                        dt = utc.localize(dt, is_dst=True)
+                        call.datetime = dt
+                    else:
+                        call.datetime = datetime.now(tzinfo=pytz.UTC)
+                    call.ok = value.get("ok", "unk") == "Pass"
+                    call.error = value.get("error", "")
+                    call.msg = value.get("msg", "")
+                    call.code = value["code"] if "code" in value and not pd.isnull(value["code"]) and not value["code"] == "NA" else 0
+                    call.json_data = value
+                    create_websitecalls.append(call)
+                    new_websitecalls += 1
+
+            WebsiteCall.objects.bulk_create(create_websitecalls)
+
+        # update website status according to latest website call
+        websitecalls = WebsiteCall.objects.order_by('website', '-datetime').distinct('website__id').prefetch_related("website")
+
+        website_updates = []
+        for w in websitecalls:
+            if w.website.status != w.ok:
+                w.website.status = w.ok
+                website_updates.append(w.website)
+
+        Website.objects.bulk_update(website_updates, ["status"])
+
+        # Save as csv
+        # try:
         #    outputfile = options['csv_target']
         #    with open(outputfile, 'w', newline='', encoding="utf-8") as csvfile:
         #        writer = csv.DictWriter(csvfile, fieldnames=columns, delimiter=';')
         #        writer.writeheader()
         #        for key, value in result.items():
         #            writer.writerow(value)
-        #except:
+        # except:
         #    self.stdout.write("CSV was not saved, no target file given or an IO Error occured")
-        self.stdout.write(self.style.SUCCESS('Successfully added ' + str(new_websitecalls) + ' website calls with ' + str(new_websites) + ' new websites with ' + str(new_paper_connections) + ' new connections to papers '))
+        self.stdout.write(self.style.SUCCESS(
+            f'Successfully added {new_websitecalls} website calls with {new_websites} new websites with {new_paper_connections} new connections to papers '))

@@ -1,7 +1,10 @@
 from django.core.management.base import BaseCommand, CommandError
 from main.models import Website
-from main.models import Paper
+from main.models import Publication
+from collections import defaultdict
 import os, csv, json, gzip
+import pandas as pd
+
 
 class Command(BaseCommand):
     help = 'Creates the paper model from a given csv'
@@ -15,135 +18,69 @@ class Command(BaseCommand):
             csv_file = options['csv_file']
         except:
             raise CommandError('Please provide an input folder')
-        header_line = True
-        num = 0
-        num2 = 0
-        num_updated = 0
-        header = dict()
 
-        #handle filter
-        filter = False
-        filter_ids = set()
-        filter_original = set()
-        try:
-            filename = options['url_filter']
-            with open(filename, 'r', encoding='utf-8') as csvfile:
-                csv_reader = csv.reader(csvfile, delimiter='\t')
-                filter = True
-                for row in csv_reader:
-                    counter = 0
-                    id_url = ""
-                    original_url = ""
-                    for entry in row:
-                        if counter == 0:
-                            id_url = str(entry).encode('unicode-escape').decode('utf-8')
-                        elif counter == 1:
-                            original_url = str(entry).encode('unicode-escape').decode('utf-8')
-                        elif counter > 1:
-                            break
-                        counter += 1
-                    filter_ids.add(id_url)
-                    filter_original.add(original_url)
+        filter_orig_urls = set()
+        if options["url_filter"] is not None:
+            filter_tbl = pd.read_csv(options['url_filter'], sep='\t')
+            filter_orig_urls = set(filter_tbl["Original URL"])
             self.stdout.write("Filter applied")
-        except:
+        else:
             self.stdout.write("No Filter applied")
 
-        with open(csv_file, 'r', encoding='utf-8') as csvfile:
-            csv_reader = csv.reader(csvfile, delimiter='\t')
-            for row in csv_reader:
-                if header_line:
-                    header_line = False
-                    counter = 0
-                    for entry in row:
-                        header[counter] = entry
-                        counter += 1
-                    continue
-                counter = 0
-                ok = True
-                urls = []
-                title = ""
-                pubmed_id = ""
-                abstract = ""
-                authors = ""
-                year = ""
-                journal = ""
-                paper = Paper()
-                for entry in row:
-                    if counter in header:
-                        if header[counter] == 'title':
-                            title = str(entry).encode('unicode-escape').decode('utf-8')
-                            paper.title = title
-                        if header[counter] == 'PMID':
-                            pubmed_id = str(entry).encode('unicode-escape').decode('utf-8')
-                            paper.pubmed_id = pubmed_id
-                        if header[counter] == 'abstract':
-                            abstract = str(entry).encode('unicode-escape').decode('utf-8')
-                            paper.abstract = abstract
-                        if header[counter] == 'authors':
-                            authors = str(entry).encode('unicode-escape').decode('utf-8')
-                            paper.authors = authors
-                        if header[counter] == 'year':
-                            year = entry[0:4]
-                            paper.year = year
-                        if header[counter] == 'journal':
-                            journal = str(entry).encode('unicode-escape').decode('utf-8')
-                            paper.journal = journal
-                        #if header[counter] == 'comment' and entry == 'delete':
-                        #    ok = False
-                        #    break
-                        if header[counter] == 'URL':
-                            urls = str(entry).encode('unicode-escape').decode('utf-8').split('; ')
-                            new_urls = str(entry).encode('unicode-escape').decode('utf-8').split('; ')
-                            for i in range(len(urls)):
-                                if urls[i].endswith("/"):
-                                    new_urls.append(urls[i][:-1])
-                                else:
-                                    new_urls.append(urls[i]+"/")
-                                new_urls.append(urls[i])
-                            urls = new_urls
-                            if(filter):
-                                remove = []
-                                for url in urls:
-                                    if url not in filter_ids and url not in filter_original:
-                                        remove.append(url)
-                                for url in remove:
-                                    urls.remove(url)
-                                if len(urls) == 0:
-                                    ok = False
-                                    break
-                            new_urls = str(entry).encode('unicode-escape').decode('utf-8').split('; ')
-                            for i in range(len(urls)):
-                                if urls[i].endswith("/"):
-                                    if urls[i][:-1] not in new_urls:
-                                        new_urls.append(urls[i][:-1])
-                                else:
-                                    if urls[i]+"/" not in new_urls:
-                                        new_urls.append(urls[i]+"/")
-                                if urls[i] not in new_urls:
-                                    new_urls.append(urls[i])
-                            urls = new_urls
-                            paper.url = urls
-                    counter += 1
-                if ok:
-                    papers = Paper.objects.filter(pubmed_id=pubmed_id)
-                    if papers.count() > 0:
-                        for old_paper in papers:
-                            old_paper.pubmed_id = pubmed_id
-                            old_paper.abstract = abstract
-                            old_paper.authors = authors
-                            old_paper.year = year
-                            old_paper.journal = journal
-                            old_paper.save()
-                            num_updated += 1
-                            continue
-                    num += 1
-                    paper.save()
-                    for url in urls:
-                        websites = Website.objects.filter(url=url)
-                        for website in websites:
-                            website.papers.add(paper)
-                            website.save()
-                            num2 += 1
-                    #websites = Website.objects.filter(url=url)
+        pub_tbl = pd.read_csv(csv_file, sep='\t', index_col="PMID")
+        pub_tbl.index = pub_tbl.index.astype(str)
+        pub_dict = pub_tbl.to_dict()
 
-            self.stdout.write(self.style.SUCCESS('Successfully added ' + str(num) + ' new Papers and updated ' + str(num_updated) + ' Papers with ' + str(num2) + ' connections to webpages'))
+        papers_to_update = list(Publication.objects.filter(pubmed_id__in=pub_tbl.index))
+
+        for p in papers_to_update:
+            p.title = pub_dict["title"][p.pubmed_id]
+            p.abstract = pub_dict["abstract"][p.pubmed_id]
+            p.year = pub_dict["year"][p.pubmed_id]
+            p.authors = pub_dict["authors"][p.pubmed_id]
+            p.journal = pub_dict["journal"][p.pubmed_id]
+            urls = pub_dict["URL"][p.pubmed_id].split('; ')
+            if filter_orig_urls:
+                urls = [u for u in urls if u in filter_orig_urls]
+            p.url = urls
+
+        Publication.objects.bulk_update(papers_to_update,
+                                        ["title", "abstract", "year", "authors", "journal", "url"])
+
+        papers_to_update_ids = set(p.pubmed_id for p in papers_to_update)
+
+        def get_paper_models(tbl):
+            for i, row in tbl.iterrows():
+                urls = row["URL"].split('; ')
+                if filter_orig_urls:
+                    urls = [u for u in urls if u in filter_orig_urls]
+                if len(urls) > 0:
+                    yield Publication(pubmed_id=i,
+                                      authors=row["authors"],
+                                      title=row["title"],
+                                      abstract=row["abstract"],
+                                      year=row["year"],
+                                      journal=row["journal"],
+                                      url=urls
+                                      )
+
+        new_pubs = pub_tbl[~pub_tbl.index.isin(papers_to_update_ids)]
+        new_pub_mdls = list(get_paper_models(new_pubs))
+        Publication.objects.bulk_create(new_pub_mdls)
+
+        pmid2pub = {p.pubmed_id:p for p in Publication.objects.filter(pubmed_id__in=pub_tbl.index)}
+        url2pub = defaultdict(set)
+        for p, url_str in pub_dict["URL"].items():
+            for u in url_str.split('; '):
+                if filter_orig_urls and u in filter_orig_urls:
+                    url2pub[u].add(pmid2pub[p])
+                elif not filter_orig_urls:
+                    url2pub[u].add(pmid2pub[p])
+
+        updated_websites = 0
+        websites_to_update = Website.objects.filter(original_url__in=url2pub.keys())
+        for website in websites_to_update:
+            website.papers.add(url2pub[website.original_url])
+            updated_websites += 1
+
+        self.stdout.write(self.style.SUCCESS(f'Successfully added {len(new_pub_mdls)} new publications and updated {len(papers_to_update)} publications with {updated_websites} connections to webpages'))

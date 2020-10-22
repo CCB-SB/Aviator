@@ -66,8 +66,8 @@ td {
 
 table tfoot {
   display: table-header-group;
-  }
-  
+}
+
 input.form-control {
   padding: 16px .5rem
 }

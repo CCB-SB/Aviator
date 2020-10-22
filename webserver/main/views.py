@@ -1,6 +1,6 @@
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, render
-from .models import Website, WebsiteCall, Paper
+from .models import Website, WebsiteCall, Publication
 from django.core import serializers
 from django.core.paginator import Paginator
 from datetime import timedelta, date, datetime
@@ -9,7 +9,7 @@ from datetime import timedelta, date, datetime
 def index(request):
     context = {}
     context['website_count'] = Website.objects.count()
-    context['paper_count'] = Paper.objects.count()
+    context['paper_count'] = Publication.objects.count()
     online = Website.objects.filter(status=True)
     context['online_count'] = online.count()
     context['offline_count'] = Website.objects.count() - online.count()
@@ -36,7 +36,7 @@ def details(request, pk):
 
 def publication(request, pk):
     context = {}
-    paper = get_object_or_404(Paper, pk=pk)
+    paper = get_object_or_404(Publication, pk=pk)
     context['paper'] = paper
     context['websites'] = paper.websites.all()
     return render(request, 'publication.html', context)
@@ -50,12 +50,12 @@ def websiteData(request):
     return JsonResponse({"data": list(Website.objects.all().values('url', 'status', 'created_at', 'updated_at', 'pk', 'papers'))})
 
 def paperData(request):
-    return JsonResponse({"data": list(Paper.objects.all().values('title', 'authors', 'abstract', 'year', 'journal', 'pubmed_id', 'websites'))})
+    return JsonResponse({"data": list(Publication.objects.all().values('title', 'authors', 'abstract', 'year', 'journal', 'pubmed_id', 'websites'))})
 
 def statistics(request):
     context = {}
     context['website_count'] = Website.objects.count()
-    context['paper_count'] = Paper.objects.count()
+    context['paper_count'] = Publication.objects.count()
     online = Website.objects.filter(status=True)
     context['online_count'] = online.count()
     context['offline_count'] = Website.objects.count() - online.count()

@@ -5,3 +5,4 @@
 !.babelrc
 node_modules
 assets/bundles
+aviator_telemetry*
