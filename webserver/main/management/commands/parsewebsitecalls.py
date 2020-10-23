@@ -4,13 +4,14 @@ from main.models import WebsiteCall
 from main.models import Publication
 import os, csv, gzip
 import orjson as json
-from datetime import datetime
+from datetime import datetime, timedelta
 from tqdm import tqdm
 import pytz
 import pandas as pd
 from glob import glob
 from os.path import join, basename
 from collections import defaultdict
+from django.contrib.postgres.aggregates import BoolOr
 import ahocorasick
 
 class Command(BaseCommand):
@@ -349,23 +350,28 @@ class Command(BaseCommand):
                     else:
                         call.datetime = datetime.now(tzinfo=pytz.UTC)
                     call.ok = value.get("ok", "unk") == "Pass"
+                    call.ok = value.get("ok", "unk") == "Pass"
                     call.error = value.get("error", "")
                     call.msg = value.get("msg", "")
                     call.code = value["code"] if "code" in value and not pd.isnull(value["code"]) and not value["code"] == "NA" else 0
+                    call.ok = call.ok and call.error == "" and call.code == 200
                     call.json_data = value
                     create_websitecalls.append(call)
                     new_websitecalls += 1
 
             WebsiteCall.objects.bulk_create(create_websitecalls)
 
-        # update website status according to latest website call
-        websitecalls = WebsiteCall.objects.order_by('website', '-datetime').distinct('website__id').prefetch_related("website")
+        # update website status according to the two last 20 hours (i.e. 2 runs)
+        latest_time = WebsiteCall.objects.latest("datetime")
+        website_statuses = WebsiteCall.objects.filter(datetime__gt=latest_time.datetime-timedelta(hours=20)).values("website").annotate(final_ok=BoolOr("ok"))
+
+        website2status = {e["website"]: e["final_ok"] for e in website_statuses}
 
         website_updates = []
-        for w in websitecalls:
-            if w.website.status != w.ok:
-                w.website.status = w.ok
-                website_updates.append(w.website)
+        for w in Website.objects.all():
+            if w.status != website2status[w.id]:
+                w.status = website2status[w.id]
+                website_updates.append(w)
 
         Website.objects.bulk_update(website_updates, ["status"])
 

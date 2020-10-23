@@ -10,6 +10,9 @@ class Publication(models.Model):
     year = models.SmallIntegerField()
     journal = models.TextField()
     pubmed_id = models.CharField(max_length=50, unique=True, db_index=True)
+    user_kwds = ArrayField(models.TextField(null=True, blank=True), blank=True, default=list)
+    mesh_terms = ArrayField(models.TextField(null=True, blank=True), blank=True, default=list)
+    contact_mail = ArrayField(models.EmailField(null=True, blank=True), blank=True, default=list)
     url = ArrayField(models.TextField())
 
 
