@@ -10,8 +10,10 @@ from django.contrib.postgres.aggregates import ArrayAgg, BoolOr
 from django.db.models.functions import TruncDate, Cast
 from django.db.models import Count
 from django.db import models
+from django.views.decorators.cache import cache_page
 
-# Create your views here.
+# cache for 6 hours
+@cache_page(60 * 60 * 6)
 def index(request):
     context = {}
     context['website_count'] = Website.objects.count()
@@ -33,6 +35,8 @@ def overview(request):
         context['search_string'] = request.POST['search_string']
     return render(request, 'overview.html', context)
 
+# cache for 6 hours
+@cache_page(60 * 60 * 6)
 def publications(request):
     context = {'search_column': -1, 'search_string':''}
     if request.method == 'POST':
@@ -61,14 +65,20 @@ def author(request):
     context['websites'] = Website.objects.all()
     return render(request, 'author.html', context)
 
+# cache for 6 hours
+@cache_page(60 * 60 * 6)
 def websiteData(request):
     return JsonResponse({"data": list(Website.objects.all().values('original_url', 'derived_url', 'status', 'created_at', 'updated_at', 'pk', 'papers'))})
 
+# cache for 6 hours
+@cache_page(60 * 60 * 6)
 def paperData(request):
     data_papers = list(Publication.objects.all().values('pk', 'title', 'url', 'authors', 'abstract', 'year', 'journal', 'pubmed_id', 'contact_mail', 'user_kwds').annotate(websites=ArrayAgg('websites')))
     return JsonResponse({"data": data_papers})
 
 
+# cache for 6 hours
+@cache_page(60 * 60 * 6)
 def statistics(request):
     context = {}
     context['website_count'] = Website.objects.count()
