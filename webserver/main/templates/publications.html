@@ -267,11 +267,9 @@
       });
 
       function updatePlot() {
-        //var ndata = datatable;.dataTable()._('tr', {"filter":"applied"});
         if(datatable == null) {
           return;
         }
-        //console.log(datatable.columns({filter:'applied'}).data()[1]);
         cdata = datatable.columns({filter:'applied'}).data()[1];
         adata = datatable.columns({filter:'applied'}).data()[5];
         var zdata = [];
@@ -281,19 +279,21 @@
           var tmp_data = [];
           tdata.push(["PMID: "+adata[i]]);
           for (var j = 0; j < websites[cdata[i]]["calls"].length; ++j) {
-            tmp_data.push(calls[websites[cdata[i]]["calls"][j]]["ok"] ? 1 : 0);
-            if (i==0) {
-              xdata.push(calls[websites[cdata[i]]["calls"][j]]["datetime"]);
-              console.log(calls[websites[cdata[i]]["calls"][j]]["datetime"]);
+            if(websites[cdata[i]]["calls"][j] in calls) {
+              let value = calls[websites[cdata[i]]["calls"][j]]["ok"] && calls[websites[cdata[i]]["calls"][j]]["error"] == "" && calls[websites[cdata[i]]["calls"][j]]["code"] == 200;
+              tmp_data.push(value ? 1 : 0);
+              if (i == 0) {
+                xdata.push(calls[websites[cdata[i]]["calls"][j]]["datetime"]);
+                console.log(calls[websites[cdata[i]]["calls"][j]]["datetime"]);
+              }
             }
           }
           zdata.push(tmp_data);
-          //zdata.push(websites[cdata[i]]["status"] ? 1 : 0);
         }
+        console.log(zdata);
         var data1 = {
           z: zdata,
           x: xdata,
-          //y: [datatable.columns({filter:'applied'}).data()[0]],
           text: tdata,
           colorscale: [
             ['0.0', 'rgb(255,0,0)'],
@@ -307,20 +307,7 @@
             ['0.888888888889', 'rgb(28,224,0)'],
             ['1.0', 'rgb(0,255,0)']
           ],
-          //z: [[true], [true], [true], [false], [true]],
-          //y: [datatable.columns({filter:'applied'}).data()[1]],
-          type: 'heatmap',
-            /*
-          text: [datatable.columns({filter:'applied'}).data()[0]],
-          textposition: 'auto',
-          hoverinfo: 'none',
-          marker: {
-            color: 'rgba(255, 206, 86, 0.5)',
-            line: {
-              color: 'rgba(255, 206, 86, 1)',
-              width: 2
-            }
-            }*/
+          type: 'heatmap'
         };
 
         var data = [data1];

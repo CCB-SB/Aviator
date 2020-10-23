@@ -14,7 +14,6 @@
     <script src="{% static 'js/popper.min.js' %}"></script>
     <script src="{% static 'js/bootstrap.min.js' %}"></script>
     <script src="{% static 'js/chart.min.js' %}"></script>
-    <script src="{% static 'js/plotly.min.js' %}"></script>
 	</head>
 	<body>
     {% include "navbar.html" %}
@@ -51,7 +50,6 @@
       </form>
       <br><br>
       <canvas id="myChart" width="400" height="300"></canvas>
-      <div id="dbstate" style="width:100%;height:300px;"></div>
     </div><
 	</body>
 </html>
@@ -70,7 +68,6 @@ function search_dropdown(num, text) {
 }
 var ctx = document.getElementById('myChart').getContext('2d');
 Chart.defaults.global.defaultFontColor = "#dee2e6";
-//Chart.defaults.global.defaultFontSize = "14";
 var myChart = new Chart(ctx, {
     type: 'bar',
     data: {
@@ -106,71 +103,4 @@ var myChart = new Chart(ctx, {
         }
     }
 });
-/*
-	dbstate = document.getElementById('dbstate');
-
-	var data1 = {
-	  x: ['Publications'],
-	  y: [{{ paper_count }}],
-    type: 'bar',
-    text: {{ paper_count }},
-    textposition: 'auto',
-    hoverinfo: 'none',
-    marker: {
-      color: 'rgba(255, 206, 86, 0.5)',
-      line: {
-        color: 'rgba(255, 206, 86, 1)',
-        width: 2
-      }
-    }
-	}
-	var data2 = {
-	  x: ['Websites'],
-	  y: [{{ website_count }}],
-    type: 'bar',
-    text: {{ website_count }},
-    textposition: 'auto',
-    hoverinfo: 'none',
-    marker: {
-      color: 'rgba(54, 162, 235, 0.5)',
-      line: {
-        color: 'rgba(54, 162, 235, 1)',
-        width: 2
-      }
-    }
-	}
-	var data3 = {
-	  x: ['Online'],
-	  y: [{{ online_count }}],
-    type: 'bar',
-    text: {{ online_count }},
-    textposition: 'auto',
-    hoverinfo: 'none',
-    marker: {
-      color: 'rgba(75, 185, 70, 0.5)',
-      line: {
-        color: 'rgba(75, 185, 70, 1)',
-        width: 2
-      }
-    }
-	}
-	var data4 = {
-	  x: ['Offline'],
-	  y: [{{ offline_count }}],
-    type: 'bar',
-    text: {{ offline_count }},
-    textposition: 'auto',
-    hoverinfo: 'none',
-    marker: {
-      color: 'rgba(255, 99, 122, 0.5)',
-      line: {
-        color: 'rgba(255, 99, 122, 1)',
-        width: 2
-      }
-    }
-	}
-
-	var data = [data1, data2, data3, data4]
-	Plotly.newPlot( dbstate, data);
-*/
 </script>
