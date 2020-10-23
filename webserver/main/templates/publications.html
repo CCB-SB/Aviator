@@ -381,6 +381,7 @@
         var tdata = [];
         var xdata = [];
 
+        /*
         for (var k = 0; k < cdata.length; ++k) {
           for (var i = 0; i < cdata[k].length; ++i) {
             if(cdata[k][i] in websites) {
@@ -393,18 +394,18 @@
               }
             }
           }
-        }
+        }*/
 
         for (var k = 0; k < cdata.length; ++k) {
           for (var i = 0; i < cdata[k].length; ++i) {
             if(cdata[k][i] in websites) {
               var tmp_data = [];
               var tmp_tdata = [];
-              for (var t = 0; t < xdata.length; ++t) {
+              for (var t = 0; t < days.length; ++t) {
                 var not_found = true;
                 for (var j = 0; j < websites[cdata[k][i]]["calls"].length; ++j) {
                   if (websites[cdata[k][i]]["calls"][j] in calls) {
-                    if (calls[websites[cdata[k][i]]["calls"][j]]["datetime"] == xdata[t]) {
+                    if (calls[websites[cdata[k][i]]["calls"][j]]["datetime"] == days[t]) {
                       let value = calls[websites[cdata[k][i]]["calls"][j]]["ok"] && calls[websites[cdata[k][i]]["calls"][j]]["error"] == "" && calls[websites[cdata[k][i]]["calls"][j]]["code"] == 200;
                       tmp_data.push(value ? 1 : 0);
                       tmp_tdata.push("PMID: "+adata[i]);
@@ -426,7 +427,7 @@
 
         var data1 = {
           z: zdata,
-          x: xdata,
+          x: days,
           text: tdata,
           colorscale: [
             ['0.0', 'rgb(255,0,0)'],
