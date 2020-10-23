@@ -29,6 +29,7 @@
               <th>Created At</th>
               <th>Updated At</th>
               <th>IP</th>
+              <td>Analytics</td>
               <th>Secure Certificate</th>
           </tr>
         </thead>
@@ -39,6 +40,7 @@
             <td>{{ website.created_at }}</td>
             <td>{{ website.updated_at }}</td>
             <td>{{ website.ip }}</td>
+            <td>{{ website.analytics }}</td>
             <td>{% if website.certificate_secure %}Yes{% else %}No{% endif %}</td>
           </tr>
       </table>
@@ -56,6 +58,8 @@
             <th>Error</th>
             <th>Message</th>
             <th>Code</th>
+            <th>Frontend</th>
+            <th>Backend</th>
           </tr>
         </thead>
           {% for call in calls %}
@@ -65,6 +69,8 @@
                   <td>{{ call.error }}</td>
                   <td>{{ call.msg }}</td>
                   <td>{{ call.code }}</td>
+                  <td>{{ call.json_data.frontend }} ms</td>
+                  <td>{{ call.json_data.backend }} ms</td>
               </tr>
           {% endfor %}
       </table>>
