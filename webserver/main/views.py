@@ -39,7 +39,7 @@ def publications(request):
 def details(request, pk):
     context = {}
     website = get_object_or_404(Website, pk=pk)
-    context['calls'] = website.calls.all()
+    context['calls'] = website.calls.all().order_by('datetime')
     context['website'] = website
     return render(request, 'details.html', context)
 
