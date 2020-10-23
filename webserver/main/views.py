@@ -32,7 +32,7 @@ def publications(request):
     if request.method == 'POST':
         context['search'] = request.POST['search']
     context["websites"] = json.dumps({x['pk']:x for x in list(Website.objects.all().values('pk', 'status').annotate(calls=ArrayAgg('calls')))})
-    context["calls"] = json.dumps({x['pk']:x for x in list(WebsiteCall.objects.filter(datetime__gt=(date.today() - timedelta(days=140))).values('pk', 'website', 'ok', 'error', 'code').annotate(datetime=Cast(TruncDate('datetime'), models.CharField())))})
+    context["calls"] = json.dumps({x['pk']:x for x in list(WebsiteCall.objects.filter(datetime__gt=(date.today() - timedelta(days=14))).values('pk', 'website', 'ok', 'error', 'code').annotate(datetime=Cast(TruncDate('datetime'), models.CharField())))})
     return render(request, 'publications.html', context)
 
 def details(request, pk):

@@ -17,6 +17,7 @@
     <script src="{% static 'js/jquery.min.js' %}"></script>
     <script src="{% static 'js/popper.min.js' %}"></script>
     <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/plotly.min.js' %}"></script>
     <script type="text/javascript" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.js"></script>
     <script type="text/javascript" src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js"></script>
     <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.5.2/js/dataTables.buttons.min.js"></script>
@@ -46,11 +47,12 @@
         <thead>
           <tr>
             <th>Title</th>
+            <th>Status</th>
             <th>Authors</th>
-            <th>Abstract</th>
             <th>Year</th>
             <th>Journal</th>
             <th>Pubmed</th>
+            <th>Abstract</th>
             <th>Websites</th>
           </tr>
         </thead>
@@ -59,15 +61,18 @@
         <tfoot>
           <tr>
             <th>Title</th>
+            <th>Status</th>
             <th>Authors</th>
-            <th>Abstract</th>
             <th>Year</th>
             <th>Journal</th>
             <th>Pubmed</th>
+            <th>Abstract</th>
             <th>Websites</th>
           </tr>
         </tfoot>
       </table>
+      <br>
+      <div id="heatmap" style="width:100%;height:300px;"></div>
     </div>
 
     <div class="modal fade" role="dialog" tabindex="-1" id="abstractModal">
@@ -138,113 +143,196 @@
     var lastone = [];
     var plot_col = [];
     var not_searchable_cols = [];
+    var abstract_counter = 0;
+    var paper_counter = 0;
 
+    let websites = JSON.parse("{{ websites|escapejs }}");
+    let calls = JSON.parse("{{ calls|escapejs }}");
 
-    var table = $('#table').DataTable({
-        "columnDefs": [
-          {orderable: false, targets: []},
-          {"height": "50px", targets: ':last-child'},
-          {
-              render: render_format_num,
-              targets: numeric_cols
-          }, {
-              render: render_scrollable,
-              targets: lastone
-          }
-        ],
-        pagingType: "input",
-        fixedColumns:   {
-          heightMatch: 'none'
-        },
-        scrollX: false,
-        order: [[5, 'asc']],
-        lengthChange: false,
-        lengthMenu: [
-            [5, 10, 25, 50],
-            ['5 rows', '10 rows', '25 rows', '50 rows']
-        ],
-        buttons: ['pageLength', {
-            extend: 'csv',
-            exportOptions: {columns: export_cols}
-        }, {extend: 'excel', exportOptions: {columns: export_cols}}
-        ],
-        ajax: {
-          url: "{% url 'main:paperData' %}"
+    var datatable = $('#table').DataTable({
+      drawCallback: function( settings ) {
+          updatePlot();
       },
-      columns: [
-        { data: "title" },
-        { data: "authors" },
-        { data: "abstract",
-          render: function ( data ) {
-            return "<button class=\"btn btn-outline-light my-2 my-sm-0\" type=\"button\" data-toggle=\"modal\" onclick=\"abstract('"+data.replaceAll('"', "")+"')\" data-target=\"#abstractModal\">Abstract</button>";
-          }
-        },
-        { data: "year" },
-        { data: "journal" },
-        { data: "pubmed_id" },
-        { data: "websites",
-          render: function ( data ) {
-          var str = "";
-          if (data != null) {
-            var i = 0;
-            for (i=0; i < data.length; i++) {
-              str += "<a class='btn btn-outline-light' href='details/"+data+"'>Website</a>"
-            }
-            if(i == 0) {
-              return "<a class='btn btn-outline-light' href='details/"+data+"'>Website</a>"
-            }
-          }
-          return str;
+      "columnDefs": [
+        {orderable: false, targets: []},
+        {"height": "50px", targets: ':last-child'},
+        {
+            render: render_format_num,
+            targets: numeric_cols
+        }, {
+            render: render_scrollable,
+            targets: lastone
+        }
+      ],
+      pagingType: "input",
+      fixedColumns:   {
+        heightMatch: 'none'
+      },
+      scrollX: false,
+      order: [[5, 'asc']],
+      lengthChange: false,
+      lengthMenu: [
+          [5, 10, 25, 50],
+          ['5 rows', '10 rows', '25 rows', '50 rows']
+      ],
+      buttons: ['pageLength', {
+          extend: 'csv',
+          exportOptions: {columns: export_cols}
+      }, {extend: 'excel', exportOptions: {columns: export_cols}}
+      ],
+      ajax: {
+        url: "{% url 'main:paperData' %}"
+    },
+    columns: [
+      { "data": "title"},
+      { "data": "pk", render: function ( data ) {
+          if (websites[data]["status"]) {
+            return "<div style='display:none'>1</div><span class='green-circle'></span>";
+            //return "<div style='display:none'>"+(data ? "0" : "1")+"</div><span class='" + (data ? "green" : "red") + "-circle'></span>";
+          } else {
+            return "<div style='display:none'>0</div><span class='red-circle'></span>";
           }
         }
-      ], initComplete: function (settings, json) {
-            var api = this.api();
+      },
+      { "data": "authors"},
+      { "data": "year"},
+      { "data": "journal"},
+      { "data": "pubmed_id"},
+      { data: "abstract", render: function ( data ) {
+          ++abstract_counter;
+          return "<div style='display:none' id='abstract"+abstract_counter+"'>"+data+"</div><button class=\"btn btn-outline-light my-2 my-sm-0\" type=\"button\" data-toggle=\"modal\" onclick=\"abstract(document.getElementById('abstract"+abstract_counter+"').innerHTML)\" data-target=\"#abstractModal\">Abstract</button>";
+        }
+      },
+      { data: "websites", render: function ( data ) {
+        var str = "";
+        if (data != null) {
+          var i = 0;
+          for (i=0; i < data.length; i++) {
+            str += "<a class='btn btn-outline-light' href='details/"+data[i]+"'>Website</a>"
+          }
+          if(i == 0) {
+            return "<a class='btn btn-outline-light' href='details/"+data+"'>Website</a>"
+          }
+        }
+        return str;
+      }
+    }
+    ], initComplete: function (settings, json) {
+          var api = this.api();
 
-            api.columns().every(function (i) {
-                var column = this;
+          api.columns().every(function (i) {
+              var column = this;
 
-                if (numeric_search_cols.indexOf(i) !== -1) {
-                    var el = $('<input class="form-control" placeholder="From" type="text" id="from' + i.toString() + '"></th>')
+              if (numeric_search_cols.indexOf(i) !== -1) {
+                  var el = $('<input class="form-control" placeholder="From" type="text" id="from' + i.toString() + '"></th>')
+                      .appendTo($(column.footer()).empty())
+                      .on('change', function () {
+                          column
+                              .draw();
+                      });
+                  $('<input class="form-control" placeholder="To" type="text" id="to' + i.toString() + '"></th>')
+                      .appendTo(el.parent())
+                      .on('change', function () {
+                          column
+                              .draw();
+                      });
+              } else if (not_searchable_cols.indexOf(i) === -1) {  // not a plot and not numeric
+                  if(select_cols.indexOf(i) !== -1) {
+                      let select = $('<select class="custom-select"><option value=""></option></select>')
+                              .appendTo($(column.footer()).empty())
+                              .on('change', function () {
+                                var val = $.fn.dataTable.util.escapeRegex(
+                                        $(this).val()
+                                );
+
+                                column.search(val ? '^' + val + '$' : '', true, false)
+                                  .draw();
+                              });
+                      column.data().unique().sort().each( function ( d, j ) {
+                          select.append( '<option value="'+d+'">'+d+'</option>' )
+                      });
+                  } else {
+                    $('<input class="form-control" type="text"></th>')
                         .appendTo($(column.footer()).empty())
                         .on('change', function () {
-                            column
+                            column.search($(this).val())
                                 .draw();
                         });
-                    $('<input class="form-control" placeholder="To" type="text" id="to' + i.toString() + '"></th>')
-                        .appendTo(el.parent())
-                        .on('change', function () {
-                            column
-                                .draw();
-                        });
-                } else if (not_searchable_cols.indexOf(i) === -1) {  // not a plot and not numeric
-                    if(select_cols.indexOf(i) !== -1) {
-                        let select = $('<select class="custom-select"><option value=""></option></select>')
-                                .appendTo($(column.footer()).empty())
-                                .on('change', function () {
-                                  var val = $.fn.dataTable.util.escapeRegex(
-                                          $(this).val()
-                                  );
-
-                                  column.search(val ? '^' + val + '$' : '', true, false)
-                                    .draw();
-                                });
-                        column.data().unique().sort().each( function ( d, j ) {
-                            select.append( '<option value="'+d+'">'+d+'</option>' )
-                        });
-                    } else {
-                      $('<input class="form-control" type="text"></th>')
-                          .appendTo($(column.footer()).empty())
-                          .on('change', function () {
-                              column.search($(this).val())
-                                  .draw();
-                          });
-                    }
-              }
-            });
-            $('#table_wrapper .col-sm-12:eq(0)').html(api.buttons().container());
-            $('#table_filter').remove();
+                  }
+            }
+          });
+          $('#table_wrapper .col-sm-12:eq(0)').html(api.buttons().container());
+          $('#table_filter').remove();
         }
       });
+
+      function updatePlot() {
+        //var ndata = datatable;.dataTable()._('tr', {"filter":"applied"});
+        if(datatable == null) {
+          return;
+        }
+        //console.log(datatable.columns({filter:'applied'}).data()[1]);
+        cdata = datatable.columns({filter:'applied'}).data()[1];
+        adata = datatable.columns({filter:'applied'}).data()[5];
+        var zdata = [];
+        var tdata = [];
+        var xdata = [];
+        for (var i = 0; i < cdata.length; ++i) {
+          var tmp_data = [];
+          tdata.push(["PMID: "+adata[i]]);
+          for (var j = 0; j < websites[cdata[i]]["calls"].length; ++j) {
+            tmp_data.push(calls[websites[cdata[i]]["calls"][j]]["ok"] ? 1 : 0);
+            if (i==0) {
+              xdata.push(calls[websites[cdata[i]]["calls"][j]]["datetime"]);
+              console.log(calls[websites[cdata[i]]["calls"][j]]["datetime"]);
+            }
+          }
+          zdata.push(tmp_data);
+          //zdata.push(websites[cdata[i]]["status"] ? 1 : 0);
+        }
+        var data1 = {
+          z: zdata,
+          x: xdata,
+          //y: [datatable.columns({filter:'applied'}).data()[0]],
+          text: tdata,
+          colorscale: [
+            ['0.0', 'rgb(255,0,0)'],
+            ['0.111111111111', 'rgb(224,28,0)'],
+            ['0.222222222222', 'rgb(196,56,0)'],
+            ['0.333333333333', 'rgb(168,84,0)'],
+            ['0.444444444444', 'rgb(140,112,0)'],
+            ['0.555555555556', 'rgb(112,140,0)'],
+            ['0.666666666667', 'rgb(84,168,0)'],
+            ['0.777777777778', 'rgb(56,196,0)'],
+            ['0.888888888889', 'rgb(28,224,0)'],
+            ['1.0', 'rgb(0,255,0)']
+          ],
+          //z: [[true], [true], [true], [false], [true]],
+          //y: [datatable.columns({filter:'applied'}).data()[1]],
+          type: 'heatmap',
+            /*
+          text: [datatable.columns({filter:'applied'}).data()[0]],
+          textposition: 'auto',
+          hoverinfo: 'none',
+          marker: {
+            color: 'rgba(255, 206, 86, 0.5)',
+            line: {
+              color: 'rgba(255, 206, 86, 1)',
+              width: 2
+            }
+            }*/
+        };
+
+        var data = [data1];
+        var layout = {
+          plot_bgcolor:"#454d55",
+          paper_bgcolor:"#454d55",
+          font: {
+            color: '#dee2e6'
+          }
+        };
+        Plotly.newPlot(document.getElementById('heatmap'), data, layout);
+      }
   });
 </script>
 
