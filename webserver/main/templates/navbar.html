@@ -20,9 +20,24 @@
         <a class="nav-link" href="{{ statistics }}">Statistics</a>
       </li>
     </ul>
-    <form class="form-inline my-2 my-lg-0" action="{% url 'main:overview' %}" method="post">
+    <form class="form-inline my-2 my-lg-0" action="{% url 'main:publications' %}" method="post">
       {% csrf_token %}
-      <input id="search" name="search" class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+        <div class="dropdown">
+          <button class="btn btn-secondary dropdown-toggle" type="button" id="ddBtnN" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Title&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          </button>
+          <div class="dropdown-menu" aria-labelledby="ddBtn1">
+            <a class="dropdown-item" onclick="document.getElementById('ddBtnN').innerHTML = this.innerHTML;document.getElementById('search_column').value = 1;return false;">Title&nbsp;&nbsp;&nbsp;&nbsp;</a>
+            <a class="dropdown-item" onclick="document.getElementById('ddBtnN').innerHTML = this.innerHTML;document.getElementById('search_column').value = 3;return false;">Authors&nbsp;&nbsp;</a>
+            <a class="dropdown-item" onclick="document.getElementById('ddBtnN').innerHTML = this.innerHTML;document.getElementById('search_column').value = 5;return false;">Journal&nbsp;&nbsp;</a>
+            <a class="dropdown-item" onclick="document.getElementById('ddBtnN').innerHTML = this.innerHTML;document.getElementById('search_column').value = 6;return false;">Pubmed ID&nbsp;&nbsp;</a>
+            <a class="dropdown-item" onclick="document.getElementById('ddBtnN').innerHTML = this.innerHTML;document.getElementById('search_column').value = 7;return false;">Abstract&nbsp;&nbsp;</a>
+            <a class="dropdown-item" onclick="document.getElementById('ddBtnN').innerHTML = this.innerHTML;document.getElementById('search_column').value = 8;return false;">Original URL</a>
+            <a class="dropdown-item" onclick="document.getElementById('ddBtnN').innerHTML = this.innerHTML;document.getElementById('search_column').value = 9;return false;">Derived URL</a>
+          </div>
+        </div>
+      <input id="search_column" name="search_column" class="form-control mr-sm-2" type="hidden" placeholder="Search" aria-label="Search" value="0">
+      <input id="search" name="search_string" class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
       <button class="btn btn-outline-light my-2 my-sm-0" type="submit" onclick="">Search</button>
     </form>
   </div>

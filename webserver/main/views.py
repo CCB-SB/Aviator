@@ -22,15 +22,17 @@ def index(request):
     return render(request, 'index.html', context)
 
 def overview(request):
-    context = {'search':''}
+    context = {'search_column':0, 'search_string':''}
     if request.method == 'POST':
-        context['search'] = request.POST['search']
+        context['search_column'] = request.POST['search_column']
+        context['search_string'] = request.POST['search_string']
     return render(request, 'overview.html', context)
 
 def publications(request):
-    context = {'search':''}
+    context = {'search_column': -1, 'search_string':''}
     if request.method == 'POST':
-        context['search'] = request.POST['search']
+        context['search_column'] = request.POST['search_column']
+        context['search_string'] = request.POST['search_string']
     context["websites"] = json.dumps({x['pk']:x for x in list(Website.objects.all().values('pk', 'status', 'original_url', 'derived_url').annotate(calls=ArrayAgg('calls')))})
     context["calls"] = json.dumps({x['pk']:x for x in list(WebsiteCall.objects.filter(datetime__gt=(date.today() - timedelta(days=140))).values('pk', 'website', 'ok', 'error', 'code').annotate(datetime=Cast(TruncDate('datetime'), models.CharField())))})
     return render(request, 'publications.html', context)
@@ -51,14 +53,14 @@ def publication(request, pk):
 
 def author(request):
     context = {}
-    context['websites'] = json.dumps(Website.objects.all())
+    context['websites'] = Website.objects.all()
     return render(request, 'author.html', context)
 
 def websiteData(request):
     return JsonResponse({"data": list(Website.objects.all().values('original_url', 'derived_url', 'status', 'created_at', 'updated_at', 'pk', 'papers'))})
 
 def paperData(request):
-    data_papers = list(Publication.objects.all().values('pk', 'title', 'url', 'authors', 'abstract', 'year', 'journal', 'pubmed_id').annotate(websites=ArrayAgg('websites')))
+    data_papers = list(Publication.objects.all().values('pk', 'title', 'url', 'authors', 'abstract', 'year', 'journal', 'pubmed_id', 'contact_mail', 'user_kwds').annotate(websites=ArrayAgg('websites')))
     return JsonResponse({"data": data_papers})
 
 def statistics(request):
