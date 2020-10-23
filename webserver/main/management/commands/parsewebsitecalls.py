@@ -34,9 +34,7 @@ class Command(BaseCommand):
         analytics_header = 'analytics'
         error_header = 'error'
         datetime_header = 'datetime'
-        result = {}
-        original_urls = {}
-        derived_urls = {}
+
         columns = [folder_header, html_title_header, analytics_header, error_header,
                    datetime_header]
         analytics_names = ['google-analytics', 'matomo', 'woopra', 'gosquared', 'go-squared',
@@ -199,6 +197,7 @@ class Command(BaseCommand):
         new_websitecalls = 0
         new_paper_connections = 0
         for tf in tqdm(telemetry_folders):
+            result = {}
             all_tbls = pd.concat((pd.read_csv(f, sep='\t') for f in glob(join(tf, "*.csv"))))
             all_tbls.set_index("Original URL", inplace=True)
             orig_urls = set(all_tbls.index)
