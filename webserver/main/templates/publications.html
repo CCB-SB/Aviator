@@ -398,11 +398,11 @@
                   if (websites[cdata[k][i]]["calls"][j] in calls) {
                     if (calls[websites[cdata[k][i]]["calls"][j]]["datetime"] == days[t]) {
                       let value = calls[websites[cdata[k][i]]["calls"][j]]["ok"] && calls[websites[cdata[k][i]]["calls"][j]]["error"] == "" && calls[websites[cdata[k][i]]["calls"][j]]["code"] == 200;
-                      if(value === 1 ){
+                      if(value){
                         tmp_data_online.push(1)
                         tmp_data_na.push(null)
                         tmp_data_offline.push(null)
-                      } else if (value == 0){
+                      } else {
                         tmp_data_online.push(null)
                         tmp_data_na.push(null)
                         tmp_data_offline.push(1)
