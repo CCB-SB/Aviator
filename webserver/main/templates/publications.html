@@ -53,6 +53,8 @@
             <th>Journal</th>
             <th>Pubmed</th>
             <th>Abstract</th>
+            <th>Original URL</th>
+            <th>Derived URL</th>
             <th>Websites</th>
           </tr>
         </thead>
@@ -67,6 +69,8 @@
             <th>Journal</th>
             <th>Pubmed</th>
             <th>Abstract</th>
+            <th>Original URL</th>
+            <th>Derived URL</th>
             <th>Websites</th>
           </tr>
         </tfoot>
@@ -185,13 +189,36 @@
     },
     columns: [
       { "data": "title"},
-      { "data": "pk", render: function ( data ) {
-          if (websites[data]["status"]) {
-            return "<div style='display:none'>1</div><span class='green-circle'></span>";
-            //return "<div style='display:none'>"+(data ? "0" : "1")+"</div><span class='" + (data ? "green" : "red") + "-circle'></span>";
-          } else {
-            return "<div style='display:none'>0</div><span class='red-circle'></span>";
+      { "data": "websites", render: function ( data ) {
+          /*
+          var state = false;
+          if (data != null) {
+            var i = 0;
+            for (i = 0; i < data.length; i++) {
+              if (data[i] != null) {
+                state = (state || websites[data[i]]["status"]);
+              }
+            }
           }
+          return "<div style='display:none'>" + (state ? 1 : 0) + "</div><span class='" + (state ? "green" : "red") + "-circle'></span>";
+          */
+          var last_date = "";
+          var last_state = false;
+          var once_online = false;
+          for (var i = 0; i < data.length; i++) {
+            if (data[i] != null) {
+              for (var j = 0; j < websites[data[i]]["calls"].length; ++j) {
+                if (websites[data[i]]["calls"][j] in calls) {
+                  if (last_date.length == 0 || calls[websites[data[i]]["calls"][j]]["datetime"] >= last_date) {
+                    last_date = calls[websites[data[i]]["calls"][j]]["datetime"];
+                    last_state = calls[websites[data[i]]["calls"][j]]["ok"] && calls[websites[data[i]]["calls"][j]]["error"] == "" && calls[websites[data[i]]["calls"][j]]["code"] == 200;
+                  }
+                  once_online = once_online || (calls[websites[data[i]]["calls"][j]]["ok"] && calls[websites[data[i]]["calls"][j]]["error"] == "" && calls[websites[data[i]]["calls"][j]]["code"] == 200);
+                }
+              }
+            }
+          }
+          return "<div style='display:none'>" + (last_state ? 1 : 0) + "</div><span class='" + (last_state ? "green" : "red") + "-circle'></span>"+(once_online && !last_state ? "&nbsp;(temporär)" : "");
         }
       },
       { "data": "authors"},
@@ -208,7 +235,35 @@
         if (data != null) {
           var i = 0;
           for (i=0; i < data.length; i++) {
-            str += "<a class='btn btn-outline-light' href='details/"+data[i]+"'>Website</a>"
+            if(data[i] != null) {
+              str += (i > 0 ? ", " : "") + websites[data[i]]["original_url"];
+            }
+          }
+        }
+        return str;
+      }
+      },
+      { data: "websites", render: function ( data ) {
+        var str = "";
+        if (data != null) {
+          var i = 0;
+          for (i=0; i < data.length; i++) {
+            if(data[i] != null) {
+              str += (i > 0 ? ", " : "") + websites[data[i]]["derived_url"];
+            }
+          }
+        }
+        return str;
+      }
+      },
+      { data: "websites", render: function ( data ) {
+        var str = "";
+        if (data != null) {
+          var i = 0;
+          for (i=0; i < data.length; i++) {
+            if(data[i] != null) {
+              str += "<a class='btn btn-outline-light' href='details/" + data[i] + "'>Website</a>"
+            }
           }
           if(i == 0) {
             return "<a class='btn btn-outline-light' href='details/"+data+"'>Website</a>"
@@ -275,22 +330,47 @@
         var zdata = [];
         var tdata = [];
         var xdata = [];
-        for (var i = 0; i < cdata.length; ++i) {
-          var tmp_data = [];
-          tdata.push(["PMID: "+adata[i]]);
-          for (var j = 0; j < websites[cdata[i]]["calls"].length; ++j) {
-            if(websites[cdata[i]]["calls"][j] in calls) {
-              let value = calls[websites[cdata[i]]["calls"][j]]["ok"] && calls[websites[cdata[i]]["calls"][j]]["error"] == "" && calls[websites[cdata[i]]["calls"][j]]["code"] == 200;
-              tmp_data.push(value ? 1 : 0);
-              if (i == 0) {
-                xdata.push(calls[websites[cdata[i]]["calls"][j]]["datetime"]);
-                console.log(calls[websites[cdata[i]]["calls"][j]]["datetime"]);
+
+        for (var k = 0; k < cdata.length; ++k) {
+          for (var i = 0; i < cdata[k].length; ++i) {
+            if(cdata[k][i] in websites) {
+              for (var j = 0; j < websites[cdata[k][i]]["calls"].length; ++j) {
+                if (websites[cdata[k][i]]["calls"][j] in calls) {
+                  if (!(xdata.includes(calls[websites[cdata[k][i]]["calls"][j]]["datetime"]))) {
+                    xdata.push(calls[websites[cdata[k][i]]["calls"][j]]["datetime"]);
+                  }
+                }
               }
             }
           }
-          zdata.push(tmp_data);
         }
-        console.log(zdata);
+
+        for (var k = 0; k < cdata.length; ++k) {
+          for (var i = 0; i < cdata[k].length; ++i) {
+            if(cdata[k][i] in websites) {
+              var tmp_data = [];
+              tdata.push(["PMID: "+adata[i]]);
+              for (var t = 0; t < xdata.length; ++t) {
+                var not_found = true;
+                for (var j = 0; j < websites[cdata[k][i]]["calls"].length; ++j) {
+                  if (websites[cdata[k][i]]["calls"][j] in calls) {
+                    if (calls[websites[cdata[k][i]]["calls"][j]]["datetime"] == xdata[t]) {
+                      let value = calls[websites[cdata[k][i]]["calls"][j]]["ok"] && calls[websites[cdata[k][i]]["calls"][j]]["error"] == "" && calls[websites[cdata[k][i]]["calls"][j]]["code"] == 200;
+                      tmp_data.push(value ? 1 : 0);
+                      not_found = false;
+                      break;
+                    }
+                  }
+                }
+                if (not_found) {
+                  tmp_data.push(0.5);
+                }
+              }
+            }
+            zdata.push(tmp_data);
+          }
+        }
+
         var data1 = {
           z: zdata,
           x: xdata,

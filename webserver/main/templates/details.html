@@ -23,7 +23,8 @@
             <th colspan="6" style="text-align:center;">Website</th>
           </tr>
           <tr>
-              <th>URL</th>
+              <th>Original URL</th>
+              <th>Derived URL</th>
               <th>Status</th>
               <th>Created At</th>
               <th>Updated At</th>
@@ -32,7 +33,8 @@
           </tr>
         </thead>
           <tr>
-            <td>{{ website.url }}</td>
+            <td>{{ website.original_url }}</td>
+            <td>{{ website.derived_url }}</td>
             <td><span class="{% if website.status %}green{% else %}red{% endif %}-circle"></span></td>
             <td>{{ website.created_at }}</td>
             <td>{{ website.updated_at }}</td>
