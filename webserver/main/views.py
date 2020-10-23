@@ -4,6 +4,12 @@ from .models import Website, WebsiteCall, Publication
 from django.core import serializers
 from django.core.paginator import Paginator
 from datetime import timedelta, date, datetime
+import json
+from django.contrib.postgres.aggregates import ArrayAgg
+from django.contrib.postgres.aggregates import BoolOr
+from django.db.models.functions import TruncDate
+from django.db.models.functions import Cast
+from django.db import models
 
 # Create your views here.
 def index(request):
@@ -25,6 +31,8 @@ def publications(request):
     context = {'search':''}
     if request.method == 'POST':
         context['search'] = request.POST['search']
+    context["websites"] = json.dumps({x['pk']:x for x in list(Website.objects.all().values('pk', 'status').annotate(calls=ArrayAgg('calls')))})
+    context["calls"] = json.dumps({x['pk']:x for x in list(WebsiteCall.objects.filter(datetime__gt=(date.today() - timedelta(days=140))).values('pk', 'website', 'ok', 'error', 'code').annotate(datetime=Cast(TruncDate('datetime'), models.CharField())))})
     return render(request, 'publications.html', context)
 
 def details(request, pk):
@@ -43,14 +51,15 @@ def publication(request, pk):
 
 def author(request):
     context = {}
-    context['websites'] = Website.objects.all()
+    context['websites'] = json.dumps(Website.objects.all())
     return render(request, 'author.html', context)
 
 def websiteData(request):
-    return JsonResponse({"data": list(Website.objects.all().values('url', 'status', 'created_at', 'updated_at', 'pk', 'papers'))})
+    return JsonResponse({"data": list(Website.objects.all().values('original_url', 'derived_url', 'status', 'created_at', 'updated_at', 'pk', 'papers'))})
 
 def paperData(request):
-    return JsonResponse({"data": list(Publication.objects.all().values('title', 'authors', 'abstract', 'year', 'journal', 'pubmed_id', 'websites'))})
+    data_papers = list(Publication.objects.all().values('pk', 'title', 'url', 'authors', 'abstract', 'year', 'journal', 'pubmed_id').annotate(websites=ArrayAgg('websites')))
+    return JsonResponse({"data": data_papers})
 
 def statistics(request):
     context = {}
@@ -61,7 +70,6 @@ def statistics(request):
     context['offline_count'] = Website.objects.count() - online.count()
 
     current_date = date.today() - timedelta(days=14)
-    #current_date = current_date - timedelta(days=40)
     stat_names = ""
     stat_online = ""
     stat_offline = ""

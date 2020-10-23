@@ -10,9 +10,6 @@
       <li class="nav-item {% if request.path == index %}active{% endif %}">
         <a class="nav-link" href="{{ index }}">Home</a>
       </li>
-      <li class="nav-item {% if request.path == overview %}active{% endif %}">
-        <a class="nav-link" href="{{ overview }}">Overview</a>
-      </li>
       <li class="nav-item {% if request.path == publications %}active{% endif %}">
         <a class="nav-link" href="{{ publications }}">Publications</a>
       </li>
@@ -23,26 +20,6 @@
         <a class="nav-link" href="{{ statistics }}">Statistics</a>
       </li>
     </ul>
-  <!--
-    <form class="form-inline my-2 my-lg-0" action="" method="post" onsubmit="document.getElementById('category').value = document.getElementById('ddBtn').innerHTML;return true;" >
-      {% csrf_token %}
-
-      <div class="dropdown">
-        <button class="btn btn-secondary dropdown-toggle" type="button" id="ddBtn" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          Webpage URL
-        </button>
-        <div class="dropdown-menu" aria-labelledby="ddBtn">
-          <a class="dropdown-item" onclick="document.getElementById('ddBtn').innerHTML = 'Webpage URL';return false;">Webpage URL</a>
-          <div class="dropdown-divider"></div>
-          <a class="dropdown-item" onclick="document.getElementById('ddBtn').innerHTML = 'Publication';return false;">Paper</a>
-          <a class="dropdown-item" onclick="document.getElementById('ddBtn').innerHTML = 'Publication Title';return false;">Paper Title</a>
-          <a class="dropdown-item" onclick="document.getElementById('ddBtn').innerHTML = 'Publication Abstract';return false;">Paper Abstract</a>
-          <a class="dropdown-item" onclick="document.getElementById('ddBtn').innerHTML = 'Publication Journal';return false;">Paper Journal</a>
-        </div>
-      </div>&nbsp;
-      <input id="search" name="search" class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-      <input id="category" name="category" type="hidden">
-      <button class="btn btn-outline-light my-2 my-sm-0" type="submit" onclick="">Search</button>-->
     <form class="form-inline my-2 my-lg-0" action="{% url 'main:overview' %}" method="post">
       {% csrf_token %}
       <input id="search" name="search" class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
