@@ -18,9 +18,22 @@
 	<body>
     {% include "navbar.html" %}
     <div class="statistics-box">
-      <canvas id="overview" width="400" height="200"></canvas>
-      <br>
-      <canvas id="c1" width="400" height="300"></canvas>
+      <div class="row">
+        <div class="col-md-6">
+          <canvas id="overview" width="400" height="300"></canvas>
+        </div>
+        <div class="col-md-6">
+          <canvas id="c1" width="400" height="300"></canvas>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <canvas id="pubs_per_year_availability" width="400" height="300"></canvas>
+        </div>
+        <div class="col-md-6">
+          <canvas id="top10_journals_availability" width="400" height="300"></canvas>
+        </div>
+      </div>
     </div>
 	</body>
 </html>
@@ -152,6 +165,93 @@ var myChart = new Chart(ctx2, {
                     beginAtZero: true
                 }
             }]
+        }
+    }
+});
+
+
+new Chart(document.getElementById('pubs_per_year_availability').getContext('2d'), {
+    type: 'bar',
+    data: {
+        labels: {{ pubs_per_year_names|safe }},
+        datasets: [{
+            label: 'Online',
+            data: {{ pubs_per_year_online|safe }},
+            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+            borderColor: 'rgba(75, 192, 192, 1)',
+            borderWidth: 2
+        }, {
+            label: 'Temporarily offline',
+            data: {{ pubs_per_year_tmp_offline|safe }},
+            backgroundColor: 'rgba(255, 206, 86, 0.2)',
+            borderColor: 'rgba(255, 206, 86, 1)',
+            borderWidth: 2
+        }, {
+            label: 'Offline',
+            data: {{ pubs_per_year_offline|safe }},
+            backgroundColor: 'rgba(255, 99, 132, 0.2)',
+            borderColor: 'rgba(255, 99, 132, 1)',
+            borderWidth: 2
+        }]
+    },
+    options: {
+        title: {
+            display: true,
+            text: 'Availability per publication year'
+        },
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero: true
+                },
+              stacked: true,
+            }],
+          xAxes: [{
+                              stacked: true
+          }],
+        }
+    }
+});
+
+new Chart(document.getElementById('top10_journals_availability').getContext('2d'), {
+    type: 'bar',
+    data: {
+        labels: {{ top10_journals_names|safe }},
+        datasets: [{
+            label: 'Online',
+            data: {{ top10_journals_online|safe }},
+            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+            borderColor: 'rgba(75, 192, 192, 1)',
+            borderWidth: 2
+        }, {
+            label: 'Temporarily offline',
+            data: {{ top10_journals_tmp_offline|safe }},
+            backgroundColor: 'rgba(255, 206, 86, 0.2)',
+            borderColor: 'rgba(255, 206, 86, 1)',
+            borderWidth: 2
+        }, {
+            label: 'Offline',
+            data: {{ top10_journals_offline|safe }},
+            backgroundColor: 'rgba(255, 99, 132, 0.2)',
+            borderColor: 'rgba(255, 99, 132, 1)',
+            borderWidth: 2
+        }]
+    },
+    options: {
+        title: {
+            display: true,
+            text: 'Availability in 10 most popular journals'
+        },
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero: true
+                },
+              stacked: true,
+            }],
+          xAxes: [{
+                              stacked: true
+          }],
         }
     }
 });

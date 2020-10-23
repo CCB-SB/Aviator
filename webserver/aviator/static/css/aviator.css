@@ -31,7 +31,7 @@ body {
   margin: 2rem auto;
   padding: 2rem;
   background-color: var(--primary);
-  width: 40rem;
+  width: 100rem;
   text-align:center;
   color:var(--font-color);
   font-size:2vw;
