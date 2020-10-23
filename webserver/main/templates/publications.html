@@ -231,7 +231,7 @@
           var online = 0;
           var offline = 0;
           for (var d = 0; d < days.length; d++) {
-            state = false;
+            var state = false;
             for (var i = 0; i < data.length; i++) {
               if (data[i] != null) {
                 for (var j = 0; j < websites[data[i]]["calls"].length; ++j) {
