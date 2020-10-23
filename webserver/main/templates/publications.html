@@ -206,7 +206,10 @@
         url: "{% url 'main:paperData' %}"
     },
     columns: [
-      { "data": "title"},
+      { "data": "title", render: function ( data ) {
+          return data.replaceAll('""""""""', '"');
+        }
+      },
       { "data": "websites", render: function ( data ) {
           var last_date = "";
           var last_state = false;
@@ -259,7 +262,7 @@
       { "data": "pubmed_id"},
       { data: "abstract", render: function ( data ) {
           ++abstract_counter;
-          return "<div style='display:none' id='abstract"+abstract_counter+"'>"+data+"</div><button class=\"btn btn-outline-light my-2 my-sm-0\" type=\"button\" data-toggle=\"modal\" onclick=\"abstract(document.getElementById('abstract"+abstract_counter+"').innerHTML)\" data-target=\"#abstractModal\">Abstract</button>";
+          return "<div style='display:none' id='abstract"+abstract_counter+"'>"+data.replaceAll('""""""""', '"')+"</div><button class=\"btn btn-outline-light my-2 my-sm-0\" type=\"button\" data-toggle=\"modal\" onclick=\"abstract(document.getElementById('abstract"+abstract_counter+"').innerHTML)\" data-target=\"#abstractModal\">Abstract</button>";
         }
       },
       { data: "websites", render: function ( data ) {
