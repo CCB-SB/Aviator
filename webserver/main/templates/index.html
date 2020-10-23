@@ -19,35 +19,28 @@
     {% include "navbar.html" %}
     <div class="center-box">
       Aviator - Online Webtool Database<br><br>
-      <form id="form1" class="form-inline my-2 my-lg-0" action="{% url 'main:overview' %}" method="post" style="display:flex;width:100%;">
-        {% csrf_token %}
-        <div class="dropdown">
-          <button class="btn btn-secondary dropdown-toggle" type="button" id="ddBtn1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            Webpages&nbsp;&nbsp;
+
+    <form class="form-inline my-2 my-lg-0 index-search-form" action="{% url 'main:publications' %}" method="post">
+      {% csrf_token %}
+        <div class="dropdown index-search-dd">
+          <button class="btn btn-secondary dropdown-toggle" type="button" id="ddBtnI" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Title&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
           </button>
           <div class="dropdown-menu" aria-labelledby="ddBtn1">
-            <a class="dropdown-item" onclick="search_dropdown(1, 'Webpages&nbsp;&nbsp;';return false;">Webpages</a>
-            <a class="dropdown-item" onclick="search_dropdown(2, 'Publications');return false;">Publications</a>
+            <a class="dropdown-item" onclick="document.getElementById('ddBtnI').innerHTML = this.innerHTML;document.getElementById('search_column_i').value = 1;return false;">Title&nbsp;&nbsp;&nbsp;&nbsp;</a>
+            <a class="dropdown-item" onclick="document.getElementById('ddBtnI').innerHTML = this.innerHTML;document.getElementById('search_column_i').value = 3;return false;">Authors&nbsp;&nbsp;</a>
+            <a class="dropdown-item" onclick="document.getElementById('ddBtnI').innerHTML = this.innerHTML;document.getElementById('search_column_i').value = 5;return false;">Journal&nbsp;&nbsp;</a>
+            <a class="dropdown-item" onclick="document.getElementById('ddBtnI').innerHTML = this.innerHTML;document.getElementById('search_column_i').value = 6;return false;">Pubmed ID&nbsp;&nbsp;</a>
+            <a class="dropdown-item" onclick="document.getElementById('ddBtnI').innerHTML = this.innerHTML;document.getElementById('search_column_i').value = 7;return false;">Abstract&nbsp;&nbsp;</a>
+            <a class="dropdown-item" onclick="document.getElementById('ddBtnI').innerHTML = this.innerHTML;document.getElementById('search_column_i').value = 8;return false;">Original URL</a>
+            <a class="dropdown-item" onclick="document.getElementById('ddBtnI').innerHTML = this.innerHTML;document.getElementById('search_column_i').value = 9;return false;">Derived URL</a>
           </div>
-        </div>&nbsp;
-        <input id="search1" name="search" class="index-search form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" style="background-color: var(--secondary);width: 22rem;">
-        <button class="btn btn-outline-light my-2 my-sm-0" type="submit" onclick="">Search</button>
-      </form>
-      <form id="form2" class="form-inline my-2 my-lg-0" action="{% url 'main:publications' %}" method="post" style="display:none;width:100%;">
-        {% csrf_token %}
-        <div class="dropdown">
-          <button class="btn btn-secondary dropdown-toggle" type="button" id="ddBtn2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            Webpages&nbsp;&nbsp;
-          </button>
-          <div class="dropdown-menu" aria-labelledby="ddBtn2">
-            <a class="dropdown-item" onclick="search_dropdown(1, 'Webpages&nbsp;&nbsp;');return false;">Webpages</a>
-            <a class="dropdown-item" onclick="search_dropdown(2, 'Publications');return false;">Publications</a>
-          </div>
-        </div>&nbsp;
+        </div>
+      <input id="search_column_i" name="search_column" class="form-control mr-sm-2" type="hidden" placeholder="Search" aria-label="Search" value="0">
+      <input id="search" name="search_string" class="form-control mr-sm-2 index-search-text" type="search" placeholder="Search" aria-label="Search">
+      <button class="btn btn-outline-light my-2 my-sm-0" type="submit index-search-btn" onclick="">Search</button>
+    </form>
 
-        <input id="search2" name="search" class="index-search form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" style="background-color: var(--secondary);width: 22rem;">
-        <button class="btn btn-outline-light my-2 my-sm-0" type="submit" onclick="">Search</button>
-      </form>
       <br><br>
       <canvas id="myChart" width="400" height="300"></canvas>
     </div><
@@ -55,17 +48,6 @@
 </html>
 
 <script>
-var last_form = 1;
-function search_dropdown(num, text) {
-  document.getElementById("ddBtn1").innerHTML = text;
-  document.getElementById("ddBtn2").innerHTML = text;
-  document.getElementById("form"+num).style.display = "flex";
-  document.getElementById("form"+(num == 1 ? 2 : 1)).style.display = "none";;
-  if (last_form != num) {
-    document.getElementById("search"+num).value = document.getElementById("search"+(num == 1 ? 2 : 1)).value;
-  }
-  last_form = num;
-}
 var ctx = document.getElementById('myChart').getContext('2d');
 Chart.defaults.global.defaultFontColor = "#dee2e6";
 var myChart = new Chart(ctx, {

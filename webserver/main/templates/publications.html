@@ -62,8 +62,6 @@
             <th>Websites</th>
           </tr>
         </thead>
-        <tbody>
-        </tbody>
         <tfoot>
           <tr>
             <th>Title</th>
@@ -81,6 +79,8 @@
             <th>Websites</th>
           </tr>
         </tfoot>
+        <tbody>
+        </tbody>
       </table>
       <br>
       <div id="heatmap" style="width:100%;height:300px;"></div>
@@ -376,25 +376,11 @@
           return;
         }
         cdata = datatable.columns({filter:'applied'}).data()[1];
-        adata = datatable.columns({filter:'applied'}).data()[5];
+        adata = datatable.columns({filter:'applied'}).data()[6];
         var zdata = [];
         var tdata = [];
         var xdata = [];
 
-        /*
-        for (var k = 0; k < cdata.length; ++k) {
-          for (var i = 0; i < cdata[k].length; ++i) {
-            if(cdata[k][i] in websites) {
-              for (var j = 0; j < websites[cdata[k][i]]["calls"].length; ++j) {
-                if (websites[cdata[k][i]]["calls"][j] in calls) {
-                  if (!(xdata.includes(calls[websites[cdata[k][i]]["calls"][j]]["datetime"]))) {
-                    xdata.push(calls[websites[cdata[k][i]]["calls"][j]]["datetime"]);
-                  }
-                }
-              }
-            }
-          }
-        }*/
 
         for (var k = 0; k < cdata.length; ++k) {
           for (var i = 0; i < cdata[k].length; ++i) {

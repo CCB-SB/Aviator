@@ -37,9 +37,19 @@ body {
   font-size:2vw;
 }
 /* Index */
-.index-search {
-  background-color: var(--secondary);
-  width: 20rem;
+.index-search-form {
+ width:100%;
+}
+.index-search-dd {
+  width: 9rem !important;
+  top: -0.4rem;
+}
+.index-search-text {
+  background-color: var(--secondary) !important;
+  width: calc(100% - 16rem) !important;
+}
+.index-search-btn {
+  width: 8rem !important;
 }
 .center-box {
   margin: 4rem auto;
