@@ -236,24 +236,30 @@
           var offline = 0;
           for (var d = 0; d < days.length; d++) {
             var state = false;
+            var found = false;
             for (var i = 0; i < data.length; i++) {
               if (data[i] != null) {
                 for (var j = 0; j < websites[data[i]]["calls"].length; ++j) {
                   if (websites[data[i]]["calls"][j] in calls) {
                     if (calls[websites[data[i]]["calls"][j]]["datetime"] == days[d]) {
                       state = state || (calls[websites[data[i]]["calls"][j]]["ok"] && calls[websites[data[i]]["calls"][j]]["error"] == "" && calls[websites[data[i]]["calls"][j]]["code"] == 200);
+                      found = true;
                     }
                   }
                 }
               }
             }
-            if(state) {
-              online++;
-            } else {
-              offline++;
+            if (found) {
+              if(state) {
+                online++;
+              } else {
+                offline++;
+              }
             }
           }
-
+          if (online == 0 && offline == 0) {
+            return "No Data";
+          }
           return (Math.ceil(100*(online/(online+offline))))+"% Online";
         }
       },
