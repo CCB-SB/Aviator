@@ -24,14 +24,16 @@ class Command(BaseCommand):
                 for call in calls:
                     state = state | (call.ok & (call.error == "") & (call.code == 200))
                     found = True
-                states.append(state)
                 if found:
+                    states.append(state)
                     if state:
                         online += 1
                         latest_state = True
                     else:
                         offline += 1
                         latest_state = False
+                else:
+                    states.append(None)
             website.states = states
             website.percentage = -1
             if online > 0 or offline > 0:
