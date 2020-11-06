@@ -32,15 +32,7 @@ def overview(request):
 def get_publication_datatable_info():
     context = {}
     context["websites"] = json.dumps({x['pk']: x for x in list(
-        Website.objects.all().values('pk', 'status', 'original_url', 'derived_url').annotate(
-            calls=ArrayAgg('calls')))})
-    context["calls"] = json.dumps({x['pk']: x for x in list(
-        WebsiteCall.objects.filter(datetime__gt=(date.today() - timedelta(days=140))).values('pk',
-                                                                                             'website',
-                                                                                             'ok',
-                                                                                             'error',
-                                                                                             'code').annotate(
-            datetime=Cast(TruncDate('datetime'), models.CharField())))})
+        Website.objects.all().values('pk', 'status', 'original_url', 'derived_url', 'percentage', 'states'))})
     return context
 
 def publications(request):

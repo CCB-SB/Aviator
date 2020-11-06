@@ -31,6 +31,8 @@ class Website(models.Model):
     script = models.CharField(max_length=50)
     certificate_secure = models.BooleanField()
     security_issuer = models.CharField(max_length=100)
+    states = ArrayField(models.NullBooleanField(), default=list())
+    percentage = models.IntegerField(default=-1)
 
 
 class WebsiteCall(models.Model):

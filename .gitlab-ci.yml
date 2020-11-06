@@ -177,6 +177,22 @@ parsepaperdata-production:
   stage: managedb-production
   <<: *parsepaperdata
   <<: *production_vars
+
+.calculatestatistics: &calculatestatistics
+  script:
+    - *setup_docker_tls
+    - docker-compose -f webserver/production.yml run --rm django python manage.py calculatestatistics
+  <<: *manage_only_master_remote
+
+calculatestatistics-staging:
+  stage: managedb-staging
+  <<: *calculatestatistics
+  <<: *staging_vars
+
+calculatestatistics-production:
+  stage: managedb-production
+  <<: *calculatestatistics
+  <<: *production_vars
   
 .reset_db: &reset_db
   script:
