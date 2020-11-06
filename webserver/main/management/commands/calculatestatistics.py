@@ -17,8 +17,8 @@ class Command(BaseCommand):
             offline = 0
             online = 0
             latest_state = None
-            for day_delta in range(1, max_days+1):
-                calls = website.calls.filter(datetime__date=now-timedelta(days=(max_days - day_delta)))
+            for day_delta in range(0, max_days):
+                calls = website.calls.filter(datetime__date=now-timedelta(days=day_delta))
                 found = False
                 state = False
                 for call in calls:
@@ -28,10 +28,12 @@ class Command(BaseCommand):
                     states.append(state)
                     if state:
                         online += 1
-                        latest_state = True
+                        if latest_state is None:
+                            latest_state = True
                     else:
                         offline += 1
-                        latest_state = False
+                        if latest_state is None:
+                            latest_state = False
                 else:
                     states.append(None)
             website.states = states

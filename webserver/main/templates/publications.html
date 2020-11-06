@@ -180,6 +180,7 @@
       fixedColumns:   {
         heightMatch: 'none'
       },
+      deferRender: true,
       scrollX: false,
       order: [[5, 'asc']],
       lengthChange: false,
@@ -238,9 +239,9 @@
       { "data": "year"},
       { "data": "journal"},
       { "data": "pubmed_id"},
-      { data: "abstract", render: function ( data ) {
+      { "data": "abstract", render: function ( data ) {
           ++abstract_counter;
-          return "<div style='display:none' id='abstract"+abstract_counter+"'>"+data.replaceAll('""""""""', '"')+"</div><button class=\"btn btn-outline-light my-2 my-sm-0\" type=\"button\" data-toggle=\"modal\" onclick=\"abstract(document.getElementById('abstract"+abstract_counter+"').innerHTML)\" data-target=\"#abstractModal\">Abstract</button>";
+          return "<div style='display:none' id='abstract" + abstract_counter + "'>" + data.replaceAll('""""""""', '"') + "</div><button class=\"btn btn-outline-light my-2 my-sm-0\" type=\"button\" data-toggle=\"modal\" onclick=\"abstract(document.getElementById('abstract" + abstract_counter + "').innerHTML)\" data-target=\"#abstractModal\">Abstract</button>";
         }
       },
       { data: "websites", render: function ( data ) {
@@ -352,11 +353,19 @@
         }
       });
 
+      //last 30 days annotation
+      var checked_days = 30;
+      var days = [];
+      for(var d = 0; d < checked_days; ++d) {
+        //var currentTime = new Date(Date.now()).getDate();
+        var currentTime = new Date();
+        currentTime.setDate(currentTime.getDate()-d);
+        days.push(currentTime.getFullYear() + "-" +  ((currentTime.getMonth() + 1) < 10 ? "0" : "") + (currentTime.getMonth() + 1) + "-" + (currentTime.getDate()  < 10 ? "0" : "") + currentTime.getDate());
+      }
       function updatePlot() {
         if(datatable == null) {
           return;
         }
-        days = 30;
         cdata = datatable.columns({filter:'applied'}).data()[1];
         adata = datatable.columns({filter:'applied'}).data()[6];
         var zdata_online = [];
