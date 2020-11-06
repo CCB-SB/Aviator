@@ -227,7 +227,7 @@
                 if (i > 0) {
                   str += " / ";
                 }
-                str += (percentage == -1 ? "No Data" : (percentage+"% Online"));
+                str += "<div style='display:none'>" + (percentage < 10 ? ("00" + percentage) : (percentage < 100 ? ("0" + percentage) : percentage)) + "</div>" + (percentage == -1 ? "No Data" : (percentage+"% Online"));
               }
             }
           }
@@ -356,6 +356,7 @@
         if(datatable == null) {
           return;
         }
+        days = 30;
         cdata = datatable.columns({filter:'applied'}).data()[1];
         adata = datatable.columns({filter:'applied'}).data()[6];
         var zdata_online = [];
