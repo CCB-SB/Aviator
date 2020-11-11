@@ -109,6 +109,8 @@
       </div>
     </div>
 <script>
+  search_column = {{ search_column }};
+  search_string = "{{ search_string }}";
   function abstract(text) {
     document.getElementById("abstract-text").innerHTML = text;
   }
@@ -119,5 +121,10 @@
         var tbl_data_url = "{% url 'main:table_data' %}";
     </script>
     <script src="{% static 'js/publications_table.js' %}"></script>
+  <script>
+    $(document).ready(function () {
+    });
+
+  </script>
 	</body>
 </html>

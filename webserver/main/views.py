@@ -36,8 +36,10 @@ def get_publication_datatable_info():
     return context
 
 def publications(request):
-    context = {}
-    #context.update(get_publication_datatable_info())
+    context = {'search_column': -1, 'search_string':''}
+    if request.method == 'POST':
+        context['search_column'] = request.POST['search_column']
+        context['search_string'] = request.POST['search_string']
     return render(request, 'publications.html', context)
 
 def details(request, pk):
@@ -87,11 +89,7 @@ class Table(BaseDatatableView):
 
     def render_column(self, row, column):
         # We want to render user as a custom column
-
-        if column == 'websites':
-            return list(row.websites.values_list("pk", flat=True))
-        else:
-            return super(Table, self).render_column(row, column)
+        return super(Table, self).render_column(row, column)
 
     def filter_queryset(self, qs):
         filter_keys = [k for k in self.request.GET.keys() if "[value]" in k and "columns" in k]
