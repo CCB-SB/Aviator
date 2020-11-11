@@ -12,4 +12,5 @@ urlpatterns = [
     path('paperData', views.paperData, name='paperData'),
     path('websiteData', views.websiteData, name='websiteData'),
     path('statistics', views.statistics, name='statistics'),
+    path("table_data", view=views.Table.as_view(), name='table_data')
 ]
