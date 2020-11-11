@@ -37,7 +37,7 @@ def get_publication_datatable_info():
 
 def publications(request):
     context = {}
-    context.update(get_publication_datatable_info())
+    #context.update(get_publication_datatable_info())
     return render(request, 'publications.html', context)
 
 def details(request, pk):
@@ -76,30 +76,17 @@ def statistics(request):
 
 class Table(BaseDatatableView):
     model = Publication
-    #columns = ['title', 'status', 'percentage', 'authors', 'year', 'journal', 'pubmed_id', 'abstract', 'original_url', 'derived_url', 'contact_mail', 'user_kwds', 'states', 'websites']
-    columns = ['title', 'authors', 'year', 'journal', 'pubmed_id', 'abstract', 'contact_mail', 'user_kwds', 'websites']
+    columns = ['title', 'status', 'percentage', 'authors', 'year', 'journal', 'pubmed_id', 'abstract', 'original_url', 'derived_url', 'contact_mail', 'user_kwds', 'website_pks']
 
     max_display_length = 500
 
     escape_values = False
 
+    def get_initial_queryset(self):
+        return Publication.objects.all().prefetch_related('websites').annotate(status=ArrayAgg('websites__status'), percentage=ArrayAgg('websites__percentage'), original_url=ArrayAgg('websites__original_url'), derived_url=ArrayAgg('websites__derived_url'), website_pks=ArrayAgg('websites__pk'))
+
     def render_column(self, row, column):
         # We want to render user as a custom column
-        #TODO
-        #if column == 'status':
-        #    return list(row.websites.values_list("status", flat=True))
-        #elif column == 'percentage':
-        #    return list(row.websites.values_list("percentage", flat=True))
-        #elif column == 'states':
-        #    return list(row.websites.values_list("states", flat=True))
-        #elif column == 'original_url':
-        #    return list(row.websites.values_list("original_url", flat=True))
-        #elif column == 'derived_url':
-        #    return list(row.websites.values_list("derived_url", flat=True))
-        #elif column == 'websites':
-        #    return list(row.websites.values_list("pk", flat=True))
-        #else:
-        #    return super(Table, self).render_column(row, column)
 
         if column == 'websites':
             return list(row.websites.values_list("pk", flat=True))
@@ -108,7 +95,7 @@ class Table(BaseDatatableView):
 
     def filter_queryset(self, qs):
         filter_keys = [k for k in self.request.GET.keys() if "[value]" in k and "columns" in k]
-        numeric_cols = {2, 3, 4, 7, 8}
+        numeric_cols = {4}
         filter = {}
         for k in filter_keys:
             if len(self.request.GET[k]) > 0:

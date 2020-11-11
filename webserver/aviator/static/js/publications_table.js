@@ -9,7 +9,7 @@ $(document).ready(function () {
     var abstract_counter = 0;
     var table = $('#table').DataTable({
       drawCallback: function( settings ) {
-          updatePlot();
+          //updatePlot();
       },
         ajax: $.fn.dataTable.pipeline({
             url:tbl_data_url,
@@ -29,12 +29,12 @@ $(document).ready(function () {
             {
                 data: "title"
             }, {
-                "data": "websites", render: function ( data ) {
+                "data": "status", render: function ( data ) {
           var str = "";
           if (data != null) {
             for (var i=0; i < data.length; i++) {
               if(data[i] != null) {
-                state = websites[data[i]]["status"];
+                state = data[i];
                 if (i > 0) {
                   str += "&nbsp;";
                 }
@@ -45,12 +45,12 @@ $(document).ready(function () {
           return str;
         }
             }, {
-                "data": "websites", render: function ( data ) {
+                "data": "percentage", render: function ( data ) {
           var str = "";
           if (data != null) {
             for (var i=0; i < data.length; i++) {
               if(data[i] != null) {
-                percentage = websites[data[i]]["percentage"];
+                percentage = data[i];
                 if (i > 0) {
                   str += " / ";
                 }
@@ -74,25 +74,25 @@ $(document).ready(function () {
 				  return "<div style='display:none' id='abstract" + abstract_counter + "'>" + data.replaceAll('""""""""', '"') + "</div><button class=\"btn btn-outline-light my-2 my-sm-0\" type=\"button\" data-toggle=\"modal\" onclick=\"abstract(document.getElementById('abstract" + abstract_counter + "').innerHTML)\" data-target=\"#abstractModal\">Abstract</button>";
 				}
             }, {
-                data: "websites", render: function ( data ) {
+                data: "original_url", render: function ( data ) {
 				var str = "";
 				if (data != null) {
 				  var i = 0;
 				  for (i=0; i < data.length; i++) {
 					if(data[i] != null) {
-					  str += (i > 0 ? ", " : "") + websites[data[i]]["original_url"];
+					  str += (i > 0 ? ", " : "") + data[i];
 					}
 				  }
 				}
 				return str;
 			  }
-            }, { data: "websites", render: function ( data ) {
+            }, { data: "derived_url", render: function ( data ) {
         var str = "";
         if (data != null) {
           var i = 0;
           for (i=0; i < data.length; i++) {
             if(data[i] != null) {
-              str += (i > 0 ? ", " : "") + websites[data[i]]["derived_url"];
+              str += (i > 0 ? ", " : "") + data[i];
             }
           }
         }
@@ -113,7 +113,7 @@ $(document).ready(function () {
         return str;
       }
       },
-      { data: "websites", render: function ( data ) {
+      { data: "website_pks", render: function ( data ) {
         var str = "";
         if (data != null) {
           var i = 0;
