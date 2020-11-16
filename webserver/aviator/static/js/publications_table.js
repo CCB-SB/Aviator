@@ -9,7 +9,6 @@ $(document).ready(function () {
     async function apply_foreign_filter() {
         if (foreign_filter_exists && scolumn != null) {
           foreign_filter_exists = false;
-          console.log("search");
           scolumn.search(search_string).draw();
         }
       }

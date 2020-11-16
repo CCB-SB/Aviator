@@ -125,7 +125,6 @@ $.fn.dataTable.Api.register('clearPipeline()', function () {
         days.push(currentTime.getFullYear() + "-" +  ((currentTime.getMonth() + 1) < 10 ? "0" : "") + (currentTime.getMonth() + 1) + "-" + (currentTime.getDate()  < 10 ? "0" : "") + currentTime.getDate());
       }
       function updatePlot(states) {
-        console.log("updatePlot");
         if(table == null) {
           return;
         }
