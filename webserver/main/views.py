@@ -7,7 +7,7 @@ from django.core import serializers
 from django.core.paginator import Paginator
 from datetime import timedelta, date, datetime
 import json
-from django.contrib.postgres.aggregates import ArrayAgg, BoolOr
+from django.contrib.postgres.aggregates import ArrayAgg, BoolOr, StringAgg
 from django.db.models.functions import TruncDate, Cast
 from django.db.models import Count
 from django.db import models
@@ -79,7 +79,6 @@ def statistics(request):
 class Table(BaseDatatableView):
     model = Publication
     columns = ['title', 'status', 'percentage', 'authors', 'year', 'journal', 'pubmed_id', 'abstract', 'original_url', 'derived_url', 'contact_mail', 'user_kwds', 'website_pks']
-
     max_display_length = 500
 
     escape_values = False
@@ -195,4 +194,71 @@ class Table(BaseDatatableView):
         if order:
             return qs.order_by(*order)
         return qs
+
+    def get_context_data(self, *args, **kwargs):
+        try:
+            self.initialize(*args, **kwargs)
+
+            # prepare columns data (for DataTables 1.10+)
+            self.columns_data = self.extract_datatables_column_data()
+
+            # determine the response type based on the 'data' field passed from JavaScript
+            # https://datatables.net/reference/option/columns.data
+            # col['data'] can be an integer (return list) or string (return dictionary)
+            # we only check for the first column definition here as there is no way to return list and dictionary
+            # at once
+            self.is_data_list = True
+            if self.columns_data:
+                self.is_data_list = False
+                try:
+                    int(self.columns_data[0]['data'])
+                    self.is_data_list = True
+                except ValueError:
+                    pass
+
+            # prepare list of columns to be returned
+            self._columns = self.get_columns()
+
+            # prepare initial queryset
+            qs = self.get_initial_queryset()
+
+            # store the total number of records (before filtering)
+            total_records = qs.count()
+
+            # apply filters
+            qs = self.filter_queryset(qs)
+
+            # number of records after filtering
+            total_display_records = qs.count()
+
+            # apply ordering
+            qs = self.ordering(qs)
+
+            website_states = list(qs.values('pubmed_id', 'websites__states'))
+
+            # apply pagintion
+            qs = self.paging(qs)
+
+            # prepare output data
+            if self.pre_camel_case_notation:
+                aaData = self.prepare_results(qs)
+
+                ret = {'sEcho': int(self._querydict.get('sEcho', 0)),
+                       'iTotalRecords': total_records,
+                       'iTotalDisplayRecords': total_display_records,
+                       'website_states': website_states,
+                       'aaData': aaData
+                       }
+            else:
+                data = self.prepare_results(qs)
+
+                ret = {'draw': int(self._querydict.get('draw', 0)),
+                       'recordsTotal': total_records,
+                       'recordsFiltered': total_display_records,
+                       'website_states': website_states,
+                       'data': data
+                       }
+            return ret
+        except Exception as e:
+            return self.handle_exception(e)
 

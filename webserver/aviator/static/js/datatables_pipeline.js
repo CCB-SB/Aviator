@@ -92,6 +92,7 @@ $.fn.dataTable.pipeline = function (opts) {
                     }
 
                     drawCallback(json);
+                   updatePlot(json.website_states);
                 }
             });
         }
@@ -113,3 +114,123 @@ $.fn.dataTable.Api.register('clearPipeline()', function () {
         settings.clearCache = true;
     });
 });
+
+      //last 30 days annotation
+      var checked_days = 30;
+      var days = [];
+      for(var d = 0; d < checked_days; ++d) {
+        //var currentTime = new Date(Date.now()).getDate();
+        var currentTime = new Date();
+        currentTime.setDate(currentTime.getDate()-d);
+        days.push(currentTime.getFullYear() + "-" +  ((currentTime.getMonth() + 1) < 10 ? "0" : "") + (currentTime.getMonth() + 1) + "-" + (currentTime.getDate()  < 10 ? "0" : "") + currentTime.getDate());
+      }
+      function updatePlot(states) {
+        console.log("updatePlot");
+        if(table == null) {
+          return;
+        }
+
+        //cdata = table.columns({filter:'applied'}).data()[1];
+        //adata = table.columns({filter:'applied'}).data()[6];
+        var zdata_online = [];
+        var zdata_offline = [];
+        var zdata_na = [];
+        var tdata = [];
+        var xdata = [];
+
+        for (var i = 0; i < states.length; ++i) {
+              var tmp_data_online = [];
+              var tmp_data_offline = [];
+              var tmp_data_na = [];
+              var tmp_tdata = [];
+              if (states[i]["websites__states"] == null) {
+                  continue;
+              }
+              for (var j = 0; j < states[i]["websites__states"].length; ++j) {
+                let value = states[i]["websites__states"][j];
+                if (value == null) {
+                  tmp_data_online.push(null)
+                  tmp_data_na.push(1)
+                  tmp_data_offline.push(null)
+                }
+                else if(value){
+                  tmp_data_online.push(1)
+                  tmp_data_na.push(null)
+                  tmp_data_offline.push(null)
+                } else {
+                  tmp_data_online.push(null)
+                  tmp_data_na.push(null)
+                  tmp_data_offline.push(1)
+                }
+                tmp_tdata.push("PMID: "+states[i]["pubmed_id"]);
+              }
+
+            zdata_online.push(tmp_data_online);
+            zdata_offline.push(tmp_data_offline);
+            zdata_na.push(tmp_data_na);
+            tdata.push(tmp_tdata);
+        }
+
+        var online_data = {
+          z: zdata_online,
+          //z: [[1, 1, null], [null, null, 1]],
+          x: days,
+          text: tdata,
+          colorscale: [[0, '#1a9850'], [1, '#1a9850']],
+          colorbar: {
+            len: 0.3,
+            y: 1,
+            yanchor: 'top',
+            tickvals: [0],
+            ticktext: [''],
+            title: 'Online'
+          },
+          type: 'heatmap'
+        };
+
+        var offline_data = {
+          z: zdata_offline,
+          //z: [[null, null, 1], [1, null, null]],
+          x: days,
+          text: tdata,
+          colorscale: [[0, '#d73027'], [1, '#d73027']],
+          colorbar: {
+            len: 0.3,
+            y: 0.5,
+            yanchor: 'middle',
+            tickvals: [0],
+            ticktext: [''],
+            title: 'Offline'
+          },
+          type: 'heatmap'
+        };
+
+        var na_data = {
+          z: zdata_na,
+          //z: [[null, 1, null], [1, 1, null]],
+          x: days,
+          text: tdata,
+          colorscale: [[0, '#969696'], [1, '#969696']],
+          colorbar: {
+            len: 0.3,
+            y: 0,
+            yanchor: 'bottom',
+            tickvals: [0],
+            ticktext: [''],
+            title: 'NA'
+          },
+          type: 'heatmap'
+        };
+
+        var data = [online_data, offline_data, na_data];
+
+        var layout = {
+          plot_bgcolor:"#454d55",
+          paper_bgcolor:"#454d55",
+          font: {
+            color: '#dee2e6'
+          }
+        };
+        Plotly.newPlot(document.getElementById('heatmap'), data, layout);
+      }
+
