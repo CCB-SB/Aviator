@@ -13,7 +13,7 @@ $(document).ready(function () {
         }
       }
     var scolumn = null;
-     var foreign_filter_exists = true;
+    var foreign_filter_exists = true;
     var abstract_counter = 0;
     var table = $('#table').DataTable({
       fnDrawCallback: function( settings ) {
@@ -100,19 +100,34 @@ $(document).ready(function () {
 				return str;
 			  }
             }, { data: "derived_url", render: function ( data ) {
+            var str = "";
+            if (data != null) {
+              var i = 0;
+              for (i=0; i < data.length; i++) {
+                if(data[i] != null) {
+                  str += (i > 0 ? ", " : "") + data[i];
+                }
+              }
+            }
+            return str;
+          }
+      },
+      { data: "contact_mail", render: function ( data ) {
         var str = "";
         if (data != null) {
           var i = 0;
           for (i=0; i < data.length; i++) {
             if(data[i] != null) {
-              str += (i > 0 ? ", " : "") + data[i];
+              str += "<a href=\"#\" onclick=\"email(this.innerHTML);return false;\">"+data[i]+"</a>";
             }
+          }
+          if(i == 0) {
+            return "<a href=\"#\" onclick=\"email(this.innerHTML);return false;\">"+data+"</a>";
           }
         }
         return str;
       }
       },
-      { "data": "contact_mail"},
       { "data": "user_kwds", render: function ( data ) {
         var str = "";
         if (data != null) {
@@ -192,3 +207,6 @@ $(document).ready(function () {
     });
 
 });
+function email(address) {
+    window.location.href = "mailto:"+address.replace("[at]", "@");
+}

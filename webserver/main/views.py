@@ -88,6 +88,8 @@ class Table(BaseDatatableView):
 
     def render_column(self, row, column):
         # We want to render user as a custom column
+        if column == "contact_mail":
+            return list(c.replace("@", "[at]") for c in row.contact_mail)
         return super(Table, self).render_column(row, column)
 
     def filter_queryset(self, qs):
