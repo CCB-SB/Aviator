@@ -163,28 +163,46 @@ $(document).ready(function () {
             api.columns().every(function (i) {
                 var column = this;
                 if (numeric_cols.indexOf(i) !== -1) {
-                    var el = $('<input class="form-control" placeholder="From" type="number"></th>')
+                    var el = $('<input id="cs_from_'+i+'" class="form-control" placeholder="From" type="number"></th>')
                         .appendTo($(column.footer()).empty())
                         .on('change', function () {
                             column
                                 .search($(this).val() + ";" + $(this).next().val())
                                 .draw();
                         });
-                    $('<input class="form-control" placeholder="To" type="number"></th>')
+                    $('<input id="cs_to_'+i+'" class="form-control" placeholder="To" type="number"></th>')
                         .appendTo(el.parent())
                         .on('change', function () {
                             column
                                 .search($(this).prev().val() + ";" + $(this).val())
                                 .draw();
                         });
+                    $( "#cs_from_"+i ).autocomplete({
+                      source: function(request, response) {
+                        $.getJSON("/autocomplete", createTableSearchData(i), response);
+                      },
+                      minLength: 1
+                    });
+                    $( "#cs_to_"+i ).autocomplete({
+                      source: function(request, response) {
+                        $.getJSON("/autocomplete", createTableSearchData(i), response);
+                      },
+                      minLength: 1
+                    });
                 } else {
-                    $('<input class="form-control" type="text" value="'+(search_column == i ? search_string : "")+'"></th>')
+                    $('<input id="cs_'+i+'" class="form-control" type="text" value="'+(search_column == i ? search_string : "")+'"></th>')
                         .appendTo($(column.footer()).empty())
                         .on('change', function () {
                             column
                                 .search($(this).val())
                                 .draw();
                         });
+                    $( "#cs_"+i ).autocomplete({
+                      source: function(request, response) {
+                        $.getJSON("/autocomplete", createTableSearchData(i), response);
+                      },
+                      minLength: 1
+                    });
                 }
                 if(search_column == i) {
                     scolumn = column;
@@ -209,4 +227,17 @@ $(document).ready(function () {
 });
 function email(address) {
     window.location.href = "mailto:"+address.replace("[at]", "@");
+}
+
+function createTableSearchData(column) {
+    data = {};
+    for(var i=0; i <= 12; ++i) {
+        if(i==4) {
+            data[i] = $('#cs_from_'+i).val()+";"+$('#cs_to_'+i).val();
+        } else {
+            data[i] = $('#cs_'+i).val();
+        }
+    }
+    data["q"] = column;
+    return data;
 }

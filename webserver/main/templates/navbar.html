@@ -3,6 +3,11 @@
 {% url 'main:publications' as publications %}
 {% url 'main:author' as author %}
 {% url 'main:statistics' as statistics %}
+
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
   <a class="navbar-brand" href="{{ index }}">Aviator</a>
   <div class="navbar-login-container" id="navbarSupportedContent">
@@ -27,7 +32,7 @@
             Title&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
           </button>
           <div class="dropdown-menu" aria-labelledby="ddBtn1">
-            <a class="dropdown-item" onclick="document.getElementById('ddBtnN').innerHTML = this.innerHTML;document.getElementById('search_column').value = 1;return false;">Title&nbsp;&nbsp;&nbsp;&nbsp;</a>
+            <a class="dropdown-item" onclick="document.getElementById('ddBtnN').innerHTML = this.innerHTML;document.getElementById('search_column').value = 0;return false;">Title&nbsp;&nbsp;&nbsp;&nbsp;</a>
             <a class="dropdown-item" onclick="document.getElementById('ddBtnN').innerHTML = this.innerHTML;document.getElementById('search_column').value = 3;return false;">Authors&nbsp;&nbsp;</a>
             <a class="dropdown-item" onclick="document.getElementById('ddBtnN').innerHTML = this.innerHTML;document.getElementById('search_column').value = 5;return false;">Journal&nbsp;&nbsp;</a>
             <a class="dropdown-item" onclick="document.getElementById('ddBtnN').innerHTML = this.innerHTML;document.getElementById('search_column').value = 6;return false;">Pubmed ID&nbsp;&nbsp;</a>
@@ -37,9 +42,25 @@
           </div>
         </div>&nbsp;&nbsp;&nbsp;
       <input id="search_column" name="search_column" class="form-control mr-sm-2" type="hidden" placeholder="Search" aria-label="Search" value="0">
-      <input id="search" name="search_string" class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+      <input id="nav_search" name="search_string" class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
       <button class="btn btn-outline-light my-2 my-sm-0" type="submit" onclick="">Search</button>
     </form>
   </div>
 </nav>
 
+<script>
+  function createNavbarSearchData() {
+    data = {};
+    data[$('#search_column').val()] = $('#nav_search').val();
+    data["q"] = $('#search_column').val();
+    return data;
+  }
+  $( function() {
+    $( "#nav_search" ).autocomplete({
+      source: function(request, response) {
+        $.getJSON("{% url 'main:autocomplete' %}", createNavbarSearchData(), response);
+      },
+      minLength: 1
+    });
+  } );
+</script>

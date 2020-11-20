@@ -16,6 +16,7 @@ from django.conf import settings
 from django_datatables_view.base_datatable_view import BaseDatatableView
 from django.views.generic import TemplateView
 from .stats import get_index_stats, get_all_statistics
+from dal import autocomplete
 
 def index(request):
     context = get_index_stats()
@@ -75,6 +76,75 @@ def paperData(request):
 def statistics(request):
     context = get_all_statistics()
     return render(request, 'statistics.html', context)
+
+
+def autocomplete(request):
+    def remove_duplicates(x):
+      return list(dict.fromkeys(x))
+    if 'q' in request.GET:
+        #Apply Filters
+        qs = Publication.objects.all().prefetch_related('websites')
+        if '0' in request.GET:
+            qs = qs.filter(title__icontains=request.GET.get('0'))
+        if '1' in request.GET:
+            qs = qs.filter(websites__status__icontains=request.GET.get('1'))
+        if '2' in request.GET:
+            qs = qs.filter(websites__percentage__icontains=request.GET.get('2'))
+        if '3' in request.GET:
+            qs = qs.filter(authors__icontains=request.GET.get('3'))
+        if '4' in request.GET:
+            min_str, max_str = request.GET['4'].split(';')
+            if min_str and max_str:
+                qs = qs.filter(authors__range=(float(min_str), float(max_str)))
+            elif min_str:
+                qs = qs.filter(authors__gte=float(min_str))
+            elif max_str:
+                qs = qs.filter(authors__lte=float(max_str))
+        if '5' in request.GET:
+            qs = qs.filter(journal__icontains=request.GET.get('5'))
+        if '6' in request.GET:
+            qs = qs.filter(pubmed_id__icontains=request.GET.get('6'))
+        if '7' in request.GET:
+            qs = qs.filter(abstract__icontains=request.GET.get('7'))
+        if '8' in request.GET:
+            qs = qs.filter(websites__original_url__icontains=request.GET.get('8'))
+        if '9' in request.GET:
+            qs = qs.filter(websites__derived_url__icontains=request.GET.get('9'))
+        if '10' in request.GET:
+            qs = qs.filter(contact_mail__icontains=request.GET.get('10'))
+        if '11' in request.GET:
+            qs = qs.filter(user_kwds__icontains=request.GET.get('11'))
+        if '12' in request.GET:
+            qs = qs.filter(websites__pk__icontains=request.GET.get('12'))
+        #Get autocomplete strings
+        if request.GET.get('q') == '0':
+            qs = qs.filter(title__icontains=request.GET.get('0'))
+            return JsonResponse(list(hm['title'] for hm in qs.values('title')[:5]), safe=False)
+        if request.GET.get('q') == '3':
+            qs = qs.filter(authors__icontains=(request.GET.get('3')))[:500]
+            search = request.GET.get('3').lower()
+            sList = remove_duplicates([item for sublist in qs.values('authors') for item in sublist['authors'].split(', ')])
+            sList = [i for i in sList if i.lower().startswith(search)]
+            return JsonResponse(sList[:5], safe=False)
+        if request.GET.get('q') == '5':
+            qs = qs.filter(journal__istartswith=request.GET.get('5'))
+            return JsonResponse(remove_duplicates(list(hm['journal'] for hm in qs.values('journal')))[:5], safe=False)
+        if request.GET.get('q') == '6':
+            qs = qs.filter(pubmed_id__istartswith=request.GET.get('6'))
+            return JsonResponse(list(hm['pubmed_id'] for hm in qs.values('pubmed_id')[:5]), safe=False)
+        if request.GET.get('q') == '7':
+            qs = qs.filter(abstract__icontains=request.GET.get('7'))
+            return JsonResponse(list(hm['abstract'] for hm in qs.values('abstract')[:5]), safe=False)
+        if request.GET.get('q') == '8':
+            qs = qs.filter(websites__original_url__istartswith=request.GET.get('8'))
+            return JsonResponse(list(hm['websites__original_url'] for hm in qs.values('websites__original_url')[:5]), safe=False)
+        if request.GET.get('q') == '9':
+            qs = qs.filter(websites__derived_url__istartswith=request.GET.get('9'))
+            return JsonResponse(remove_duplicates(list(hm['websites__derived_url'] for hm in qs.values('websites__derived_url')[:5])), safe=False)
+        if request.GET.get('q') == '11':
+            qs = qs.filter(contact_mail__istartswith=request.GET.get('9'))
+            return JsonResponse(remove_duplicates(list(hm['contact_mail'].replace("@", "[at]") for hm in qs.values('contact_mail')[:5])), safe=False)
+    return JsonResponse(list(), safe=False)
 
 class Table(BaseDatatableView):
     model = Publication
