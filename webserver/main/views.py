@@ -16,7 +16,6 @@ from django.conf import settings
 from django_datatables_view.base_datatable_view import BaseDatatableView
 from django.views.generic import TemplateView
 from .stats import get_index_stats, get_all_statistics
-from dal import autocomplete
 
 def index(request):
     context = get_index_stats()
