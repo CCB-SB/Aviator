@@ -179,13 +179,13 @@ $(document).ready(function () {
                         });
                     $( "#cs_from_"+i ).autocomplete({
                       source: function(request, response) {
-                        $.getJSON("/autocomplete", createTableSearchData(i), response);
+                        $.getJSON(autocomplete_url, createTableSearchData(i), response);
                       },
                       minLength: 1
                     });
                     $( "#cs_to_"+i ).autocomplete({
                       source: function(request, response) {
-                        $.getJSON("/autocomplete", createTableSearchData(i), response);
+                        $.getJSON(autocomplete_url, createTableSearchData(i), response);
                       },
                       minLength: 1
                     });
@@ -199,7 +199,7 @@ $(document).ready(function () {
                         });
                     $( "#cs_"+i ).autocomplete({
                       source: function(request, response) {
-                        $.getJSON("/autocomplete", createTableSearchData(i), response);
+                        $.getJSON(autocomplete_url, createTableSearchData(i), response);
                       },
                       minLength: 1
                     });
