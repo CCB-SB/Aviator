@@ -126,7 +126,7 @@ def autocomplete(request):
             sList = [i for i in sList if i.lower().startswith(search)]
             return JsonResponse(sList[:5], safe=False)
         if request.GET.get('q') == '5':
-            qs = qs.filter(journal__istartswith=request.GET.get('5'))
+            qs = qs.filter(journal__icontains=request.GET.get('5'))
             return JsonResponse(remove_duplicates(list(hm['journal'] for hm in qs.values('journal')))[:5], safe=False)
         if request.GET.get('q') == '6':
             qs = qs.filter(pubmed_id__istartswith=request.GET.get('6'))
@@ -135,13 +135,13 @@ def autocomplete(request):
             qs = qs.filter(abstract__icontains=request.GET.get('7'))
             return JsonResponse(list(hm['abstract'] for hm in qs.values('abstract')[:5]), safe=False)
         if request.GET.get('q') == '8':
-            qs = qs.filter(websites__original_url__istartswith=request.GET.get('8'))
+            qs = qs.filter(websites__original_url__icontains=request.GET.get('8'))
             return JsonResponse(list(hm['websites__original_url'] for hm in qs.values('websites__original_url')[:5]), safe=False)
         if request.GET.get('q') == '9':
-            qs = qs.filter(websites__derived_url__istartswith=request.GET.get('9'))
+            qs = qs.filter(websites__derived_url__icontains=request.GET.get('9'))
             return JsonResponse(remove_duplicates(list(hm['websites__derived_url'] for hm in qs.values('websites__derived_url')[:5])), safe=False)
         if request.GET.get('q') == '11':
-            qs = qs.filter(contact_mail__istartswith=request.GET.get('9'))
+            qs = qs.filter(contact_mail__icontains=request.GET.get('11'))
             return JsonResponse(remove_duplicates(list(hm['contact_mail'].replace("@", "[at]") for hm in qs.values('contact_mail')[:5])), safe=False)
     return JsonResponse(list(), safe=False)
 
