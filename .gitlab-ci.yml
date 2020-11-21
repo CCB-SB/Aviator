@@ -146,6 +146,22 @@ migrate-production:
   <<: *migrate
   <<: *production_vars
 
+.removepublications: &removepublications
+  script:
+    - *setup_docker_tls
+    - docker-compose -f webserver/production.yml run --rm django python manage.py removepublications
+  <<: *manage_only_master_remote
+
+removepublications-staging:
+  stage: managedb-staging
+  <<: *removepublications
+  <<: *staging_vars
+
+removepublications-production:
+  stage: managedb-production
+  <<: *removepublications
+  <<: *production_vars
+
 .parsewebsitecalls: &parsewebsitecalls
   script:
     - *setup_docker_tls
