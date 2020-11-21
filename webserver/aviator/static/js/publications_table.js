@@ -74,7 +74,16 @@ $(document).ready(function () {
           return str;
         }
             }, {
-                data: "authors",
+                "data": "authors", render: function ( data ) {
+				  str = "";
+				  for(var n=0; n < data.length; n++) {
+				      str += data[n];
+				      if(n < data.length - 1) {
+				          str += ", ";
+                      }
+                  }
+				  return str;
+				}
             }, {
                 data: "year",
             }, {

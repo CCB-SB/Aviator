@@ -43,7 +43,7 @@ class Command(BaseCommand):
             p.title = pub_dict["title"][p.pubmed_id]
             p.abstract = pub_dict["abstract"][p.pubmed_id]
             p.year = pub_dict["year"][p.pubmed_id]
-            p.authors = pub_dict["authors"][p.pubmed_id]
+            p.authors = pub_dict["authors"][p.pubmed_id].split(", ")
             p.journal = pub_dict["journal"][p.pubmed_id]
             urls = pub_dict["URL"][p.pubmed_id].split('; ')
             if filter_orig_urls:
@@ -66,7 +66,7 @@ class Command(BaseCommand):
                     urls = [u for u in urls if u in filter_orig_urls]
                 if len(urls) > 0:
                     yield Publication(pubmed_id=i,
-                                      authors=row["authors"],
+                                      authors=str(row["authors"]).split(", "),
                                       title=row["title"],
                                       abstract=row["abstract"],
                                       year=row["year"],

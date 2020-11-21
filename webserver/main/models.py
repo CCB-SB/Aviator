@@ -6,7 +6,7 @@ from django.contrib.postgres.fields import JSONField, ArrayField
 class Publication(models.Model):
     title = models.TextField()
     abstract = models.TextField()
-    authors = models.TextField()
+    authors = ArrayField(models.TextField(), blank=True, default=list)
     year = models.SmallIntegerField(db_index=True)
     journal = models.TextField(db_index=True)
     pubmed_id = models.CharField(max_length=50, unique=True, db_index=True)
