@@ -36,7 +36,7 @@
           <tr>
             <td>{{ website.original_url }}</td>
             <td>{{ website.derived_url }}</td>
-            <td><span class="{% if website.status %}green{% else %}red{% endif %}-circle"></span></td>
+            <td><span class="{% if website.status == "O" %}green{% elif website.status == "T" %}orange{% elif website.status == "F" %}red{% elif website.status == "U" %}grey{% endif %}-circle"></span></td>
             <td>{{ website.created_at }}</td>
             <td>{{ website.updated_at }}</td>
             <td>{{ website.ip }}</td>
