@@ -17,20 +17,19 @@ $(document).ready(function () {
     var abstract_counter = 0;
     var table = $('#table').DataTable({
       fnDrawCallback: function( settings ) {
+          //updatePlot();
+          //TODO Fix
           setTimeout(function(){
             apply_foreign_filter();
           }, 0);
 
       },
         ajax: $.fn.dataTable.pipeline({
-            url:tbl_data_url,
+            url: tbl_data_url,
             pages: 5 // number of pages to cache
         }),
       "columnDefs": [
-        { 'visible': false, 'targets': [9, 11, 12, 13] },
-        { 'width': 50, 'targets': [1, 4, 13] },
-        { 'width': 100, 'targets': [2, 5, 6, 7, 14] },
-        { 'width': 250, 'targets': [0] },
+        { 'visible': false, 'targets': [11] },
       ],
         deferRender: true,
         processing: true,
@@ -47,11 +46,13 @@ $(document).ready(function () {
           var str = "";
           if (data != null) {
             for (var i=0; i < data.length; i++) {
+              if(data[i] != null) {
                 state = data[i];
                 if (i > 0) {
                   str += "&nbsp;";
                 }
-                str += "<div style='display:none'>" + (state == null ? 1 : (state ? 0 : 2)) + "</div><span class='" + (state == null ? "orange" : (state ? "green" : "red")) + "-circle'></span>";
+                str += "<div style='display:none'>" + state + "</div><span class='" + (state === "T" ? "orange" : (state === "O" ? "green" : (state === "F" ? "red" : "grey"))) + "-circle'></span>";
+              }
             }
           }
           return str;
@@ -66,7 +67,7 @@ $(document).ready(function () {
                 if (i > 0) {
                   str += " / ";
                 }
-                str += "<div style='display:none'>" + (percentage < 10 ? ("00" + percentage) : (percentage < 100 ? ("0" + percentage) : percentage)) + "</div>" + (percentage == -1 ? "No Data" : (percentage+"% Online"));
+                str += "<div style='display:none'>" + (percentage < 10 ? ("00" + percentage) : (percentage < 100 ? ("0" + percentage) : percentage)) + "</div>" + (percentage === null ? "No Data" : (percentage+"% Online"));
               }
             }
           }
@@ -101,7 +102,7 @@ $(document).ready(function () {
 				  var i = 0;
 				  for (i=0; i < data.length; i++) {
 					if(data[i] != null) {
-					  str += (i > 0 ? ", " : "") + "<a href=\""+data[i]+"\">"+data[i]+"</a>";
+					  str += (i > 0 ? ", " : "") + data[i];
 					}
 				  }
 				}
@@ -113,7 +114,7 @@ $(document).ready(function () {
               var i = 0;
               for (i=0; i < data.length; i++) {
                 if(data[i] != null) {
-                  str += (i > 0 ? ", " : "") + "<a href=\""+data[i]+"\">"+data[i]+"</a>";
+                  str += (i > 0 ? ", " : "") + data[i];
                 }
               }
             }
@@ -143,32 +144,6 @@ $(document).ready(function () {
           for (i=0; i < data.length; i++) {
             if(data[i] != null) {
               str += (i > 0 ? ", " : "") + data[i];
-            }
-          }
-        }
-        return str;
-      }
-      },
-      { "data": "scripts", render: function ( data ) {
-        var str = "";
-        if (data != null) {
-          var i = 0;
-          for (i=0; i < data.length; i++) {
-            if(data[i] != null) {
-              str += (i > 0 ? ", " : "") + data[i];
-            }
-          }
-        }
-        return str;
-      }
-      },
-      { "data": "ssl", render: function ( data ) {
-        var str = "";
-        if (data != null) {
-          var i = 0;
-          for (i=0; i < data.length; i++) {
-            if(data[i] != null) {
-              str += (i > 0 ? ", " : "") + (data[i] == null ? "NA" : (data[i] ? "Yes" : "No"));
             }
           }
         }

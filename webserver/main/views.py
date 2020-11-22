@@ -18,30 +18,36 @@ from django.views.generic import TemplateView
 from .stats import get_index_stats, get_all_statistics
 from itertools import chain
 
+
 def index(request):
     context = get_index_stats()
     return render(request, 'index.html', context)
 
+
 def overview(request):
-    context = {'search_column':0, 'search_string':''}
+    context = {'search_column': 0, 'search_string': ''}
     if request.method == 'POST':
         context['search_column'] = request.POST['search_column']
         context['search_string'] = request.POST['search_string']
     return render(request, 'overview.html', context)
 
+
 @cache_memoize(settings.CACHE_TIMEOUT)
 def get_publication_datatable_info():
     context = {}
     context["websites"] = json.dumps({x['pk']: x for x in list(
-        Website.objects.all().values('pk', 'status', 'original_url', 'derived_url', 'percentage', 'states'))})
+        Website.objects.all().values('pk', 'status', 'original_url', 'derived_url', 'percentage',
+                                     'states'))})
     return context
 
+
 def publications(request):
-    context = {'search_column': -1, 'search_string':''}
+    context = {'search_column': -1, 'search_string': ''}
     if request.method == 'POST':
         context['search_column'] = request.POST['search_column']
         context['search_string'] = request.POST['search_string']
     return render(request, 'publications.html', context)
+
 
 def details(request, pk):
     context = {}
@@ -50,6 +56,7 @@ def details(request, pk):
     context['website'] = website
     return render(request, 'details.html', context)
 
+
 def publication(request, pk):
     context = {}
     paper = get_object_or_404(Publication, pk=pk)
@@ -57,32 +64,42 @@ def publication(request, pk):
     context['websites'] = paper.websites.all()
     return render(request, 'publication.html', context)
 
+
 def author(request):
     context = {}
     context['websites'] = Website.objects.all()
     return render(request, 'author.html', context)
 
+
 # cache for 6 hours
 @cache_page(60 * 60 * 6)
 def websiteData(request):
-    return JsonResponse({"data": list(Website.objects.all().values('original_url', 'derived_url', 'status', 'created_at', 'updated_at', 'pk', 'papers'))})
+    return JsonResponse({"data": list(
+        Website.objects.all().values('original_url', 'derived_url', 'status', 'created_at',
+                                     'updated_at', 'pk', 'papers'))})
+
 
 # cache for 6 hours
 @cache_page(60 * 60 * 6)
 def paperData(request):
-    data_papers = list(Publication.objects.all().values('pk', 'title', 'url', 'authors', 'abstract', 'year', 'journal', 'pubmed_id', 'contact_mail', 'user_kwds').annotate(websites=ArrayAgg('websites')))
+    data_papers = list(
+        Publication.objects.all().values('pk', 'title', 'url', 'authors', 'abstract', 'year',
+                                         'journal', 'pubmed_id', 'contact_mail',
+                                         'user_kwds').annotate(websites=ArrayAgg('websites')))
     return JsonResponse({"data": data_papers})
 
+
 def statistics(request):
-    context = get_all_statistics()
+    context = get_all_statistics(Publication.objects.all())
     return render(request, 'statistics.html', context)
 
 
 def autocomplete(request):
     def remove_duplicates(x):
-      return list(dict.fromkeys(x))
+        return list(dict.fromkeys(x))
+
     if 'q' in request.GET:
-        #Apply Filters
+        # Apply Filters
         qs = Publication.objects.all().prefetch_related('websites')
         filter = {}
         if '0' in request.GET:
@@ -146,7 +163,9 @@ def autocomplete(request):
             return JsonResponse(remove_duplicates(list(hm['abstract'] for hm in qs.values('abstract')[:5])), safe=False)
         if request.GET.get('q') == '8':
             qs = qs.filter(websites__original_url__icontains=request.GET.get('8'))
-            return JsonResponse(list(hm['websites__original_url'] for hm in qs.values('websites__original_url')[:5]), safe=False)
+            return JsonResponse(list(
+                hm['websites__original_url'] for hm in qs.values('websites__original_url')[:5]),
+                                safe=False)
         if request.GET.get('q') == '9':
             qs = qs.filter(websites__derived_url__icontains=request.GET.get('9'))
             return JsonResponse(remove_duplicates(list(hm['websites__derived_url'] for hm in qs.values('websites__derived_url')[:5])), safe=False)
@@ -158,15 +177,21 @@ def autocomplete(request):
             return JsonResponse(remove_duplicates(list(hm['user_kwds'] for hm in qs.values('user_kwds')[:5])), safe=False)
     return JsonResponse(list(), safe=False)
 
+
 class Table(BaseDatatableView):
     model = Publication
-    columns = ['title', 'status', 'percentage', 'authors', 'year', 'journal', 'pubmed_id', 'abstract', 'original_url', 'derived_url', 'contact_mail', 'user_kwds', 'scripts', 'ssl', 'website_pks']
+    columns = ['title', 'status', 'percentage', 'authors', 'year', 'journal', 'pubmed_id',
+               'abstract', 'original_url', 'derived_url', 'contact_mail', 'user_kwds',
+               'website_pks']
     max_display_length = 500
 
     escape_values = False
 
     def get_initial_queryset(self):
-        return Publication.objects.all().prefetch_related('websites').annotate(status=ArrayAgg('websites__status'), percentage=ArrayAgg('websites__percentage'), original_url=ArrayAgg('websites__original_url'), derived_url=ArrayAgg('websites__derived_url'), scripts=ArrayAgg('websites__script'), ssl=ArrayAgg('websites__certificate_secure'), website_pks=ArrayAgg('websites__pk'))
+        return Publication.objects.all().prefetch_related('websites').annotate(
+            status=ArrayAgg('websites__status'), percentage=ArrayAgg('websites__percentage'),
+            original_url=ArrayAgg('websites__original_url'),
+            derived_url=ArrayAgg('websites__derived_url'), website_pks=ArrayAgg('websites__pk'))
 
     def render_column(self, row, column):
         # We want to render user as a custom column
@@ -211,15 +236,19 @@ class Table(BaseDatatableView):
             counter = 0
             data_name_key = 'columns[{0}][name]'.format(counter)
             while data_name_key in request_dict:
-                searchable = True if request_dict.get('columns[{0}][searchable]'.format(counter)) == 'true' else False
-                orderable = True if request_dict.get('columns[{0}][orderable]'.format(counter)) == 'true' else False
+                searchable = True if request_dict.get(
+                    'columns[{0}][searchable]'.format(counter)) == 'true' else False
+                orderable = True if request_dict.get(
+                    'columns[{0}][orderable]'.format(counter)) == 'true' else False
 
                 col_data.append({'name': request_dict.get(data_name_key),
                                  'data': request_dict.get('columns[{0}][data]'.format(counter)),
                                  'searchable': searchable,
                                  'orderable': orderable,
-                                 'search.value': request_dict.get('columns[{0}][search][value]'.format(counter)),
-                                 'search.regex': request_dict.get('columns[{0}][search][regex]'.format(counter)),
+                                 'search.value': request_dict.get(
+                                     'columns[{0}][search][value]'.format(counter)),
+                                 'search.regex': request_dict.get(
+                                     'columns[{0}][search][regex]'.format(counter)),
                                  })
                 counter += 1
                 data_name_key = 'columns[{0}][name]'.format(counter)
@@ -315,10 +344,15 @@ class Table(BaseDatatableView):
             # number of records after filtering
             total_display_records = qs.count()
 
+            stats = get_all_statistics(qs)
+
             # apply ordering
             qs = self.ordering(qs)
 
             website_states = list(qs.values('pubmed_id', 'websites__states'))
+            latest_date = WebsiteCall.objects.latest("datetime").datetime
+
+            state_dates = [(latest_date-timedelta(days=day_delta)).date().strftime("%Y-%m-%d") for day_delta in range(settings.TEMPORAL_INFO_DAYS, -1, -1)]
 
             # apply pagintion
             qs = self.paging(qs)
@@ -330,7 +364,6 @@ class Table(BaseDatatableView):
                 ret = {'sEcho': int(self._querydict.get('sEcho', 0)),
                        'iTotalRecords': total_records,
                        'iTotalDisplayRecords': total_display_records,
-                       'website_states': website_states,
                        'aaData': aaData
                        }
             else:
@@ -339,10 +372,13 @@ class Table(BaseDatatableView):
                 ret = {'draw': int(self._querydict.get('draw', 0)),
                        'recordsTotal': total_records,
                        'recordsFiltered': total_display_records,
-                       'website_states': website_states,
                        'data': data
                        }
+            ret['website_states'] = {
+                           "states": website_states,
+                           "dates": state_dates
+                       }
+            ret['statistics'] = stats
             return ret
         except Exception as e:
             return self.handle_exception(e)
-

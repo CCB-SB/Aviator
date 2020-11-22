@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 {% load staticfiles %}
-{% url 'main:details' as details %}
+
 <html lang="en">
 	<head>
     <meta charset="utf-8">
@@ -121,10 +121,10 @@ var ctx2 = document.getElementById('c1').getContext('2d');
 var myChart = new Chart(ctx2, {
     type: 'line',
     data: {
-        labels: [{{ stat1_names|safe }}],
+        labels: {{ stat1_names|safe }},
         datasets: [{
             label: 'Online',
-            data: [{{ stat1_online|safe }}],
+            data: {{ stat1_online|safe }},
             backgroundColor: [
                 'rgba(75, 192, 192, 0.2)'
             ],
@@ -134,7 +134,7 @@ var myChart = new Chart(ctx2, {
             borderWidth: 2
         }, {
             label: 'Temporarily offline',
-            data: [{{ stat1_tmp_offline|safe }}],
+            data: {{ stat1_tmp_offline|safe }},
             backgroundColor: [
                 'rgba(255, 206, 86, 0.2)',
             ],
@@ -144,7 +144,7 @@ var myChart = new Chart(ctx2, {
             borderWidth: 2
         }, {
             label: 'Offline',
-            data: [{{ stat1_offline|safe }}],
+            data: {{ stat1_offline|safe }},
             backgroundColor: [
                 'rgba(255, 99, 132, 0.2)'
             ],

@@ -1,8 +1,9 @@
 from django.core.management.base import BaseCommand, CommandError
 from main.models import Website
 from main.models import WebsiteCall
+from main.models import WebsiteStatus
 from main.models import Publication
-import os, csv, gzip
+import os, gzip
 import orjson as json
 from datetime import datetime, timedelta
 from tqdm import tqdm
@@ -13,6 +14,7 @@ from os.path import join, basename
 from collections import defaultdict
 from django.contrib.postgres.aggregates import BoolOr
 import ahocorasick
+
 
 class Command(BaseCommand):
     help = 'Creates the website / website calls model and a csv from a given source folder'
@@ -133,18 +135,17 @@ class Command(BaseCommand):
                 error_phrase_hits.add(error_phrase)
             target[error_header] = ", ".join(sorted(error_phrase_hits))
 
-
         def handleLogs(filename, target):
             target[analytics_header] = ''
             if filename[-3:] == '.gz':
                 with gzip.open(filename, 'rt') as file:
                     analytics_hits = set()
-                    #for l in file:
+                    # for l in file:
                     for _, a in analytics_automaton.iter(file.read()):
                         analytics_hits.add(a)
                     target[analytics_header] = ", ".join(sorted(analytics_hits))
-                    #data = json.loads(file.read())
-                    #iterateLogJSON(data, target)
+                    # data = json.loads(file.read())
+                    # iterateLogJSON(data, target)
             else:
                 with open(filename, 'r', encoding="utf-8") as file:
                     analytics_hits = set()
@@ -152,8 +153,8 @@ class Command(BaseCommand):
                         for _, a in analytics_automaton.iter(l):
                             analytics_hits.add(a)
                     target[analytics_header] = ", ".join(sorted(analytics_hits))
-                    #data = json.loads(file.read())
-                    #iterateLogJSON(data, target)
+                    # data = json.loads(file.read())
+                    # iterateLogJSON(data, target)
 
         def iterateLogJSON(source, target):
             if isinstance(source, dict):
@@ -234,7 +235,6 @@ class Command(BaseCommand):
                                                                             url_replacements[
                                                                                 replace])
 
-
             create_websites = []
             update_websites = []
             # Create new Websites
@@ -248,7 +248,8 @@ class Command(BaseCommand):
                 # get original url(s) for this folder
                 orig_urls = folder2orig_urls.get(basename(value[folder_header]), None)
                 if orig_urls is None:
-                    self.stderr.write(f"No folder 2 original url mapping found for folder {basename(value[folder_header])}")
+                    self.stderr.write(
+                        f"No folder 2 original url mapping found for folder {basename(value[folder_header])}")
                     continue
 
                 if filter_orig_urls:
@@ -257,16 +258,15 @@ class Command(BaseCommand):
                     continue
 
                 # Check and create Webpage if there is none
-                website = None
-                status = False
+                status = WebsiteStatus.OFFLINE
                 if "code" in value and value["code"] == 200:
-                    status = True
+                    status = WebsiteStatus.ONLINE
                 elif "code" in value:
-                    status = False
+                    status = WebsiteStatus.OFFLINE
                 if "ok" in value and value["ok"] != "Pass":
-                    status = False
+                    status = WebsiteStatus.OFFLINE
                 if "error" in value and len(value["error"]) > 0:
-                    status = False
+                    status = WebsiteStatus.OFFLINE
 
                 for o in orig_urls:
                     if o not in orig_url_2_website and o not in already_done:
@@ -282,7 +282,8 @@ class Command(BaseCommand):
                         website.server = value.get("response_headers_server", "")
                         website.analytics = value.get("analytics", "")
                         website.timezone = value.get("response_headers_Pragma", "")
-                        website.certificate_secure = value.get("certificateSecurityState", "unknown") == "secure"
+                        website.certificate_secure = value.get("certificateSecurityState",
+                                                               "unknown") == "secure"
                         website.script = ""
                         if "response_headers_Set-Cookie" in value:
                             if "PHPSESSID" in value["response_headers_Set-Cookie"]:
@@ -291,12 +292,7 @@ class Command(BaseCommand):
                                 website.script += "Java"
                         new_websites += 1
                         create_websites.append(website)
-                    elif o in orig_url_2_website:
-                        website = orig_url_2_website[o]
-                        website.status = status
-                        update_websites.append(website)
 
-            Website.objects.bulk_update(update_websites, ["status"])
             create_websites = Website.objects.bulk_create(create_websites)
 
             # connect new websites to publications
@@ -309,7 +305,8 @@ class Command(BaseCommand):
             for website in create_websites:
                 pubs = origurl2paper.get(website.original_url, None)
                 if pubs is None:
-                    self.stderr.write(f"No publications could be found for URL {website.original_url}!")
+                    self.stderr.write(
+                        f"No publications could be found for URL {website.original_url}!")
                 else:
                     website.papers.set(pubs)
                     new_paper_connections += len(pubs)
@@ -348,12 +345,12 @@ class Command(BaseCommand):
                         dt = utc.localize(dt, is_dst=True)
                         call.datetime = dt
                     else:
-                        call.datetime = datetime.now(tzinfo=pytz.UTC)
-                    call.ok = value.get("ok", "unk") == "Pass"
+                        call.datetime = datetime.now(tz=pytz.UTC)
                     call.ok = value.get("ok", "unk") == "Pass"
                     call.error = value.get("error", "")
                     call.msg = value.get("msg", "")
-                    call.code = value["code"] if "code" in value and not pd.isnull(value["code"]) and not value["code"] == "NA" else 0
+                    call.code = value["code"] if "code" in value and not pd.isnull(
+                        value["code"]) and not value["code"] == "NA" else 0
                     call.ok = call.ok and call.error == "" and call.code == 200
                     call.json_data = value
                     create_websitecalls.append(call)
@@ -361,19 +358,7 @@ class Command(BaseCommand):
 
             WebsiteCall.objects.bulk_create(create_websitecalls)
 
-        # update website status according to the two last 20 hours (i.e. 2 runs)
-        latest_time = WebsiteCall.objects.latest("datetime")
-        website_statuses = WebsiteCall.objects.filter(datetime__gt=latest_time.datetime-timedelta(hours=20)).values("website").annotate(final_ok=BoolOr("ok"))
 
-        website2status = {e["website"]: e["final_ok"] for e in website_statuses}
-
-        website_updates = []
-        for w in Website.objects.all():
-            if w.status != website2status[w.id]:
-                w.status = website2status[w.id]
-                website_updates.append(w)
-
-        Website.objects.bulk_update(website_updates, ["status"])
 
         # Save as csv
         # try:

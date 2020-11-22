@@ -2,134 +2,163 @@
 {% load staticfiles %}
 {% url 'main:details' as details %}
 {% url 'main:paperData' as paperData %}
-<html  lang="en">
-	<head>
-    <meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
-		<title>Aviator</title>
-		<link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet" type="text/css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap4.min.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.2.3/css/responsive.bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/rowgroup/1.0.4/css/rowGroup.dataTables.min.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.5.2/css/buttons.bootstrap4.min.css">
-		<link href="{% static 'css/aviator.css' %}" rel="stylesheet" type="text/css">
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+  <title>Aviator</title>
+  <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet" type="text/css">
+  <link rel="stylesheet"
+        href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap4.min.css">
+  <link rel="stylesheet"
+        href="https://cdn.datatables.net/responsive/2.2.3/css/responsive.bootstrap.min.css">
+  <link rel="stylesheet"
+        href="https://cdn.datatables.net/rowgroup/1.0.4/css/rowGroup.dataTables.min.css">
+  <link rel="stylesheet"
+        href="https://cdn.datatables.net/buttons/1.5.2/css/buttons.bootstrap4.min.css">
+  <link href="{% static 'css/aviator.css' %}" rel="stylesheet" type="text/css">
+  <link href="{% static 'css/chart.min.css' %}" rel="stylesheet" type="text/css">
+</head>
 
-	</head>
+<body>
+{% include "navbar.html" %}
+{% comment %}<script src="{% static 'js/jquery.min.js' %}"></script>{% endcomment %}
+<script src="{% static 'js/popper.min.js' %}"></script>
+<script src="{% static 'js/bootstrap.min.js' %}"></script>
+{% comment %}<script src="{% static 'js/plotly.min.js' %}"></script>{% endcomment %}
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<script type="text/javascript"
+        src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.js"></script>
+<script type="text/javascript"
+        src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js"></script>
+<script type="text/javascript"
+        src="https://cdn.datatables.net/buttons/1.5.2/js/dataTables.buttons.min.js"></script>
+<script type="text/javascript"
+        src="https://cdn.datatables.net/buttons/1.5.2/js/buttons.bootstrap4.min.js"></script>
+<script type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
 
-	<body>
-    {% include "navbar.html" %}
-    {% comment %}<script src="{% static 'js/jquery.min.js' %}"></script>{% endcomment %}
-    <script src="{% static 'js/popper.min.js' %}"></script>
-    <script src="{% static 'js/bootstrap.min.js' %}"></script>
-    {% comment %}<script src="{% static 'js/plotly.min.js' %}"></script>{% endcomment %}
-    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-    <script type="text/javascript" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.js"></script>
-    <script type="text/javascript" src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js"></script>
-    <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.5.2/js/dataTables.buttons.min.js"></script>
-    <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.5.2/js/buttons.bootstrap4.min.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+<script type="text/javascript"
+        src="https://cdn.rawgit.com/bpampuch/pdfmake/0.1.27/build/pdfmake.min.js"></script>
+<script type="text/javascript"
+        src="https://cdn.rawgit.com/bpampuch/pdfmake/0.1.27/build/vfs_fonts.js"></script>
+<script type="text/javascript"
+        src="https://cdn.datatables.net/buttons/1.5.2/js/buttons.html5.min.js"></script>
+<script type="text/javascript"
+        src="https://cdn.datatables.net/buttons/1.5.2/js/buttons.colVis.min.js"></script>
 
-    <script type="text/javascript" src="https://cdn.rawgit.com/bpampuch/pdfmake/0.1.27/build/pdfmake.min.js"></script>
-    <script type="text/javascript" src="https://cdn.rawgit.com/bpampuch/pdfmake/0.1.27/build/vfs_fonts.js"></script>
-    <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.5.2/js/buttons.html5.min.js"></script>
-    <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.5.2/js/buttons.colVis.min.js"></script>
-
-    <script type="text/javascript"
-            src="https://cdn.datatables.net/rowgroup/1.0.4/js/dataTables.rowGroup.min.js"></script>
-    <script type="text/javascript"
-            src=" https://cdn.datatables.net/responsive/2.2.3/js/dataTables.responsive.min.js "></script>
-    <script type="text/javascript"
-            src="https://cdn.datatables.net/responsive/2.2.3/js/responsive.bootstrap.min.js"></script>
-    <script type="text/javascript"
-            src="{% static 'js/custom_datatables.plugin.input.js' %}"></script>
-    <script type="text/javascript"
-            src="{% static 'js/table_display_helper.js' %}"></script>
-    <div class="content-container">
-      <table id="table" class="table table-striped table-dark">
-        <thead>
-          <tr>
-            <th>Title</th>
-            <th>Status</th>
-            <th>Last 30 Days</th>
-            <th>Authors</th>
-            <th>Year</th>
-            <th>Journal</th>
-            <th>Pubmed</th>
-            <th>Abstract</th>
-            <th>Original URL</th>
-            <th>Derived URL</th>
-            <th>Contact Mail</th>
-            <th>Keywords</th>
-            <th>Scripts</th>
-            <th>SSL</th>
-            <th>Websites</th>
-          </tr>
-        </thead>
-        <tfoot>
-          <tr>
-            <th>Title</th>
-            <th>Status</th>
-            <th>Last 30 Days</th>
-            <th>Authors</th>
-            <th>Year</th>
-            <th>Journal</th>
-            <th>Pubmed</th>
-            <th>Abstract</th>
-            <th>Original URL</th>
-            <th>Derived URL</th>
-            <th>Contact Mail</th>
-            <th>Keywords</th>
-            <th>Scripts</th>
-            <th>SSL</th>
-            <th>Websites</th>
-          </tr>
-        </tfoot>
-        <tbody>
-        </tbody>
-      </table>
-      <br>
-      <div id="heatmap"></div>
-    </div>
-
-    <div class="modal fade" role="dialog" tabindex="-1" id="abstractModal">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h3 class="modal-title">Abstract</h3>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            <div class="form-group">
-              <div id="abstract-text"></div>
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button class="btn btn-outline-dark" data-dismiss="modal">Close</button>
-          </div>
-        </div>
+<script type="text/javascript"
+        src="https://cdn.datatables.net/rowgroup/1.0.4/js/dataTables.rowGroup.min.js"></script>
+<script type="text/javascript"
+        src=" https://cdn.datatables.net/responsive/2.2.3/js/dataTables.responsive.min.js "></script>
+<script type="text/javascript"
+        src="https://cdn.datatables.net/responsive/2.2.3/js/responsive.bootstrap.min.js"></script>
+<script type="text/javascript"
+        src="{% static 'js/custom_datatables.plugin.input.js' %}"></script>
+<script type="text/javascript"
+        src="{% static 'js/table_display_helper.js' %}"></script>
+<script src="{% static 'js/chart.min.js' %}"></script>
+<div class="content-container">
+  <table id="table" class="table table-striped  table-dark">
+    <thead>
+    <tr>
+      <th>Title</th>
+      <th>Status</th>
+      <th>Last 30 Days</th>
+      <th>Authors</th>
+      <th>Year</th>
+      <th>Journal</th>
+      <th>Pubmed</th>
+      <th>Abstract</th>
+      <th>Original URL</th>
+      <th>Derived URL</th>
+      <th>Contact Mail</th>
+      <th>Keywords</th>
+      <th>Websites</th>
+    </tr>
+    </thead>
+    <tfoot>
+    <tr>
+      <th>Title</th>
+      <th>Status</th>
+      <th>Last 30 Days</th>
+      <th>Authors</th>
+      <th>Year</th>
+      <th>Journal</th>
+      <th>Pubmed</th>
+      <th>Abstract</th>
+      <th>Original URL</th>
+      <th>Derived URL</th>
+      <th>Contact Mail</th>
+      <th>Keywords</th>
+      <th>Websites</th>
+    </tr>
+    </tfoot>
+    <tbody>
+    </tbody>
+  </table>
+  <br>
+  <div id="heatmap"></div>
+  <div class="statistics-box">
+    <div class="row">
+      <div class="col-md-6">
+        <canvas id="overview" width="400" height="300"></canvas>
+      </div>
+      <div class="col-md-6">
+        <canvas id="c1" width="400" height="300"></canvas>
       </div>
     </div>
+    <div class="row">
+      <div class="col-md-6">
+        <canvas id="pubs_per_year_availability" width="400" height="300"></canvas>
+      </div>
+      <div class="col-md-6">
+        <canvas id="top10_journals_availability" width="400" height="300"></canvas>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" role="dialog" tabindex="-1" id="abstractModal">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Abstract</h3>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <div id="abstract-text"></div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline-dark" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
 <script>
   search_column = {{ search_column }};
   search_string = "{{ search_string }}";
+
   function abstract(text) {
     document.getElementById("abstract-text").innerHTML = text;
   }
 </script>
 
-    <script src="{% static 'js/datatables_pipeline.js' %}"></script>
-    <script>
-        var tbl_data_url = "{% url 'main:table_data' %}";
-        var autocomplete_url = "{% url 'main:autocomplete' %}";
-    </script>
-    <script src="{% static 'js/publications_table.js' %}"></script>
-  <script>
-    $(document).ready(function () {
-    });
+<script src="{% static 'js/datatables_pipeline.js' %}"></script>
+<script>
+  var tbl_data_url = "{% url 'main:table_data' %}";
+  var autocomplete_url = "{% url 'main:autocomplete' %}";
+</script>
+<script src="{% static 'js/publications_table.js' %}"></script>
+<script>
+  $(document).ready(function () {
+  });
 
-  </script>
-	</body>
+</script>
+</body>
 </html>

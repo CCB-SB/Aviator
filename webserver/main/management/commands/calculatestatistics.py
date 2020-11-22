@@ -1,49 +1,61 @@
-from django.core.management.base import BaseCommand, CommandError
-from main.models import Website, WebsiteCall
-from datetime import date, datetime, timedelta
+from django.core.management.base import BaseCommand
+from django.conf import settings
+from django.contrib.postgres.aggregates import BoolOr
+
+from main.models import Website, WebsiteCall, WebsiteStatus
+
+from datetime import timedelta
+
+from collections import defaultdict
+
 import math
-import pytz
 from tqdm import tqdm
+
 
 class Command(BaseCommand):
     help = 'Updates the website statistics for the last 30 days'
+
     def handle(self, *args, **options):
-        max_days = 30
-        websites = Website.objects.all().prefetch_related("calls")
+        max_days = settings.TEMPORAL_INFO_DAYS
         website_updates = []
-        now = datetime.utcnow()
-        for website in tqdm(websites):
-            states = list()
+        latest_time = WebsiteCall.objects.latest("datetime").datetime
+        website_ok = WebsiteCall.objects.filter(datetime__date__gte=latest_time-timedelta(days=max_days)).values("website", "datetime").annotate(ok=BoolOr("ok"))
+
+        # update website status according to the last 20 hours (i.e. 2 runs)
+        latest_time = WebsiteCall.objects.latest("datetime").datetime
+        website_statuses = WebsiteCall.objects.filter(
+            datetime__gt=latest_time - timedelta(hours=20)).values("website").annotate(
+            final_ok=BoolOr("ok"))
+
+        website2status = {e["website"]: (WebsiteStatus.ONLINE if e["final_ok"] else WebsiteStatus.OFFLINE) for e in website_statuses}
+
+        website_states = defaultdict(dict)
+        for w in website_ok:
+            website_states[w['website']][w["datetime"].date()] = w["ok"]
+
+        for website in tqdm(Website.objects.all()):
+            states = []
             offline = 0
             online = 0
-            latest_state = None
-            for day_delta in range(0, max_days):
-                calls = website.calls.filter(datetime__date=now-timedelta(days=day_delta))
-                found = False
-                state = False
-                for call in calls:
-                    state = state | (call.ok & (call.error == "") & (call.code == 200))
-                    found = True
-                if found:
-                    states.append(state)
+            for day_delta in range(max_days, -1, -1):
+                date = (latest_time-timedelta(days=day_delta)).date()
+                state = website_states[website.id].get(date, None)
+                states.append(state)
+                if state is not None:
                     if state:
                         online += 1
-                        if latest_state is None:
-                            latest_state = True
                     else:
                         offline += 1
-                        if latest_state is None:
-                            latest_state = False
-                else:
-                    states.append(None)
             website.states = states
-            website.percentage = -1
+            website.percentage = None
             if online > 0 or offline > 0:
-                website.percentage = math.ceil(100*(online/(online+offline)))
-            if latest_state is False and online > 1:
-                latest_state = None
-            website.status = latest_state
+                website.percentage = 100 * (online / (online + offline))
+            status = website2status.get(website.id, WebsiteStatus.UNKNOWN)
+            if status == WebsiteStatus.OFFLINE and any(states[-settings.TEMP_OFFLINE_DAYS-1:]):
+                status = WebsiteStatus.TEMP_OFFLINE
+            website.status = status
             website_updates.append(website)
+
         Website.objects.bulk_update(website_updates, ["status", "states", "percentage"])
         self.stdout.write(self.style.SUCCESS("Successfully calculated website statistics"))
 
