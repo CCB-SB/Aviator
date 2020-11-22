@@ -108,7 +108,7 @@ def get_all_statistics(pub_queryset):
     context["publications_per_year"] = list(pub_queryset.values("year").annotate(
         count=Count("year")).order_by("-count"))
     year2count = {e["year"]: e["count"] for e in context["publications_per_year"]}
-    years_online = Counter(e["year"] for e in Publication.objects.all().annotate(
+    years_online = Counter(e["year"] for e in pub_queryset.annotate(
         status=BoolOr(Q(websites__status=WebsiteStatus.ONLINE),
                       output_field=BooleanField())).filter(
         status=True).values("year"))
