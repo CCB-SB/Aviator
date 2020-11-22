@@ -15,6 +15,7 @@
   <component name="NewModuleRootManager">
     <content url="file://$MODULE_DIR$">
       <excludeFolder url="file://$MODULE_DIR$/aviator_telemetry" />
+      <excludeFolder url="file://$MODULE_DIR$/aviator_telemetry2" />
     </content>
     <orderEntry type="jdk" jdkName="Remote Python 3.8.5 Docker Compose (django at [/home/tobias/git_projects/aviator_pascal/webserver/local.yml])" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />

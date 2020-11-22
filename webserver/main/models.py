@@ -1,8 +1,8 @@
 from django.db import models
 from django.contrib.postgres.fields import JSONField, ArrayField
+from djchoices import DjangoChoices, ChoiceItem
 
 
-# Create your models here.
 class Publication(models.Model):
     title = models.TextField()
     abstract = models.TextField()
@@ -16,12 +16,20 @@ class Publication(models.Model):
     url = ArrayField(models.TextField())
 
 
+class WebsiteStatus(DjangoChoices):
+    ONLINE = ChoiceItem("O")
+    OFFLINE = ChoiceItem("F")
+    TEMP_OFFLINE = ChoiceItem("T")
+    UNKNOWN = ChoiceItem("U")
+
+
 class Website(models.Model):
     original_url = models.TextField(db_index=True, unique=True)
     derived_url = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    status = models.NullBooleanField(null=True, default=None)
+    status = models.CharField(max_length=1, choices=WebsiteStatus.choices,
+                              default=WebsiteStatus.UNKNOWN)
     papers = models.ManyToManyField(Publication, related_name='websites')
     ip = models.GenericIPAddressField(null=True)
     server = models.CharField(max_length=200)
@@ -31,8 +39,9 @@ class Website(models.Model):
     script = models.CharField(max_length=50)
     certificate_secure = models.BooleanField()
     security_issuer = models.CharField(max_length=100)
-    states = ArrayField(models.NullBooleanField(), default=list())
-    percentage = models.IntegerField(default=-1)
+    # store offline/online/NA per day in ascending date order
+    states = ArrayField(models.NullBooleanField(), default=list)
+    percentage = models.FloatField(null=True, default=None)
 
 
 class WebsiteCall(models.Model):

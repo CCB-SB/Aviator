@@ -25,7 +25,7 @@ $(document).ready(function () {
 
       },
         ajax: $.fn.dataTable.pipeline({
-            url:tbl_data_url,
+            url: tbl_data_url,
             pages: 5 // number of pages to cache
         }),
       "columnDefs": [
@@ -51,7 +51,7 @@ $(document).ready(function () {
                 if (i > 0) {
                   str += "&nbsp;";
                 }
-                str += "<div style='display:none'>" + (state == null ? 1 : (state ? 0 : 2)) + "</div><span class='" + (state == null ? "orange" : (state ? "green" : "red")) + "-circle'></span>";
+                str += "<div style='display:none'>" + state + "</div><span class='" + (state === "T" ? "orange" : (state === "O" ? "green" : (state === "F" ? "red" : "grey"))) + "-circle'></span>";
               }
             }
           }
@@ -67,7 +67,7 @@ $(document).ready(function () {
                 if (i > 0) {
                   str += " / ";
                 }
-                str += "<div style='display:none'>" + (percentage < 10 ? ("00" + percentage) : (percentage < 100 ? ("0" + percentage) : percentage)) + "</div>" + (percentage == -1 ? "No Data" : (percentage+"% Online"));
+                str += "<div style='display:none'>" + (percentage < 10 ? ("00" + percentage) : (percentage < 100 ? ("0" + percentage) : percentage)) + "</div>" + (percentage === null ? "No Data" : (percentage+"% Online"));
               }
             }
           }

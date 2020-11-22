@@ -2,7 +2,6 @@ from django.core.management.base import BaseCommand, CommandError
 from main.models import Website
 from main.models import Publication
 from collections import defaultdict
-import os, csv, json, gzip
 import pandas as pd
 
 
