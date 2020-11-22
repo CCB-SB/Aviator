@@ -162,6 +162,12 @@ div.dataTables_wrapper li.paginate_button a {
 .dt-button.dropdown-item.active{
     background-color: var(--primary) !important;
 }
+td > a {
+  color: var(--font-color);
+}
+td > a:hover {
+  color: var(--hover-font-color);
+}
 /*
 input[type="search"]::-webkit-search-cancel-button {
   -webkit-appearance: none;
