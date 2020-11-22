@@ -220,7 +220,8 @@ function updatePlot(website_states) {
       paper_bgcolor:"#454d55",
       font: {
         color: '#dee2e6'
-      }
+      },
+      hovermode: 'closest',
     };
     Plotly.newPlot(document.getElementById('heatmap'), data, layout);
 }

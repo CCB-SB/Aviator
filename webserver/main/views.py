@@ -182,7 +182,7 @@ class Table(BaseDatatableView):
     model = Publication
     columns = ['title', 'status', 'percentage', 'authors', 'year', 'journal', 'pubmed_id',
                'abstract', 'original_url', 'derived_url', 'contact_mail', 'user_kwds',
-               'website_pks']
+                'scripts', 'ssl', 'website_pks']
     max_display_length = 500
 
     escape_values = False
@@ -191,7 +191,8 @@ class Table(BaseDatatableView):
         return Publication.objects.all().prefetch_related('websites').annotate(
             status=ArrayAgg('websites__status'), percentage=ArrayAgg('websites__percentage'),
             original_url=ArrayAgg('websites__original_url'),
-            derived_url=ArrayAgg('websites__derived_url'), website_pks=ArrayAgg('websites__pk'))
+            derived_url=ArrayAgg('websites__derived_url'), scripts=ArrayAgg('websites__script'),
+            ssl=ArrayAgg('websites__certificate_secure'), website_pks=ArrayAgg('websites__pk'))
 
     def render_column(self, row, column):
         # We want to render user as a custom column

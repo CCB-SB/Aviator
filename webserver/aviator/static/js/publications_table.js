@@ -29,7 +29,10 @@ $(document).ready(function () {
             pages: 5 // number of pages to cache
         }),
       "columnDefs": [
-        { 'visible': false, 'targets': [11] },
+        { 'visible': false, 'targets': [9, 11, 12, 13] },
+        { 'width': 50, 'targets': [1, 4, 13] },
+        { 'width': 100, 'targets': [2, 5, 6, 7, 14] },
+        { 'width': 250, 'targets': [0] },
       ],
         deferRender: true,
         processing: true,
@@ -144,6 +147,32 @@ $(document).ready(function () {
           for (i=0; i < data.length; i++) {
             if(data[i] != null) {
               str += (i > 0 ? ", " : "") + data[i];
+            }
+          }
+        }
+        return str;
+      }
+      },
+      { "data": "scripts", render: function ( data ) {
+        var str = "";
+        if (data != null) {
+          var i = 0;
+          for (i=0; i < data.length; i++) {
+            if(data[i] != null) {
+              str += (i > 0 ? ", " : "") + data[i];
+            }
+          }
+        }
+        return str;
+      }
+      },
+      { "data": "ssl", render: function ( data ) {
+        var str = "";
+        if (data != null) {
+          var i = 0;
+          for (i=0; i < data.length; i++) {
+            if(data[i] != null) {
+              str += (i > 0 ? ", " : "") + (data[i] == null ? "NA" : (data[i] ? "Yes" : "No"));
             }
           }
         }
