@@ -105,7 +105,7 @@ $(document).ready(function () {
 				  var i = 0;
 				  for (i=0; i < data.length; i++) {
 					if(data[i] != null) {
-					  str += (i > 0 ? ", " : "") + data[i];
+					  str += (i > 0 ? ", " : "") + "<a href=\""+data[i]+"\">"+data[i]+"</a>";
 					}
 				  }
 				}
@@ -117,7 +117,7 @@ $(document).ready(function () {
               var i = 0;
               for (i=0; i < data.length; i++) {
                 if(data[i] != null) {
-                  str += (i > 0 ? ", " : "") + data[i];
+                  str += (i > 0 ? ", " : "") + "<a href=\""+data[i]+"\">"+data[i]+"</a>";
                 }
               }
             }
