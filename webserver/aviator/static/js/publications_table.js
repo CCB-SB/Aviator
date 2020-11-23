@@ -185,11 +185,11 @@ $(document).ready(function () {
           var i = 0;
           for (i=0; i < data.length; i++) {
             if(data[i] != null) {
-              str += "<a class='btn btn-outline-light' href='details/" + data[i] + "'>Website</a>"
+              str += "<a class='btn btn-outline-light' href='details/" + data[i] + "'>Show Details</a>"
             }
           }
           if(i == 0) {
-            return "<a class='btn btn-outline-light' href='details/"+data+"'>Website</a>"
+            return "<a class='btn btn-outline-light' href='details/"+data+"'>Show Details</a>"
           }
         }
         return str;
