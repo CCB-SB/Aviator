@@ -241,6 +241,17 @@ $(document).ready(function () {
                       },
                       minLength: 1
                     });
+                    if ($( "#cs_"+i ).autocomplete().data("ui-autocomplete") != undefined) {
+                        $( "#cs_"+i ).autocomplete().data("ui-autocomplete")._renderItem = function (ul, item) {
+                            var newText = String(item.value).replace(
+                            new RegExp(this.term, "gi"),
+                            "<span style='color: white;'><strong>$&</strong></span>");
+                            return $("<li></li>")
+                            .data("item.autocomplete", item)
+                            .append("<div>" + newText + "</div>")
+                            .appendTo(ul);
+                        };
+                    }
                 }
                 if(search_column == i) {
                     scolumn = column;
@@ -269,10 +280,10 @@ function email(address) {
 
 function createTableSearchData(column) {
     data = {};
-    for(var i=0; i <= 12; ++i) {
-        if(i==4) {
+    for(var i=0; i <= 14; ++i) {
+        if(i==4 && $('#cs_from_'+i).val() != undefined) {
             data[i] = $('#cs_from_'+i).val()+";"+$('#cs_to_'+i).val();
-        } else {
+        } else if($('#cs_'+i).val() != undefined) {
             data[i] = $('#cs_'+i).val();
         }
     }

@@ -97,84 +97,54 @@ def statistics(request):
 def autocomplete(request):
     def remove_duplicates(x):
         return list(dict.fromkeys(x))
-
     if 'q' in request.GET:
-        # Apply Filters
-        qs = Publication.objects.all().prefetch_related('websites')
+        qs = Publication.objects.all().prefetch_related('websites').annotate(
+            status=ArrayAgg('websites__status'), percentage=ArrayAgg('websites__percentage'),
+            original_url=ArrayAgg('websites__original_url'),
+            derived_url=ArrayAgg('websites__derived_url'), scripts=ArrayAgg('websites__script'),
+            ssl=ArrayAgg('websites__certificate_secure'), website_pks=ArrayAgg('websites__pk'))
+        columns = ['title', 'status', 'percentage', 'authors', 'year', 'journal', 'pubmed_id',
+                   'abstract', 'original_url', 'derived_url', 'contact_mail', 'user_kwds',
+                   'scripts', 'ssl', 'website_pks']
+        numeric_cols = {4}
         filter = {}
-        if '0' in request.GET:
-            qs = qs.filter(title__icontains=request.GET.get('0'))
-        if '1' in request.GET:
-            qs = qs.filter(websites__status__icontains=request.GET.get('1'))
-        if '2' in request.GET:
-            qs = qs.filter(websites__percentage__icontains=request.GET.get('2'))
-        if '3' in request.GET:
-            qs = qs.filter(authors__icontains=request.GET.get('3'))
-        if '4' in request.GET:
-            min_str, max_str = request.GET['4'].split(';')
-            if min_str and max_str:
-                qs = qs.filter(authors__range=(float(min_str), float(max_str)))
-            elif min_str:
-                qs = qs.filter(authors__gte=float(min_str))
-            elif max_str:
-                qs = qs.filter(authors__lte=float(max_str))
-        if '5' in request.GET:
-            qs = qs.filter(journal__icontains=request.GET.get('5'))
-        if '6' in request.GET:
-            qs = qs.filter(pubmed_id__icontains=request.GET.get('6'))
-        if '7' in request.GET:
-            qs = qs.filter(abstract__icontains=request.GET.get('7'))
-        #if '8' in request.GET:
-        #    qs = qs.filter(websites__original_url__icontains=request.GET.get('8'))
-        #if '9' in request.GET:
-        #    qs = qs.filter(websites__derived_url__icontains=request.GET.get('9'))
-        if '10' in request.GET:
-            qs = qs.filter(contact_mail__icontains=request.GET.get('10'))
-        if '11' in request.GET:
-            qs = qs.filter(user_kwds__icontains=request.GET.get('11'))
-        #if '12' in request.GET:
-        #    qs = qs.filter(websites__pk__icontains=request.GET.get('12'))
-        #Get autocomplete strings
-        if request.GET.get('q') == '0':
-            qs = qs.filter(title__icontains=request.GET.get('0')).order_by('title')
-            return JsonResponse(remove_duplicates(list(hm['title'] for hm in qs.values('title')[:5])), safe=False)
-        if request.GET.get('q') == '3':
-            qs = qs.filter(authors__icontains=(request.GET.get('3')))
+        for k in range(0, 14):
+            if str(k) in request.GET and len(columns) > k:
+                filter_string = request.GET.get(str(k))
+                if len(filter_string) > 0 and filter_string != ";":
+                    field_name = columns[k]
+                    if filter_string in numeric_cols:
+                        min_str, max_str = filter_string.split(';')
+                        if min_str and max_str:
+                            filter["{}__range".format(field_name)] = (float(min_str), float(max_str))
+                        elif min_str:
+                            filter["{}__gte".format(field_name)] = float(min_str)
+                        elif max_str:
+                            filter["{}__lte".format(field_name)] = float(max_str)
+                    else:
+                        filter["{}__icontains".format(field_name)] = filter_string
+        if filter:
+            qs = qs.filter(**filter)
+        listed_cols = {1, 2, 3, 8, 9, 10, 11, 12, 13, 14}
+        ignore_cols = {4}
+        field_name = columns[int(request.GET.get('q'))]
+        if int(request.GET.get('q')) in ignore_cols:
+            return JsonResponse(list(), safe=False)
+        elif int(request.GET.get('q')) in listed_cols:
             search = request.GET.get('3').lower()
             seen = {}
             sList = []
-            values = qs.values('authors')
+            values = qs.values(field_name)
             for hm in values:
-                for item in hm['authors']:
+                for item in hm[field_name]:
                     if item in seen: continue
-                    if not item.lower().startswith(search): continue
+                    if search not in item.lower(): continue
                     seen[item] = 1
                     sList.append(item)
-            sList.sort();
+            sList.sort()
             return JsonResponse(sList[:5], safe=False)
-        if request.GET.get('q') == '5':
-            qs = qs.filter(journal__icontains=request.GET.get('5')).order_by('journal')
-            return JsonResponse(remove_duplicates(list(hm['journal'] for hm in qs.values('journal')))[:5], safe=False)
-        if request.GET.get('q') == '6':
-            qs = qs.filter(pubmed_id__istartswith=request.GET.get('6')).order_by('pubmed_id')
-            return JsonResponse(remove_duplicates(list(hm['pubmed_id'] for hm in qs.values('pubmed_id')[:5])), safe=False)
-        if request.GET.get('q') == '7':
-            qs = qs.filter(abstract__icontains=request.GET.get('7')).order_by('abstract')
-            return JsonResponse(remove_duplicates(list(hm['abstract'] for hm in qs.values('abstract')[:5])), safe=False)
-        if request.GET.get('q') == '8':
-            qs = qs.filter(websites__original_url__icontains=request.GET.get('8'))
-            return JsonResponse(list(
-                hm['websites__original_url'] for hm in qs.values('websites__original_url')[:5]),
-                                safe=False)
-        if request.GET.get('q') == '9':
-            qs = qs.filter(websites__derived_url__icontains=request.GET.get('9'))
-            return JsonResponse(remove_duplicates(list(hm['websites__derived_url'] for hm in qs.values('websites__derived_url')[:5])), safe=False)
-        if request.GET.get('q') == '10':
-            qs = qs.filter(contact_mail__icontains=request.GET.get('10'))
-            return JsonResponse(remove_duplicates(list(hm['contact_mail'].replace("@", "[at]") for hm in qs.values('contact_mail')[:5])), safe=False)
-        if request.GET.get('q') == '11':
-            qs = qs.filter(user_kwds__icontains=request.GET.get('11'))
-            return JsonResponse(remove_duplicates(list(hm['user_kwds'] for hm in qs.values('user_kwds')[:5])), safe=False)
+        else:
+            return JsonResponse(remove_duplicates(list(hm[field_name] for hm in qs.order_by(field_name).values(field_name)))[:5], safe=False)
     return JsonResponse(list(), safe=False)
 
 
