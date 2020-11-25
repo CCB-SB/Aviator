@@ -1,3 +1,5 @@
+
+var author_column = null;
 $(document).ready(function () {
     var numeric_cols = [4];
 
@@ -17,8 +19,6 @@ $(document).ready(function () {
     var abstract_counter = 0;
     var table = $('#table').DataTable({
       fnDrawCallback: function( settings ) {
-          //updatePlot();
-          //TODO Fix
           setTimeout(function(){
             apply_foreign_filter();
           }, 0);
@@ -80,7 +80,7 @@ $(document).ready(function () {
                 "data": "authors", render: function ( data ) {
 				  str = "";
 				  for(var n=0; n < data.length; n++) {
-				      str += data[n];
+                      str += "<a href=\"#\" onclick=\"filterAuthor('"+data[n]+"');return false;\">"+data[n]+"</a>";
 				      if(n < data.length - 1) {
 				          str += ", ";
                       }
@@ -256,6 +256,9 @@ $(document).ready(function () {
                 if(search_column == i) {
                     scolumn = column;
                 }
+                if(i == 3) {
+                    author_column = column;
+                }
             });
             $('#table_wrapper .col-sm-12:eq(0)').html(api.buttons().container());
             $('#table_filter').remove();
@@ -273,6 +276,7 @@ $(document).ready(function () {
         ]
     });
 
+
 });
 function email(address) {
     window.location.href = "mailto:"+address.replace("[at]", "@");
@@ -289,4 +293,9 @@ function createTableSearchData(column) {
     }
     data["q"] = column;
     return data;
+}
+
+function filterAuthor(author_name) {
+    document.getElementById("cs_3").value = author_name;
+  author_column.search(author_name).draw();
 }
