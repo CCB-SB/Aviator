@@ -107,13 +107,16 @@ def autocomplete(request):
                    'abstract', 'original_url', 'derived_url', 'contact_mail', 'user_kwds',
                    'scripts', 'ssl', 'website_pks']
         numeric_cols = {4}
+        email_col = {10}
         filter = {}
         for k in range(0, 14):
             if str(k) in request.GET and len(columns) > k:
                 filter_string = request.GET.get(str(k))
                 if len(filter_string) > 0 and filter_string != ";":
                     field_name = columns[k]
-                    if filter_string in numeric_cols:
+                    if k in email_col:
+                        filter_string = filter_string.replace("[at]", "@")
+                    if k in numeric_cols:
                         min_str, max_str = filter_string.split(';')
                         if min_str and max_str:
                             filter["{}__range".format(field_name)] = (float(min_str), float(max_str))
@@ -142,7 +145,11 @@ def autocomplete(request):
                     seen[item] = 1
                     sList.append(item)
             sList.sort()
-            return JsonResponse(sList[:5], safe=False)
+            sList = sList[:5]
+            if int(request.GET.get('q')) in email_col:
+                for i in range(len(sList)):
+                    sList[i] = sList[i].replace("@", "[at]")
+            return JsonResponse(sList, safe=False)
         else:
             return JsonResponse(remove_duplicates(list(hm[field_name] for hm in qs.order_by(field_name).values(field_name)))[:5], safe=False)
     return JsonResponse(list(), safe=False)
