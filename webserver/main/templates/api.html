@@ -9,6 +9,9 @@
 		<title>Aviator</title>
 		<link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet" type="text/css">
 		<link href="{% static 'css/aviator.css' %}" rel="stylesheet" type="text/css">
+
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.4.1/styles/a11y-dark.min.css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.4.1/highlight.min.js"></script>
     <script src="{% static 'js/jquery.min.js' %}"></script>
     <script src="{% static 'js/popper.min.js' %}"></script>
     <script src="{% static 'js/bootstrap.min.js' %}"></script>
@@ -30,7 +33,7 @@
         </div>
       </div>
 
-      <div id="api_box_1" class="code-box">
+      <div id="api_box_1" class="code-box JavaScript">
 <pre><code>const http = require('http');
 const url = require('url');
 
@@ -42,7 +45,7 @@ http.createServer(function (req, res) {
 }).listen(8080);</code></pre>
     </div>
 
-      <div id="api_box_2" class="code-box" style="display: none;">
+      <div id="api_box_2" class="code-box Perl" style="display: none;">
 <pre><code>#!/usr/bin/perl
 use strict;
 use CGI;
@@ -62,7 +65,7 @@ unless ($number=~/^\d+$/) {
 exit 0;</code></pre>
     </div>
 
-      <div id="api_box_3" class="code-box" style="display: none;">
+      <div id="api_box_3" class="code-box php" style="display: none;">
 <pre><code>&lt;?php
 // PHP code goes here
 ?&gt;</code></pre>
@@ -85,3 +88,4 @@ function show_code(num) {
     document.getElementById("api_box_"+num).style.display = "block";
 }
 </script>
+<script>hljs.initHighlightingOnLoad();</script>

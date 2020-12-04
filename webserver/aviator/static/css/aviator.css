@@ -64,7 +64,7 @@ body {
 .api-box {
   margin: 4rem auto;
   padding: 2rem;
-  background-color: var(--primary);
+  background-color: var(--secondary);
   width: 80vw;
   text-align:center;
   color:var(--font-color);
@@ -72,7 +72,7 @@ body {
 }
 .code-box {
   padding: 1rem 2rem 0.5rem 2rem;
-  background-color: var(--secondary);
+  background-color: var(--primary);
   width: 100%;
   text-align:left;
   color:var(--font-color);
@@ -86,6 +86,9 @@ body {
 }
 .btn-group-container {
   text-align:left;
+}
+.hljs {
+  background-color: var(--primary) !important;
 }
 /* Tables */
 content-container > table {
