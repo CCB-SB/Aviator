@@ -14,4 +14,5 @@ urlpatterns = [
     path('statistics', views.statistics, name='statistics'),
     path("table_data", view=views.Table.as_view(), name='table_data'),
     path('autocomplete', views.autocomplete, name='autocomplete'),
+    path('api', views.api, name='api'),
 ]

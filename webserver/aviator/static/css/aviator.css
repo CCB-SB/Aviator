@@ -60,6 +60,33 @@ body {
   color:var(--font-color);
   font-size:2vw;
 }
+/* API*/
+.api-box {
+  margin: 4rem auto;
+  padding: 2rem;
+  background-color: var(--primary);
+  width: 80vw;
+  text-align:center;
+  color:var(--font-color);
+  font-size:1rem;
+}
+.code-box {
+  padding: 1rem 2rem 0.5rem 2rem;
+  background-color: var(--secondary);
+  width: 100%;
+  text-align:left;
+  color:var(--font-color);
+  font-size:1rem;
+}
+.code-box > pre {
+  color:var(--font-color);
+}
+.code-title {
+  text-align:left;
+}
+.btn-group-container {
+  text-align:left;
+}
 /* Tables */
 content-container > table {
   table-layout: fixed;

@@ -70,6 +70,9 @@ def author(request):
     context['websites'] = Website.objects.all()
     return render(request, 'author.html', context)
 
+def api(request):
+    context = {}
+    return render(request, 'api.html', context)
 
 # cache for 6 hours
 @cache_page(60 * 60 * 6)
