@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+{% load staticfiles %}
+{% url 'main:details' as details %}
+<html  lang="en">
+	<head>
+    <meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+		<title>Aviator</title>
+		<link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet" type="text/css">
+		<link href="{% static 'css/aviator.css' %}" rel="stylesheet" type="text/css">
+    <script src="{% static 'js/jquery.min.js' %}"></script>
+    <script src="{% static 'js/popper.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+	</head>
+	<body>
+    {% include "navbar.html" %}
+    <div class="api-box">
+
+      <h3>The API</h3>
+      <p>...Explanation text...</p>
+      <br>
+      <br>
+
+      <div class="btn-group-container">
+        <div class="btn-group" role="group" aria-label="Basic example">
+          <button id="api_btn_1" type="button" class="btn btn-secondary active" onclick="show_code(1)">Node.js</button>
+          <button id="api_btn_2" type="button" class="btn btn-secondary" onclick="show_code(2)">Perl</button>
+          <button id="api_btn_3" type="button" class="btn btn-secondary" onclick="show_code(3)">PHP</button>
+        </div>
+      </div>
+
+      <div id="api_box_1" class="code-box">
+<pre><code>const http = require('http');
+const url = require('url');
+
+http.createServer(function (req, res) {
+  res.writeHead(200, {"Content-Type": "text/plain"});
+  var input = url.parse(req.url, true).query.input;
+  res.end(input ? input.toString().split("").map(Number).reduce(
+    (a, b) => a + b, 0).toString() : "NaN");
+}).listen(8080);</code></pre>
+    </div>
+
+      <div id="api_box_2" class="code-box" style="display: none;">
+<pre><code>#!/usr/bin/perl
+use strict;
+use CGI;
+use CGI::Carp("fatalsToBrowser");
+my $cgi=new CGI;
+print "Content-Type: text/plain\n\n";
+my $number=$cgi->param("input");
+unless ($number=~/^\d+$/) {
+    print "Not a number!\n";
+} else {
+    my $digit_sum=0;
+    foreach my $digit (split //,$number) {
+        $digit_sum+=$digit;
+    }
+    print $digit_sum;
+}
+exit 0;</code></pre>
+    </div>
+
+      <div id="api_box_3" class="code-box" style="display: none;">
+<pre><code>&lt;?php
+// PHP code goes here
+?&gt;</code></pre>
+      </div>
+
+    </div>
+	</body>
+</html>
+<script>
+function show_code(num) {
+    var btns = document.querySelectorAll('button[id^="api_btn_"]');
+    for (var i = 0; i < btns.length; ++i) {
+        btns[i].className = btns[i].className.replace(" active", "");
+    }
+    document.getElementById("api_btn_"+num).className += " active";
+    var divs = document.querySelectorAll('div[id^="api_box_"]');
+    for (var i = 0; i < divs.length; ++i) {
+        divs[i].style.display = "none";
+    }
+    document.getElementById("api_box_"+num).style.display = "block";
+}
+</script>
