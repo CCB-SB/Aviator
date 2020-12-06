@@ -29,9 +29,9 @@ $(document).ready(function () {
             pages: 5 // number of pages to cache
         }),
       "columnDefs": [
-        { 'visible': false, 'targets': [9, 11, 12, 13] },
+        { 'visible': false, 'targets': [9, 11, 12, 13, 14] },
         { 'width': 50, 'targets': [1, 4, 13] },
-        { 'width': 100, 'targets': [2, 5, 6, 7, 14] },
+        { 'width': 100, 'targets': [2, 5, 6, 7, 14, 15] },
         { 'width': 250, 'targets': [0] },
       ],
         deferRender: true,
@@ -175,6 +175,21 @@ $(document).ready(function () {
               str += (i > 0 ? ", " : "") + (data[i] == null ? "NA" : (data[i] ? "Yes" : "No"));
             }
           }
+        }
+        return str;
+      }
+      },
+      { "data": "heap_size", render: function ( data ) {
+        var str = "";
+        if (data != null) {
+          var i = 0;
+          for (i=0; i < data.length; i++) {
+            if(data[i] != null) {
+              str += (i > 0 ? ", " : "") + (data[i]);//data[i] == 0 ? "NA" : data[i]);
+            }
+          }
+        } else {
+            str = "NA";
         }
         return str;
       }

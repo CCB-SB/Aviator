@@ -105,10 +105,11 @@ def autocomplete(request):
             status=ArrayAgg('websites__status'), percentage=ArrayAgg('websites__percentage'),
             original_url=ArrayAgg('websites__original_url'),
             derived_url=ArrayAgg('websites__derived_url'), scripts=ArrayAgg('websites__script'),
-            ssl=ArrayAgg('websites__certificate_secure'), website_pks=ArrayAgg('websites__pk'))
+            ssl=ArrayAgg('websites__certificate_secure'), heap_size=ArrayAgg('websites__last_heap_size'),
+            website_pks=ArrayAgg('websites__pk'))
         columns = ['title', 'status', 'percentage', 'authors', 'year', 'journal', 'pubmed_id',
                    'abstract', 'original_url', 'derived_url', 'contact_mail', 'user_kwds',
-                   'scripts', 'ssl', 'website_pks']
+                   'scripts', 'ssl', 'heap_size', 'website_pks']
         numeric_cols = {4}
         email_col = {10}
         filter = {}
@@ -131,8 +132,8 @@ def autocomplete(request):
                         filter["{}__icontains".format(field_name)] = filter_string
         if filter:
             qs = qs.filter(**filter)
-        listed_cols = {1, 2, 3, 8, 9, 10, 11, 12, 13, 14}
-        ignore_cols = {4}
+        listed_cols = {1, 2, 3, 8, 9, 10, 11, 12, 13, 14, 15}
+        ignore_cols = {4, 14, 15}
         field_name = columns[int(request.GET.get('q'))]
         if int(request.GET.get('q')) in ignore_cols:
             return JsonResponse(list(), safe=False)
@@ -162,7 +163,7 @@ class Table(BaseDatatableView):
     model = Publication
     columns = ['title', 'status', 'percentage', 'authors', 'year', 'journal', 'pubmed_id',
                'abstract', 'original_url', 'derived_url', 'contact_mail', 'user_kwds',
-                'scripts', 'ssl', 'website_pks']
+                'scripts', 'ssl', 'heap_size', 'website_pks']
     max_display_length = 500
 
     escape_values = False
@@ -172,7 +173,8 @@ class Table(BaseDatatableView):
             status=ArrayAgg('websites__status'), percentage=ArrayAgg('websites__percentage'),
             original_url=ArrayAgg('websites__original_url'),
             derived_url=ArrayAgg('websites__derived_url'), scripts=ArrayAgg('websites__script'),
-            ssl=ArrayAgg('websites__certificate_secure'), website_pks=ArrayAgg('websites__pk'))
+            ssl=ArrayAgg('websites__certificate_secure'), heap_size=ArrayAgg('websites__last_heap_size'),
+            website_pks=ArrayAgg('websites__pk'))
 
     def render_column(self, row, column):
         # We want to render user as a custom column

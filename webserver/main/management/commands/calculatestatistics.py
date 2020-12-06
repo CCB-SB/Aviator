@@ -23,6 +23,7 @@ class Command(BaseCommand):
 
         # update website status according to the last 20 hours (i.e. 2 runs)
         latest_time = WebsiteCall.objects.latest("datetime").datetime
+
         website_statuses = WebsiteCall.objects.filter(
             datetime__gt=latest_time - timedelta(hours=20)).values("website").annotate(
             final_ok=BoolOr("ok"))
@@ -46,6 +47,10 @@ class Command(BaseCommand):
                         online += 1
                     else:
                         offline += 1
+            if "total_heap_size" in website.calls.latest("datetime").json_data:
+                website.last_heap_size = website.calls.latest("datetime").json_data["total_heap_size"]#used_heap_size
+            else:
+                website.last_heap_size = 0
             website.states = states
             website.percentage = None
             if online > 0 or offline > 0:
@@ -56,6 +61,6 @@ class Command(BaseCommand):
             website.status = status
             website_updates.append(website)
 
-        Website.objects.bulk_update(website_updates, ["status", "states", "percentage"])
+        Website.objects.bulk_update(website_updates, ["status", "states", "percentage", "last_heap_size"])
         self.stdout.write(self.style.SUCCESS("Successfully calculated website statistics"))
 

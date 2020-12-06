@@ -42,7 +42,7 @@ class Website(models.Model):
     # store offline/online/NA per day in ascending date order
     states = ArrayField(models.NullBooleanField(), default=list)
     percentage = models.FloatField(null=True, default=None)
-
+    last_heap_size = models.IntegerField(default=0)
 
 class WebsiteCall(models.Model):
     website = models.ForeignKey(Website, related_name='calls', on_delete=models.CASCADE)
