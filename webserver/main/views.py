@@ -138,7 +138,7 @@ def autocomplete(request):
         if int(request.GET.get('q')) in ignore_cols:
             return JsonResponse(list(), safe=False)
         elif int(request.GET.get('q')) in listed_cols:
-            search = request.GET.get('3').lower()
+            search = request.GET.get(request.GET.get('q')).lower()
             seen = {}
             sList = []
             values = qs.values(field_name)
