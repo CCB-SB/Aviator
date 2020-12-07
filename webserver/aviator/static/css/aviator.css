@@ -218,6 +218,15 @@ td > a:hover {
 .ui-widget-content {
    border-color: var(--primary) !important;
  }
+.plots-header {
+  margin: 2rem auto;
+  padding: 1rem 0 0.5rem 0;
+  background-color: var(--primary);
+  width: 100%;
+  text-align:center;
+  color:var(--font-color);
+  font-size: 1.5rem;
+}
 /*
 input[type="search"]::-webkit-search-cancel-button {
   -webkit-appearance: none;
