@@ -16,6 +16,8 @@ from django.contrib.postgres.aggregates import BoolOr
 import ahocorasick
 
 
+
+
 class Command(BaseCommand):
     help = 'Creates the website / website calls model and a csv from a given source folder'
 
@@ -285,11 +287,17 @@ class Command(BaseCommand):
                         website.certificate_secure = value.get("certificateSecurityState",
                                                                "unknown") == "secure"
                         website.script = ""
-                        if "response_headers_Set-Cookie" in value:
-                            if "PHPSESSID" in value["response_headers_Set-Cookie"]:
-                                website.script += "PHP"
-                            if "JSESSIONID" in value["response_headers_Set-Cookie"]:
-                                website.script += "Java"
+                        if "response" in value and value.get("response") is not None:
+                            if "headers" in value.get("response"):
+                                if "server" in value.get("response").get("headers"):
+                                    website.server = value.get("response").get("headers").get("server", "")
+                                if "Pragma" in value.get("response").get("headers"):
+                                    website.timezone = value.get("response").get("headers").get("Pragma", "")
+                                if "Set-Cookie" in value.get("response").get("headers"):
+                                    if "PHPSESSID" in value.get("response").get("headers").get("Set-Cookie"):
+                                        website.script += "PHP"
+                                    if "JSESSIONID" in value.get("response").get("headers").get("Set-Cookie"):
+                                        website.script += "Java"
                         new_websites += 1
                         create_websites.append(website)
 
