@@ -1,7 +1,7 @@
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, render
 from django.views.decorators.cache import cache_page
-from .models import Website, WebsiteCall, Publication
+from .models import Website, WebsiteCall, Publication, Tag, CuratedWebsite
 from collections import Counter
 from django.core import serializers
 from django.core.paginator import Paginator
@@ -48,6 +48,12 @@ def publications(request):
         context['search_string'] = request.POST['search_string']
     return render(request, 'publications.html', context)
 
+def curated(request):
+    context = {'search_column': -1, 'search_string': ''}
+    if request.method == 'POST':
+        context['search_column'] = request.POST['search_column']
+        context['search_string'] = request.POST['search_string']
+    return render(request, 'curated.html', context)
 
 def details(request, pk):
     context = {}
@@ -68,6 +74,7 @@ def publication(request, pk):
 def author(request):
     context = {}
     context['websites'] = Website.objects.all()
+    context['tags'] = Tag.objects.all()
     return render(request, 'author.html', context)
 
 def api(request):
@@ -113,7 +120,7 @@ def autocomplete(request):
         numeric_cols = {4}
         email_col = {10}
         filter = {}
-        for k in range(0, 14):
+        for k in range(0, len(columns)):
             if str(k) in request.GET and len(columns) > k:
                 filter_string = request.GET.get(str(k))
                 if len(filter_string) > 0 and filter_string != ";":
@@ -158,6 +165,60 @@ def autocomplete(request):
             return JsonResponse(remove_duplicates(list(hm[field_name] for hm in qs.order_by(field_name).values(field_name)))[:5], safe=False)
     return JsonResponse(list(), safe=False)
 
+def curated_autocomplete(request):
+    def remove_duplicates(x):
+        return list(dict.fromkeys(x))
+    if 'q' in request.GET:
+        columns = ['title', 'status', 'percentage', 'authors', 'year', 'journal', 'pubmed_id', 'abstract', 'url', 'tag_tags', 'website']
+        qs = CuratedWebsite.objects.all().prefetch_related('tags').annotate(tag_tags=ArrayAgg('tags'))
+        columns = ['title', 'status', 'percentage', 'authors', 'year', 'journal', 'pubmed_id', 'abstract', 'url', 'tag_tags', 'website']
+        numeric_cols = {4}
+        email_col = {}
+        filter = {}
+        for k in range(0, len(columns)):
+            if str(k) in request.GET and len(columns) > k:
+                filter_string = request.GET.get(str(k))
+                if len(filter_string) > 0 and filter_string != ";":
+                    field_name = columns[k]
+                    if k in email_col:
+                        filter_string = filter_string.replace("[at]", "@")
+                    if k in numeric_cols:
+                        min_str, max_str = filter_string.split(';')
+                        if min_str and max_str:
+                            filter["{}__range".format(field_name)] = (float(min_str), float(max_str))
+                        elif min_str:
+                            filter["{}__gte".format(field_name)] = float(min_str)
+                        elif max_str:
+                            filter["{}__lte".format(field_name)] = float(max_str)
+                    else:
+                        filter["{}__icontains".format(field_name)] = filter_string
+        if filter:
+            qs = qs.filter(**filter)
+        listed_cols = {9}
+        ignore_cols = {10}
+        field_name = columns[int(request.GET.get('q'))]
+        if int(request.GET.get('q')) in ignore_cols:
+            return JsonResponse(list(), safe=False)
+        elif int(request.GET.get('q')) in listed_cols:
+            search = request.GET.get(request.GET.get('q')).lower()
+            seen = {}
+            sList = []
+            values = qs.values(field_name)
+            for hm in values:
+                for item in hm[field_name]:
+                    if item in seen: continue
+                    if search not in item.lower(): continue
+                    seen[item] = 1
+                    sList.append(item)
+            sList.sort()
+            sList = sList[:5]
+            if int(request.GET.get('q')) in email_col:
+                for i in range(len(sList)):
+                    sList[i] = sList[i].replace("@", "[at]")
+            return JsonResponse(sList, safe=False)
+        else:
+            return JsonResponse(remove_duplicates(list(hm[field_name] for hm in qs.order_by(field_name).values(field_name)))[:5], safe=False)
+    return JsonResponse(list(), safe=False)
 
 class Table(BaseDatatableView):
     model = Publication
@@ -362,6 +423,91 @@ class Table(BaseDatatableView):
                            "dates": state_dates
                        }
             ret['statistics'] = stats
+            return ret
+        except Exception as e:
+            return self.handle_exception(e)
+
+class CuratedTable(Table):
+    model = CuratedWebsite
+    columns = ['title', 'status', 'percentage', 'authors', 'year', 'journal', 'pubmed_id', 'abstract', 'url', 'tag_tags', 'website']
+    max_display_length = 500
+
+    escape_values = False
+
+    def get_initial_queryset(self):
+        return CuratedWebsite.objects.all().prefetch_related('tags').annotate(tag_tags=ArrayAgg('tags'))
+
+    def get_context_data(self, *args, **kwargs):
+        try:
+            self.initialize(*args, **kwargs)
+
+            # prepare columns data (for DataTables 1.10+)
+            self.columns_data = self.extract_datatables_column_data()
+
+            # determine the response type based on the 'data' field passed from JavaScript
+            # https://datatables.net/reference/option/columns.data
+            # col['data'] can be an integer (return list) or string (return dictionary)
+            # we only check for the first column definition here as there is no way to return list and dictionary
+            # at once
+            self.is_data_list = True
+            if self.columns_data:
+                self.is_data_list = False
+                try:
+                    int(self.columns_data[0]['data'])
+                    self.is_data_list = True
+                except ValueError:
+                    pass
+
+            # prepare list of columns to be returned
+            self._columns = self.get_columns()
+
+            # prepare initial queryset
+            qs = self.get_initial_queryset()
+
+            # store the total number of records (before filtering)
+            total_records = qs.count()
+
+            # apply filters
+            qs = self.filter_queryset(qs)
+
+            # number of records after filtering
+            total_display_records = qs.count()
+
+            #stats = get_all_statistics(qs)
+
+            # apply ordering
+            qs = self.ordering(qs)
+
+            website_states = list(qs.values('pubmed_id', 'states'))
+            latest_date = WebsiteCall.objects.latest("datetime").datetime
+
+            state_dates = [(latest_date-timedelta(days=day_delta)).date().strftime("%Y-%m-%d") for day_delta in range(settings.TEMPORAL_INFO_DAYS, -1, -1)]
+
+            # apply pagintion
+            qs = self.paging(qs)
+
+            # prepare output data
+            if self.pre_camel_case_notation:
+                aaData = self.prepare_results(qs)
+
+                ret = {'sEcho': int(self._querydict.get('sEcho', 0)),
+                       'iTotalRecords': total_records,
+                       'iTotalDisplayRecords': total_display_records,
+                       'aaData': aaData
+                       }
+            else:
+                data = self.prepare_results(qs)
+
+                ret = {'draw': int(self._querydict.get('draw', 0)),
+                       'recordsTotal': total_records,
+                       'recordsFiltered': total_display_records,
+                       'data': data
+                       }
+            ret['website_states'] = {
+                           "states": website_states,
+                           "dates": state_dates
+                       }
+            #ret['statistics'] = stats
             return ret
         except Exception as e:
             return self.handle_exception(e)

@@ -13,6 +13,9 @@ urlpatterns = [
     path('websiteData', views.websiteData, name='websiteData'),
     path('statistics', views.statistics, name='statistics'),
     path("table_data", view=views.Table.as_view(), name='table_data'),
+    path("curated_data", view=views.CuratedTable.as_view(), name='curated_data'),
     path('autocomplete', views.autocomplete, name='autocomplete'),
     path('api', views.api, name='api'),
+    path('curated', views.curated, name='curated'),
+    path('curated_autocomplete', views.curated_autocomplete, name='curated_autocomplete'),
 ]

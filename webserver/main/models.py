@@ -58,9 +58,17 @@ class Tag(models.Model):
     name = models.CharField(max_length=50)
 
 
-class AuthorInfo(models.Model):
-    tool_name = models.CharField(max_length=200)
+class CuratedWebsite(models.Model):
+    title = models.CharField(max_length=200)
+    pubmed_id = models.CharField(max_length=50, unique=True, db_index=True)
+    year = models.SmallIntegerField(db_index=True)
+    journal = models.TextField(db_index=True)
     description = models.TextField()
-    webserver = models.CharField(max_length=100)
-    website = models.OneToOneField(Website, related_name='authorinfo', on_delete=models.CASCADE)
+    authors = ArrayField(models.TextField(), blank=True, default=list)
+    url = models.CharField(max_length=100)
+    api_url = models.CharField(max_length=100)
     tags = models.ManyToManyField(Tag, related_name='authorinfos')
+    website = models.OneToOneField(Website, related_name='authorinfo', on_delete=models.CASCADE)
+    status = models.CharField(max_length=1, choices=WebsiteStatus.choices, default=WebsiteStatus.UNKNOWN)
+    states = ArrayField(models.NullBooleanField(), default=list)
+    percentage = models.FloatField(null=True, default=None)

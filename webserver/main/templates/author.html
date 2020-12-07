@@ -16,22 +16,37 @@
 	<body>
     {% include "navbar.html" %}
     <div class="contact-container">
-      <form>
+      <form action="mailto:example@aviator.com" method="GET" enctype="multipart/form-data" name="EmailForm" onsubmit="return prepareEmail();">
+        <input type="hidden" name="subject" id="mail_subject" value="">
+        <input type="hidden" name="body" id="mail_body" value="">
+        <div class="form-group">
+          <label for="input_name">Name</label>
+          <input type="text" class="form-control" id="input_name" placeholder="Name">
+        </div>
         <div class="form-group">
           <label for="input_email">Email address</label>
           <input type="email" class="form-control" id="input_email" placeholder="name@example.com">
         </div>
+        <br>
         <div class="form-group">
-          <label for="input_name">Name</label>
-          <input type="text" class="form-control" id="input_name" placeholder="Name">
+          <label for="input_pubmed">Pubmed ID</label>
+          <input type="text" class="form-control" id="input_pubmed" placeholder="Pubmed ID">
         </div>
         <div class="form-group">
           <label for="input_toolname">Tool Name</label>
           <input type="text" class="form-control" id="input_toolname" placeholder="Tool Name">
         </div>
         <div class="form-group">
+          <label for="input_authors">Authors</label>
+          <textarea class="form-control" id="input_authors" rows="2" placeholder="Authors"></textarea>
+        </div>
+        <div class="form-group">
           <label for="input_url">Tool URL</label>
           <input type="text" class="form-control" id="input_url" placeholder="URL">
+        </div>
+        <div class="form-group">
+          <label for="api_url">API URL</label>
+          <input type="text" class="form-control" id="api_url" placeholder="API URL">
         </div>
         <div class="form-group">
           <label for="input_tooldesc">Tool Description</label>
@@ -40,18 +55,35 @@
         <div class="form-group">
           <label for="input_tags">Tags</label>
           <select multiple class="form-control" id="input_tags">
-            <option>Database</option>
-            <option>Drug discovery</option>
-            <option>Gene expression</option>
-            <option>Pathways</option>
-            <option>Machine learning</option>
-            <option>Synthetic biology</option>
-            <option>Systems biology</option>
-            <option>Genomics</option>
+          {% for tag in tags %}
+            <option>{{ tag.name }}</option>
+          {% endfor %}
           </select>
+        </div>
+        <br>
+        <div class="form-group">
+          <label for="input_comments">Comments</label>
+          <textarea class="form-control" id="input_comments" rows="5" placeholder="Comments"></textarea>
         </div>
         <button type="submit" class="btn btn-outline-light">Submit</button>
       </form>
   </div>
 	</body>
 </html>
+<script>
+  function prepareEmail() {
+    var text = "Name: "+document.getElementById("input_name").value + "%0D%0A";
+    text += "Email: "+document.getElementById("input_email").value + "%0D%0A%0D%0A";
+    text += "Tool: "+document.getElementById("input_toolname").value + "%0D%0A";
+    text += "Pubmed ID: "+document.getElementById("input_pubmed").value + "%0D%0A";
+    text += "URL: "+document.getElementById("input_url").value + "%0D%0A";
+    text += "API: "+document.getElementById("api_url").value + "%0D%0A%0D%0A";
+    text += "Authors: " + document.getElementById("input_authors").value + "\%0D%0A%0D%0A";
+    text += "Description: " + document.getElementById("input_tooldesc").value + "\%0D%0A%0D%0A";
+    text += "Tags: "+document.getElementById("input_tags").value + "%0D%0A%0D%0A";
+    text += "Comments: "+document.getElementById("input_comments").value + "%0D%0A";
+    document.getElementById("mail_body").value = encodeURIComponent(text);
+    document.getElementById("mail_subject").value = document.getElementById("input_pubmed").value;
+    return false;
+  }
+</script>

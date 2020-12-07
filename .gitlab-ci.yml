@@ -146,20 +146,20 @@ migrate-production:
   <<: *migrate
   <<: *production_vars
 
-.removepublications: &removepublications
+.removepublications: &parsekeywords
   script:
     - *setup_docker_tls
-    - docker-compose -f webserver/production.yml run --rm django python manage.py removepublications
+    - docker-compose -f webserver/production.yml run --rm django python manage.py parsekeywords ${KEYWORDS_PATH}
   <<: *manage_only_master_remote
 
 removepublications-staging:
   stage: managedb-staging
-  <<: *removepublications
+  <<: *parsekeywords
   <<: *staging_vars
 
 removepublications-production:
   stage: managedb-production
-  <<: *removepublications
+  <<: *parsekeywords
   <<: *production_vars
 
 .parsewebsitecalls: &parsewebsitecalls
