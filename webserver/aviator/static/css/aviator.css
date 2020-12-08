@@ -238,6 +238,7 @@ input[type="search"]::-webkit-search-cancel-button {
 .form-control::placeholder {
   color: var(--placeholder-font-color);
 }
+
 .dataTables_info {
   color: var(--font-color);
 }
@@ -285,8 +286,26 @@ input[type="search"]::-webkit-search-cancel-button {
   }
 }
 @media only screen and (min-width: 120rem) {
-	.contact-container {
+  .contact-container {
     width: calc(100% - 60vw);
     margin: 2rem 30vw 2rem 30vw;
   }
+}
+.bootstrap-select > .btn {
+  border-color: var(--primary);
+}
+.bootstrap-select > .dropdown-menu {
+  background-color: var(--primary);
+}
+.bootstrap-select > .dropdown-menu > .bs-searchbox > input {
+  background-color: var(--secondary);
+    color: white;
+}
+.bootstrap-select > .dropdown-menu > .inner > ul > li > .dropdown-item {
+  background-color: var(--primary);
+    color: white;
+}
+.filter-option {
+  background-color: var(--primary);
+    color: white;
 }

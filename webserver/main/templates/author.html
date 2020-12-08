@@ -9,14 +9,16 @@
 		<title>Aviator</title>
 		<link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet" type="text/css">
 		<link href="{% static 'css/aviator.css' %}" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.css" />
     <script src="{% static 'js/jquery.min.js' %}"></script>
     <script src="{% static 'js/popper.min.js' %}"></script>
     <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
 	</head>
 	<body>
     {% include "navbar.html" %}
     <div class="contact-container">
-      <form action="mailto:example@aviator.com" method="GET" enctype="multipart/form-data" name="EmailForm" onsubmit="return prepareEmail();">
+      <form action="mailto:example@aviator.com" method="get" enctype="text/plain" name="EmailForm" onsubmit="return prepareEmail();">
         <input type="hidden" name="subject" id="mail_subject" value="">
         <input type="hidden" name="body" id="mail_body" value="">
         <div class="form-group">
@@ -54,12 +56,13 @@
         </div>
         <div class="form-group">
           <label for="input_tags">Tags</label>
-          <select multiple class="form-control" id="input_tags">
+          <select multiple class="selectpicker form-control" id="input_tags" data-live-search="true">
           {% for tag in tags %}
             <option>{{ tag.name }}</option>
           {% endfor %}
           </select>
         </div>
+
         <br>
         <div class="form-group">
           <label for="input_comments">Comments</label>
@@ -72,18 +75,20 @@
 </html>
 <script>
   function prepareEmail() {
-    var text = "Name: "+document.getElementById("input_name").value + "%0D%0A";
-    text += "Email: "+document.getElementById("input_email").value + "%0D%0A%0D%0A";
-    text += "Tool: "+document.getElementById("input_toolname").value + "%0D%0A";
-    text += "Pubmed ID: "+document.getElementById("input_pubmed").value + "%0D%0A";
-    text += "URL: "+document.getElementById("input_url").value + "%0D%0A";
-    text += "API: "+document.getElementById("api_url").value + "%0D%0A%0D%0A";
-    text += "Authors: " + document.getElementById("input_authors").value + "\%0D%0A%0D%0A";
-    text += "Description: " + document.getElementById("input_tooldesc").value + "\%0D%0A%0D%0A";
-    text += "Tags: "+document.getElementById("input_tags").value + "%0D%0A%0D%0A";
-    text += "Comments: "+document.getElementById("input_comments").value + "%0D%0A";
-    document.getElementById("mail_body").value = encodeURIComponent(text);
+    var text = "Name: "+document.getElementById("input_name").value + "\r\n";
+    text += "Email: "+document.getElementById("input_email").value + "\r\n\r\n";
+    text += "Tool: "+document.getElementById("input_toolname").value + "\r\n";
+    text += "Pubmed ID: "+document.getElementById("input_pubmed").value + "\r\n";
+    text += "URL: "+document.getElementById("input_url").value + "\r\n";
+    text += "API: "+document.getElementById("api_url").value + "\r\n";
+    text += "Authors: " + document.getElementById("input_authors").value + "\r\n";
+    text += "Description: " + document.getElementById("input_tooldesc").value + "\r\n";
+    text += "Tags: "+document.getElementsByClassName("filter-option-inner-inner")[0].innerHTML + "\r\n\r\n";
+    text += "Comments: "+document.getElementById("input_comments").value + "\r\n";
+
+    //document.getElementById("mail_body").value = encodeURIComponent(text);
+    document.getElementById("mail_body").value = (text);
     document.getElementById("mail_subject").value = document.getElementById("input_pubmed").value;
-    return false;
+    return true;
   }
 </script>
