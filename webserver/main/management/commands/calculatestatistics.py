@@ -8,7 +8,7 @@ from datetime import timedelta, date, datetime
 
 from collections import defaultdict
 import random
-import urllib
+import urllib.request
 import math
 from tqdm import tqdm
 
