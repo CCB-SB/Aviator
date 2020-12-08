@@ -134,11 +134,15 @@ function updatePlot(website_states) {
           var tmp_data_offline = [];
           var tmp_data_na = [];
           var tmp_tdata = [];
-          if (states[i]["websites__states"] == null) {
+          wkey = "websites__states"
+          if("states" in states[i]) {
+              wkey = "states";
+          }
+          if (states[i][wkey] == null) {
               continue;
           }
-          for (var j = 0; j < states[i]["websites__states"].length; ++j) {
-            let value = states[i]["websites__states"][j];
+          for (var j = 0; j < states[i][wkey].length; ++j) {
+            let value = states[i][wkey][j];
             if (value == null) {
               tmp_data_online.push(null)
               tmp_data_na.push(1)

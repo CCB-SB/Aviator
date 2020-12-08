@@ -1,5 +1,6 @@
 
 var author_column = null;
+var tags_column = null;
 $(document).ready(function () {
     var numeric_cols = [4];
 
@@ -46,7 +47,6 @@ $(document).ready(function () {
                 data: "title"
             }, {
                 "data": "status", render: function ( data ) {
-                  console.log(data);
                   return "<div style='display:none'>" + data + "</div><span class='" + (data === "TEMP_OFFLINE" ? "orange" : (data === "ONLINE" ? "green" : (data === "OFFLINE" ? "red" : "grey"))) + "-circle'></span>";
                 }
             }, {
@@ -79,22 +79,17 @@ $(document).ready(function () {
                 data: "url", render: function ( data ) {
 				return "<a href=\""+data+"\">"+data+"</a>";
 			  }
+            },{
+                "data": "tag_tags", render: function ( data ) {
+				  str = "";
+				  for(var n=0; n < data.length; n++) {
+                      str += (n > 0 ? ", " : "") + "<a href=\"#\" onclick=\"filterTags('"+data[n]+"');return false;\">"+data[n]+"</a>";
+                  }
+				  return str;
+				}
             },
-          { "data": "tag_tags", render: function ( data ) {
-            var str = "";
-            if (data != null) {
-              var i = 0;
-              for (i=0; i < data.length; i++) {
-                if(data[i] != null) {
-                  str += (i > 0 ? ", " : "") + data[i];
-                }
-              }
-            }
-            return str;
-          }
-          },
           { data: "website_pk", render: function ( data ) {
-            return "<a class='btn btn-outline-light' href='details/"+data[0]+"'>Show Details</a>"
+            return "<a class='btn btn-outline-light' href='details/"+data[0]+"'>Auto-Generated Data</a>"
           }
         }
         ],
@@ -161,6 +156,9 @@ $(document).ready(function () {
                 if(i == 3) {
                     author_column = column;
                 }
+                if(i == 9) {
+                    tags_column = column;
+                }
             });
             $('#table_wrapper .col-sm-12:eq(0)').html(api.buttons().container());
             $('#table_filter').remove();
@@ -199,5 +197,9 @@ function createTableSearchData(column) {
 
 function filterAuthor(author_name) {
     document.getElementById("cs_3").value = author_name;
-  author_column.search(author_name).draw();
+    author_column.search(author_name).draw();
+}
+function filterTags(tag_name) {
+    document.getElementById("cs_9").value = tag_name;
+    tags_column.search(tag_name).draw();
 }

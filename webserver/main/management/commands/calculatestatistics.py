@@ -36,6 +36,7 @@ class Command(BaseCommand):
             website_states[w['website']][w["datetime"].date()] = w["ok"]
 
         for website in tqdm(Website.objects.all()):
+            break
             states = []
             offline = 0
             online = 0
@@ -71,13 +72,14 @@ class Command(BaseCommand):
                 n //= 10
             return s
         today = date.today()
+        today_dt = datetime.now()
         website_updates = []
         for website in tqdm(CuratedWebsite.objects.all()):
-            if today not in website.dates:
-                input = random.randint(10, 999) #12
-                result = sum_digits(input)#3
+            if not (len(website.dates) > 0 and website.dates[len(website.dates) - 1].date() == today):
+                input = random.randint(10, 999)
+                result = sum_digits(input)
                 web = urllib.request.urlopen(website.api_url + "?input="+str(input))
-                website.dates.append(today)
+                website.dates.append(today_dt)
                 text = str(web.read())[2:-1]
                 if text == str(result):
                     website.states.append(True)

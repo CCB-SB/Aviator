@@ -169,9 +169,8 @@ def curated_autocomplete(request):
     def remove_duplicates(x):
         return list(dict.fromkeys(x))
     if 'q' in request.GET:
-        columns = ['title', 'status', 'percentage', 'authors', 'year', 'journal', 'pubmed_id', 'abstract', 'url', 'tag_tags', 'website']
-        qs = CuratedWebsite.objects.all().prefetch_related('tags').annotate(tag_tags=ArrayAgg('tags'))
-        columns = ['title', 'status', 'percentage', 'authors', 'year', 'journal', 'pubmed_id', 'abstract', 'url', 'tag_tags', 'website']
+        columns = ['title', 'status', 'percentage', 'authors', 'year', 'journal', 'pubmed_id', 'description', 'url', 'tag_tags', 'website']
+        qs = CuratedWebsite.objects.all().prefetch_related('tags').annotate(tag_tags=ArrayAgg('tags__name'))
         numeric_cols = {4}
         email_col = {}
         filter = {}
@@ -194,7 +193,7 @@ def curated_autocomplete(request):
                         filter["{}__icontains".format(field_name)] = filter_string
         if filter:
             qs = qs.filter(**filter)
-        listed_cols = {9}
+        listed_cols = {3, 9}
         ignore_cols = {10}
         field_name = columns[int(request.GET.get('q'))]
         if int(request.GET.get('q')) in ignore_cols:
@@ -429,7 +428,7 @@ class Table(BaseDatatableView):
 
 class CuratedTable(Table):
     model = CuratedWebsite
-    columns = ['title', 'status', 'percentage', 'authors', 'year', 'journal', 'pubmed_id', 'abstract', 'url', 'tag_tags', 'website_pk']
+    columns = ['title', 'status', 'percentage', 'authors', 'year', 'journal', 'pubmed_id', 'description', 'url', 'tag_tags', 'website_pk']
     max_display_length = 500
 
     escape_values = False
@@ -480,6 +479,9 @@ class CuratedTable(Table):
 
             website_states = list(qs.values('pubmed_id', 'states'))
             latest_date = WebsiteCall.objects.latest("datetime").datetime
+            if CuratedWebsite.objects.all().count() > 0:
+                dates = CuratedWebsite.objects.all()[0].dates;
+                latest_date = dates[len(dates) - 1]
 
             state_dates = [(latest_date-timedelta(days=day_delta)).date().strftime("%Y-%m-%d") for day_delta in range(settings.TEMPORAL_INFO_DAYS, -1, -1)]
 
