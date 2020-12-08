@@ -67,7 +67,8 @@ exit 0;</code></pre>
 
       <div id="api_box_3" class="code-box php" style="display: none;">
 <pre><code>&lt;?php
-// PHP code goes here
+  header("Content-Type: text/plain");
+  echo array_sum(str_split($_GET['input']));
 ?&gt;</code></pre>
       </div>
 

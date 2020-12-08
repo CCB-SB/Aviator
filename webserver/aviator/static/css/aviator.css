@@ -263,6 +263,13 @@ input[type="search"]::-webkit-search-cancel-button {
   border-radius: 50%;
   display: inline-block;
 }
+.grey-circle {
+  height: 25px;
+  width: 25px;
+  background-color: grey;
+  border-radius: 50%;
+  display: inline-block;
+}
 /* Author Info */
 .contact-container {
     width: calc(100% - 4rem);

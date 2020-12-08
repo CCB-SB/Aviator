@@ -194,6 +194,22 @@ parsepaperdata-production:
   <<: *parsepaperdata
   <<: *production_vars
 
+.parsecurated: &parsecurated
+  script:
+    - *setup_docker_tls
+    - docker-compose -f webserver/production.yml run --rm django python manage.py parsecurated ${CURATED_PATH}
+  <<: *manage_only_master_remote
+
+parsecurated-staging:
+  stage: managedb-staging
+  <<: *parsecurated
+  <<: *staging_vars
+
+parsecurated-production:
+  stage: managedb-production
+  <<: *parsecurated
+  <<: *production_vars
+
 .calculatestatistics: &calculatestatistics
   script:
     - *setup_docker_tls

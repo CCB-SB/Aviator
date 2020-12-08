@@ -28,7 +28,7 @@ def get_index_stats():
     return context
 
 
-def get_all_statistics(pub_queryset):
+def get_all_statistics(pub_queryset, curated=False):
     # website count
     # paper count
     # online count
@@ -37,9 +37,12 @@ def get_all_statistics(pub_queryset):
     # temporal online, offline, tmp offline
     # top 10 journals, online, offline, tmp offline
     # per year online, offline, tmp offline
-    website_ids = set(e[0] for e in pub_queryset.values_list("websites").distinct())
-    websites = [w for w in Website.objects.all().values_list("id", "status", "states") if
-                w[0] in website_ids]
+    if curated:
+        website_ids = set(e.website for e in pub_queryset)
+        websites = [w for w in pub_queryset.values_list("id", "status", "states") if w[0] in website_ids]
+    else:
+        website_ids = set(e[0] for e in pub_queryset.values_list("websites").distinct())
+        websites = [w for w in Website.objects.all().values_list("id", "status", "states") if w[0] in website_ids]
     context = dict()
     context['website_count'] = len(websites)
     context['paper_count'] = pub_queryset.count()
@@ -87,15 +90,19 @@ def get_all_statistics(pub_queryset):
     context["top10_journals"] = list(pub_queryset.values("journal").annotate(
         count=Count("journal")).order_by("-count")[:10])
     journals2count = {e["journal"]: e["count"] for e in context["top10_journals"]}
-    top_journals_online = Counter(e["journal"] for e in pub_queryset.filter(
-        journal__in=journals2count.keys()).annotate(
-        status=BoolOr(Q(websites__status=WebsiteStatus.ONLINE),
-                      output_field=BooleanField())).filter(
-        status=True).values("journal"))
-    tmp_offline_all_journals = Counter(e for p in
-                                       Website.objects.filter(id__in=tmp_offline_websites).annotate(
-                                           paper=ArrayAgg("papers__journal")).values("paper") for e
-                                       in p["paper"])
+    if curated:
+        top_journals_online = Counter(e["journal"] for e in pub_queryset.filter(
+            journal__in=journals2count.keys()).filter(status=WebsiteStatus.ONLINE).values("journal"))
+        tmp_offline_all_journals = Counter(e for e in pub_queryset.filter(id__in=tmp_offline_websites).values("journal"))
+    else:
+        top_journals_online = Counter(e["journal"] for e in pub_queryset.filter(
+            journal__in=journals2count.keys()).annotate(
+            status=BoolOr(Q(websites__status=WebsiteStatus.ONLINE), output_field=BooleanField())).filter(
+            status=True).values("journal"))
+        tmp_offline_all_journals = Counter(e for p in
+                                           Website.objects.filter(id__in=tmp_offline_websites).annotate(
+                                               paper=ArrayAgg("papers__journal")).values("paper") for e
+                                           in p["paper"])
     tmp_offline_top_journals = {j: tmp_offline_all_journals.get(j, 0) for j in top_journals_online}
     #################
     offline_top_journals = {}
@@ -118,14 +125,19 @@ def get_all_statistics(pub_queryset):
     context["publications_per_year"] = list(pub_queryset.values("year").annotate(
         count=Count("year")).order_by("-count"))
     year2count = {e["year"]: e["count"] for e in context["publications_per_year"]}
-    years_online = Counter(e["year"] for e in pub_queryset.annotate(
-        status=BoolOr(Q(websites__status=WebsiteStatus.ONLINE),
-                      output_field=BooleanField())).filter(
-        status=True).values("year"))
-    tmp_offline_years = Counter(e for p in
-                                Website.objects.filter(id__in=tmp_offline_websites).annotate(
-                                    paper=ArrayAgg("papers__year")).values("paper") for e
-                                in p["paper"])
+    if curated:
+        years_online = Counter(e["year"] for e in pub_queryset.filter(
+            status=WebsiteStatus.ONLINE).values("year"))
+        tmp_offline_years = Counter(y for y in pub_queryset.filter(id__in=tmp_offline_websites).values("year"))
+    else:
+        years_online = Counter(e["year"] for e in pub_queryset.annotate(
+            status=BoolOr(Q(websites__status=WebsiteStatus.ONLINE),
+                          output_field=BooleanField())).filter(
+            status=True).values("year"))
+        tmp_offline_years = Counter(e for p in
+                                    Website.objects.filter(id__in=tmp_offline_websites).annotate(
+                                        paper=ArrayAgg("papers__year")).values("paper") for e
+                                    in p["paper"])
     offline_years = {j: (c - years_online[j] - tmp_offline_years[j]) for j, c
                      in year2count.items()}
     years = sorted(year2count.keys())

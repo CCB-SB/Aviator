@@ -16,7 +16,7 @@ $(document).ready(function () {
       }
     var scolumn = null;
     var foreign_filter_exists = true;
-    var abstract_counter = 0;
+    var description_counter = 0;
     var table = $('#table').DataTable({
       fnDrawCallback: function( settings ) {
           setTimeout(function(){
@@ -29,9 +29,9 @@ $(document).ready(function () {
             pages: 5 // number of pages to cache
         }),
       "columnDefs": [
-        { 'visible': false, 'targets': [9, 11, 12, 13, 14] },
-        { 'width': 50, 'targets': [1, 4, 13] },
-        { 'width': 100, 'targets': [2, 5, 6, 7, 14, 15] },
+        { 'visible': false, 'targets': [] },
+        { 'width': 50, 'targets': [1, 4] },
+        { 'width': 100, 'targets': [2, 5, 6, 7] },
         { 'width': 250, 'targets': [0] },
       ],
         deferRender: true,
@@ -46,7 +46,8 @@ $(document).ready(function () {
                 data: "title"
             }, {
                 "data": "status", render: function ( data ) {
-                  return "<div style='display:none'>" + data + "</div><span class='" + (data === "T" ? "orange" : (data === "O" ? "green" : (data === "F" ? "red" : "grey"))) + "-circle'></span>";
+                  console.log(data);
+                  return "<div style='display:none'>" + data + "</div><span class='" + (data === "TEMP_OFFLINE" ? "orange" : (data === "ONLINE" ? "green" : (data === "OFFLINE" ? "red" : "grey"))) + "-circle'></span>";
                 }
             }, {
                 "data": "percentage", render: function ( data ) {
@@ -71,8 +72,8 @@ $(document).ready(function () {
                 data: "pubmed_id"
             }, {
                 "data": "description", render: function ( data ) {
-				  ++abstract_counter;
-				  return "<div style='display:none' id='abstract" + abstract_counter + "'>" + data + "</div><button class=\"btn btn-outline-light my-2 my-sm-0\" type=\"button\" data-toggle=\"modal\" onclick=\"abstract(document.getElementById('abstract" + abstract_counter + "').innerHTML)\" data-target=\"#abstractModal\">Abstract</button>";
+				  ++description_counter;
+				  return "<div style='display:none' id='description" + description_counter + "'>" + data + "</div><button class=\"btn btn-outline-light my-2 my-sm-0\" type=\"button\" data-toggle=\"modal\" onclick=\"showDescription(document.getElementById('description" + description_counter + "').innerHTML)\" data-target=\"#descriptionModal\">Description</button>";
 				}
             }, {
                 data: "url", render: function ( data ) {
@@ -92,8 +93,8 @@ $(document).ready(function () {
             return str;
           }
           },
-          { data: "website", render: function ( data ) {
-            return "<a class='btn btn-outline-light' href='details/"+data+"'>Show Details</a>"
+          { data: "website_pk", render: function ( data ) {
+            return "<a class='btn btn-outline-light' href='details/"+data[0]+"'>Show Details</a>"
           }
         }
         ],

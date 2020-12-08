@@ -2,12 +2,13 @@ from django.core.management.base import BaseCommand
 from django.conf import settings
 from django.contrib.postgres.aggregates import BoolOr
 
-from main.models import Website, WebsiteCall, WebsiteStatus
+from main.models import Website, WebsiteCall, WebsiteStatus, CuratedWebsite
 
-from datetime import timedelta
+from datetime import timedelta, date, datetime
 
 from collections import defaultdict
-
+import random
+import urllib
 import math
 from tqdm import tqdm
 
@@ -39,8 +40,8 @@ class Command(BaseCommand):
             offline = 0
             online = 0
             for day_delta in range(max_days, -1, -1):
-                date = (latest_time-timedelta(days=day_delta)).date()
-                state = website_states[website.id].get(date, None)
+                d_date = (latest_time-timedelta(days=day_delta)).date()
+                state = website_states[website.id].get(d_date, None)
                 states.append(state)
                 if state is not None:
                     if state:
@@ -62,5 +63,57 @@ class Command(BaseCommand):
             website_updates.append(website)
 
         Website.objects.bulk_update(website_updates, ["status", "states", "percentage", "last_heap_size"])
+
+        def sum_digits(n):
+            s = 0
+            while n:
+                s += n % 10
+                n //= 10
+            return s
+        today = date.today()
+        website_updates = []
+        for website in tqdm(CuratedWebsite.objects.all()):
+            if today not in website.dates:
+                input = random.randint(10, 999) #12
+                result = sum_digits(input)#3
+                web = urllib.request.urlopen(website.api_url + "?input="+str(input))
+                website.dates.append(today)
+                text = str(web.read())[2:-1]
+                if text == str(result):
+                    website.states.append(True)
+                    website.status = WebsiteStatus.ONLINE
+                else:
+                    website.states.append(False)
+                    website.status = WebsiteStatus.OFFLINE
+            website_updates.append(website)
+        CuratedWebsite.objects.bulk_update(website_updates, ["dates", "states", "status"])
+
+        website_updates = []
+        for website in tqdm(CuratedWebsite.objects.all()):
+            states = []
+            offline = 0
+            online = 0
+            for day_delta in range(max_days, -1, -1):
+                d_date = (datetime.now() -timedelta(days=day_delta)).date()
+                state = None
+                for d in range(len(website.dates)):
+                    if d_date == website.dates[d].date():
+                        state = website.dates[d]
+                states.append(state)
+                if state is not None:
+                    if state:
+                        online += 1
+                    else:
+                        offline += 1
+            website.percentage = None
+            if online > 0 or offline > 0:
+                website.percentage = 100 * (online / (online + offline))
+            status = website.status
+            if status == WebsiteStatus.OFFLINE and any(states[-settings.TEMP_OFFLINE_DAYS-1:]):
+                status = WebsiteStatus.TEMP_OFFLINE
+            website.status = status
+            website_updates.append(website)
+        CuratedWebsite.objects.bulk_update(website_updates, ["status", "percentage"])
+
         self.stdout.write(self.style.SUCCESS("Successfully calculated website statistics"))
 

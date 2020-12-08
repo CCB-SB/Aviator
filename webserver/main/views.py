@@ -429,13 +429,13 @@ class Table(BaseDatatableView):
 
 class CuratedTable(Table):
     model = CuratedWebsite
-    columns = ['title', 'status', 'percentage', 'authors', 'year', 'journal', 'pubmed_id', 'abstract', 'url', 'tag_tags', 'website']
+    columns = ['title', 'status', 'percentage', 'authors', 'year', 'journal', 'pubmed_id', 'abstract', 'url', 'tag_tags', 'website_pk']
     max_display_length = 500
 
     escape_values = False
 
     def get_initial_queryset(self):
-        return CuratedWebsite.objects.all().prefetch_related('tags').annotate(tag_tags=ArrayAgg('tags'))
+        return CuratedWebsite.objects.all().prefetch_related('tags').annotate(tag_tags=ArrayAgg('tags__name'), website_pk=ArrayAgg('website'))
 
     def get_context_data(self, *args, **kwargs):
         try:
@@ -473,7 +473,7 @@ class CuratedTable(Table):
             # number of records after filtering
             total_display_records = qs.count()
 
-            #stats = get_all_statistics(qs)
+            stats = get_all_statistics(qs, True)
 
             # apply ordering
             qs = self.ordering(qs)
@@ -507,7 +507,7 @@ class CuratedTable(Table):
                            "states": website_states,
                            "dates": state_dates
                        }
-            #ret['statistics'] = stats
+            ret['statistics'] = stats
             return ret
         except Exception as e:
             return self.handle_exception(e)

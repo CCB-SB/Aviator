@@ -120,14 +120,14 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h3 class="modal-title">Abstract</h3>
+        <h3 class="modal-title">Description</h3>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
         <div class="form-group">
-          <div id="abstract-text"></div>
+          <div id="description-text"></div>
         </div>
       </div>
       <div class="modal-footer">
@@ -140,8 +140,8 @@
   search_column = {{ search_column }};
   search_string = "{{ search_string }}";
 
-  function abstract(text) {
-    document.getElementById("abstract-text").innerHTML = text;
+  function showDescription(text) {
+    document.getElementById("description-text").innerHTML = text;
   }
 </script>
 
