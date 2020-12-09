@@ -185,7 +185,7 @@ $(document).ready(function () {
           var i = 0;
           for (i=0; i < data.length; i++) {
             if(data[i] != null) {
-              str += (i > 0 ? ", " : "") + (data[i]);//data[i] == 0 ? "NA" : data[i]);
+              str += (i > 0 ? ", " : "") + (parseInt(data[i]) < 1000000 ? "< 1 mb" : (parseInt(parseInt(data[i]) / 1000000) + " mb"));
             }
           }
         } else {

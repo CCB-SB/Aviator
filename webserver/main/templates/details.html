@@ -76,7 +76,7 @@
                   <td>{{ call.code }}</td>
                   <td>{% if call.json_data.frontend < 0 %}NA{% else %}{{ call.json_data.frontend }} ms{% endif %}</td>
                   <td>{% if call.json_data.backend < 0 %}NA{% else %}{{ call.json_data.backend }} ms{% endif %}</td>
-                  <td>{% if call.json_data.total_heap_size <= 0 %}NA{% else %}{{ call.json_data.total_heap_size }}{% endif %}</td>
+                  <td>{% if call.json_data.total_heap_size <= 0 %}NA{% elif call.json_data.total_heap_size <= 1000000 %}< 1 mb{% else %}{% widthratio call.json_data.total_heap_size 1000000 1 %} mb{% endif %}</td>
               </tr>
           {% endfor %}
       </table>>
