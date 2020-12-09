@@ -68,7 +68,7 @@ class Command(BaseCommand):
                                       url=row["url"],
                                       api_url=row["api_url"],
                                       website=website)
-                    kwds = row["keywords"].split('; ')
+                    kwds = row["keywords"].split(';')
                     cw.save()
                     for kwd in kwds:
                         if Tag.objects.filter(name=kwd).count() > 0:

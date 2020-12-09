@@ -73,7 +73,7 @@ $(document).ready(function () {
             }, {
                 "data": "description", render: function ( data ) {
 				  ++description_counter;
-				  return "<div style='display:none' id='description" + description_counter + "'>" + data + "</div><button class=\"btn btn-outline-light my-2 my-sm-0\" type=\"button\" data-toggle=\"modal\" onclick=\"showDescription(document.getElementById('description" + description_counter + "').innerHTML)\" data-target=\"#descriptionModal\">Description</button>";
+				  return "<div style='display:none' id='description" + description_counter + "'>" + data + "</div><button class=\"btn btn-outline-light my-2 my-sm-0\" type=\"button\" data-toggle=\"modal\" onclick=\"showDescription(document.getElementById('description" + description_counter + "').innerHTML)\" data-target=\"#descriptionModal\">Abstract</button>";
 				}
             }, {
                 data: "url", render: function ( data ) {

@@ -272,9 +272,14 @@ input[type="search"]::-webkit-search-cancel-button {
   display: inline-block;
 }
 /* Author Info */
+.custom-control-input.is-valid~.custom-control-label, .was-validated .custom-control-input:valid~.custom-control-label {
+    color: var(--primary);
+}
 .contact-container {
     width: calc(100% - 4rem);
     margin: 2rem;
+    padding: 2rem;
+    background-color: var(--primary);
 }
 .contact-container > form > div > label {
     color: white;
@@ -291,21 +296,25 @@ input[type="search"]::-webkit-search-cancel-button {
     margin: 2rem 30vw 2rem 30vw;
   }
 }
+.contact-container > form > .form-group > .form-control {
+  border-color: var(--secondary);
+  background-color: var(--secondary);
+}
 .bootstrap-select > .btn {
-  border-color: var(--primary);
+  border-color: var(--secondary);
 }
 .bootstrap-select > .dropdown-menu {
-  background-color: var(--primary);
+  background-color: var(--secondary);
 }
 .bootstrap-select > .dropdown-menu > .bs-searchbox > input {
-  background-color: var(--secondary);
+  background-color: var(--primary);
     color: white;
 }
 .bootstrap-select > .dropdown-menu > .inner > ul > li > .dropdown-item {
-  background-color: var(--primary);
+  background-color: var(--secondary);
     color: white;
 }
 .filter-option {
-  background-color: var(--primary);
+  background-color: var(--secondary );
     color: white;
 }

@@ -51,7 +51,7 @@
           <input type="text" class="form-control" id="api_url" placeholder="API URL">
         </div>
         <div class="form-group">
-          <label for="input_tooldesc">Tool Description</label>
+          <label for="input_tooldesc">Abstract</label>
           <textarea class="form-control" id="input_tooldesc" rows="5" placeholder="Description"></textarea>
         </div>
         <div class="form-group">
@@ -62,12 +62,17 @@
           {% endfor %}
           </select>
         </div>
-
         <br>
         <div class="form-group">
           <label for="input_comments">Comments</label>
           <textarea class="form-control" id="input_comments" rows="5" placeholder="Comments"></textarea>
         </div>
+        <br>
+        <div class="custom-control custom-checkbox mb-3">
+          <input type="checkbox" class="custom-control-input" id="messageValidation">
+          <label class="custom-control-label" for="messageValidation">I want to be informed, if the website is down for more than three days.</label>
+        </div>
+        <br>
         <button type="submit" class="btn btn-outline-light">Submit</button>
       </form>
   </div>
@@ -82,9 +87,10 @@
     text += "URL: "+document.getElementById("input_url").value + "\r\n";
     text += "API: "+document.getElementById("api_url").value + "\r\n";
     text += "Authors: " + document.getElementById("input_authors").value + "\r\n";
-    text += "Description: " + document.getElementById("input_tooldesc").value + "\r\n";
+    text += "Abstract: " + document.getElementById("input_tooldesc").value + "\r\n";
     text += "Tags: "+document.getElementsByClassName("filter-option-inner-inner")[0].innerHTML + "\r\n\r\n";
     text += "Comments: "+document.getElementById("input_comments").value + "\r\n";
+    text += "I want to be informed, if the website is down for more than three days: "+ (document.getElementById("messageValidation").checked ? "Yes" : "No") + "\r\n";
 
     //document.getElementById("mail_body").value = encodeURIComponent(text);
     document.getElementById("mail_body").value = (text);
