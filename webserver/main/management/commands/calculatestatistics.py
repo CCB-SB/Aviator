@@ -75,7 +75,7 @@ class Command(BaseCommand):
         today_dt = datetime.now()
         website_updates = []
         for website in tqdm(CuratedWebsite.objects.all()):
-            if not (len(website.dates) > 0 and website.dates[len(website.dates) - 1].date() == today):
+            if not (len(website.dates) > 1 and website.dates[len(website.dates) - 1].date() == today and website.dates[len(website.dates) - 2].date() == today):
                 input = random.randint(10, 999)
                 result = sum_digits(input)
                 web = urllib.request.urlopen(website.api_url + "?input="+str(input))
