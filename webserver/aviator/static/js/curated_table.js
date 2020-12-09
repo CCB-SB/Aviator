@@ -3,6 +3,9 @@ var author_column = null;
 var tags_column = null;
 $(document).ready(function () {
     var numeric_cols = [4];
+    let cookie_name = "curated_hidden_columns";
+    let standard_hidden_columns = [];
+    let save_days = 60;
 
     var render_format_num = {
         display: function (data, type, row, meta) {
@@ -30,7 +33,7 @@ $(document).ready(function () {
             pages: 5 // number of pages to cache
         }),
       "columnDefs": [
-        { 'visible': false, 'targets': [] },
+        { 'visible': false, 'targets': getHiddenColumns() },
         { 'width': 50, 'targets': [1, 4] },
         { 'width': 100, 'targets': [2, 5, 6, 7] },
         { 'width': 250, 'targets': [0] },
@@ -172,11 +175,58 @@ $(document).ready(function () {
             ['10 rows', '25 rows', '50 rows']
         ],
         buttons: [
-            'pageLength', 'excel', 'csv', 'colvis'
+            'pageLength', 'excel', 'csv', {extend: 'colvis',
+          action: function ( e, dt, node, config ) {
+            $.fn.dataTable.ext.buttons.collection.action.call(this, e, dt, node, config);
+          }}
         ]
     });
 
-
+    var hidden_columns = getHiddenColumns();
+    table.on( 'buttons-action', function ( e, buttonApi, dataTable, node, config ) {
+        if(config.columns != undefined) {
+            let index = config.columns;
+            if(hidden_columns.includes(index)) {
+                var sindex = hidden_columns.indexOf(index);
+                if (sindex > -1) {
+                    hidden_columns.splice(sindex, 1);
+                }
+            } else {
+                hidden_columns.push(index);
+            }
+            setCookie(cookie_name, hidden_columns.toString(), save_days);
+        }
+    });
+    function getHiddenColumns() {
+        if(getCookie(cookie_name) == null) {
+            return standard_hidden_columns;
+        }
+        values = getCookie(cookie_name).split(",");
+        ret = [];
+        for (let i = 0; i < values.length; i++) {
+            ret.push(parseInt(values[i]));
+        }
+        return ret;
+    }
+    function setCookie(name, value, days) {
+        var expires = "";
+        if (days) {
+            var date = new Date();
+            date.setTime(date.getTime() + (days*24*60*60*1000));
+            expires = "; expires=" + date.toUTCString();
+        }
+        document.cookie = name + "=" + (value || "")  + expires + "; path=/";
+    }
+    function getCookie(name) {
+        var nameEQ = name + "=";
+        var ca = document.cookie.split(';');
+        for(var i=0;i < ca.length;i++) {
+            var c = ca[i];
+            while (c.charAt(0)==' ') c = c.substring(1,c.length);
+            if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+        }
+        return null;
+    }
 });
 function email(address) {
     window.location.href = "mailto:"+address.replace("[at]", "@");
