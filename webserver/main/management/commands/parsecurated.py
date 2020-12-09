@@ -20,7 +20,6 @@ class Command(BaseCommand):
         cw_tbl = pd.read_csv(csv_file, sep='\t', index_col="PMID")
         cw_tbl.index = cw_tbl.index.astype(str)
         cw_dict = cw_tbl.to_dict()
-        self.stdout.write(str(cw_tbl))
         cw_to_update = list(CuratedWebsite.objects.filter(pubmed_id__in=cw_tbl.index))
 
         def split_w_nan(s, delimiter):
