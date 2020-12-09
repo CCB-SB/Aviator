@@ -480,7 +480,7 @@ class CuratedTable(Table):
             website_states = list(qs.values('pubmed_id', 'states'))
             latest_date = WebsiteCall.objects.latest("datetime").datetime
             if CuratedWebsite.objects.all().count() > 0:
-                dates = CuratedWebsite.objects.all()[0].dates;
+                dates = CuratedWebsite.objects.all()[0].date
                 latest_date = dates[len(dates) - 1]
 
             state_dates = [(latest_date-timedelta(days=day_delta)).date().strftime("%Y-%m-%d") for day_delta in range(settings.TEMPORAL_INFO_DAYS, -1, -1)]

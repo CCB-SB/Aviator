@@ -36,7 +36,6 @@ class Command(BaseCommand):
             website_states[w['website']][w["datetime"].date()] = w["ok"]
 
         for website in tqdm(Website.objects.all()):
-            break
             states = []
             offline = 0
             online = 0
@@ -75,18 +74,31 @@ class Command(BaseCommand):
         today_dt = datetime.now()
         website_updates = []
         for website in tqdm(CuratedWebsite.objects.all()):
-            if not (len(website.dates) > 1 and website.dates[len(website.dates) - 1].date() == today and website.dates[len(website.dates) - 2].date() == today):
-                input = random.randint(10, 999)
-                result = sum_digits(input)
-                web = urllib.request.urlopen(website.api_url + "?input="+str(input))
+            input = random.randint(10, 999)
+            result = sum_digits(input)
+            web = urllib.request.urlopen(website.api_url + "?input="+str(input))
+            ok = str(web.read())[2:-1] == str(result)
+            if not (len(website.dates) > 0 and website.dates[len(website.dates) - 1].date() == today):
                 website.dates.append(today_dt)
-                text = str(web.read())[2:-1]
-                if text == str(result):
+                if ok:
                     website.states.append(True)
                     website.status = WebsiteStatus.ONLINE
                 else:
                     website.states.append(False)
                     website.status = WebsiteStatus.OFFLINE
+            else:
+                website.dates[len(website.dates) - 1] = today_dt
+                website.states[len(website.states) - 1] = (ok or website.states[len(website.states) - 1])
+                if website.states[len(website.states) - 1]:
+                    website.status = WebsiteStatus.ONLINE
+                else:
+                    website.status = WebsiteStatus.OFFLINE
+            while len(website.states) > max_days + 1:
+                website.states.pop(0)
+                website.dates.pop(0)
+            while len(website.states) < max_days + 1:
+                website.states.insert(0, None)
+                website.dates.insert(0, (website.dates[len(website.dates) - 1] - timedelta(days=1)).date())
             website_updates.append(website)
         CuratedWebsite.objects.bulk_update(website_updates, ["dates", "states", "status"])
 
