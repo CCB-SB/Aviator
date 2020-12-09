@@ -26,10 +26,12 @@
               <th>Original URL</th>
               <th>Derived URL</th>
               <th>Status</th>
-              <th>Created At</th>
-              <th>Updated At</th>
+              <th>Last 30 days</th>
+              <th>First Call</th>
+              <th>Latest Call</th>
               <th>IP</th>
-              <td>Analytics</td>
+              <th>Analytics</th>
+              <th>Programming Languages</th>
               <th>Secure Certificate</th>
           </tr>
         </thead>
@@ -37,10 +39,12 @@
             <td>{{ website.original_url }}</td>
             <td>{{ website.derived_url }}</td>
             <td><span class="{% if website.status == "O" %}green{% elif website.status == "T" %}orange{% elif website.status == "F" %}red{% elif website.status == "U" %}grey{% endif %}-circle"></span></td>
+            <td>{{ website.percentage|floatformat }} % online</td>
             <td>{{ website.created_at }}</td>
-            <td>{{ website.updated_at }}</td>
+            <td>{{ calls.0.datetime }}</td>
             <td>{{ website.ip }}</td>
             <td>{{ website.analytics }}</td>
+            <td>{{ website.script }}</td>
             <td>{% if website.certificate_secure %}Yes{% else %}No{% endif %}</td>
           </tr>
       </table>
@@ -58,9 +62,9 @@
             <th>Error</th>
             <th>Message</th>
             <th>Code</th>
-            <th>Frontend</th>
-            <th>Backend</th>
-            <th>Heap Size</th>
+            <th>Frontend Loading</th>
+            <th>Backend Loading</th>
+            <th>RAM Usage</th>
           </tr>
         </thead>
           {% for call in calls %}
