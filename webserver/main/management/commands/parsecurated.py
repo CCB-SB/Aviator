@@ -58,7 +58,6 @@ class Command(BaseCommand):
                     website = Website.objects.filter(original_url=row["url"])[0]
                 if Website.objects.filter(derived_url=row["url"]).count() > 0:
                     website = Website.objects.filter(derived_url=row["url"])[0]
-                self.stdout.write(str(website))
                 if website is not None:
                     cw = CuratedWebsite(pubmed_id=i,
                                       authors=str(row["authors"]).split(", "),

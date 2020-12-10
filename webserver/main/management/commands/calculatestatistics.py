@@ -80,7 +80,7 @@ class Command(BaseCommand):
                             try:
                                 send_mail(
                                     'Your website has been offline for 3 days',
-                                    f'This is an autoamted email from aviator to inform you, that your website {website.url} has been offline for 3 days',
+                                    f'This is an automated email from aviator to inform you, that your website {website.url} has been offline for 3 days',
                                     'no-reply@aviator.com',
                                     [website.contact_mail],
                                     fail_silently=False,
@@ -92,11 +92,18 @@ class Command(BaseCommand):
         today_dt = datetime.now()
         website_updates = []
         for website in tqdm(CuratedWebsite.objects.all()):
+            first_check = False
             input = random.randint(10, 999)
             result = sum_digits(input)
-            web = urllib.request.urlopen(website.api_url + "?input="+str(input))
-            ok = str(web.read())[2:-1] == str(result)
+            response = "0"
+            try:
+                web = urllib.request.urlopen(website.api_url + "?input="+str(input))
+                response = str(web.read())[2:-1]
+            except Exception:
+                response = "0"
+            ok = response == str(result)
             if not (len(website.dates) > 0 and website.dates[len(website.dates) - 1].date() == today):
+                first_check = True
                 website.dates.append(today_dt)
                 if ok:
                     website.states.append(True)
@@ -118,7 +125,8 @@ class Command(BaseCommand):
                 website.states.insert(0, None)
                 website.dates.insert(0, (website.dates[len(website.dates) - 1] - timedelta(days=1)).date())
             website_updates.append(website)
-            handleAutomatedMessage(website)
+            if first_check:
+                handleAutomatedMessage(website)
         CuratedWebsite.objects.bulk_update(website_updates, ["dates", "states", "status"])
 
         website_updates = []
