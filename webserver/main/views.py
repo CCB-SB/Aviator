@@ -81,9 +81,11 @@ def prepare_csv_export(qs, columns, request, numeric_cols, email_col):
                 for i in range(0, len(values)):
                     new_value = []
                     for j in range(0, len(values[i][0])):
-                        new_value.append(str(len(values[i][0][j])).replace("@", "[at]"))
-                    new_values.append(str(new_value).replace("@", "[at]"))
-            csv_content.append(values)
+                        new_value.append(str(values[i][0][j]).replace("@", "[at]"))
+                    new_values.append(str(new_value))
+                csv_content.append(new_values)
+            else:
+                csv_content.append(values)
     writer.writerows(list(map(list, zip(*csv_content))))
     response['Content-Disposition'] = 'attachment; filename="export.csv"'
     return response
