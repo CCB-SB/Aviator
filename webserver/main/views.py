@@ -17,6 +17,76 @@ from django_datatables_view.base_datatable_view import BaseDatatableView
 from django.views.generic import TemplateView
 from .stats import get_index_stats, get_all_statistics
 from itertools import chain
+import csv
+
+
+def export_publications_csv(request):
+    qs = Publication.objects.all().prefetch_related('websites').annotate(
+        status=ArrayAgg('websites__status'), percentage=ArrayAgg('websites__percentage'),
+        original_url=ArrayAgg('websites__original_url'),
+        derived_url=ArrayAgg('websites__derived_url'), scripts=ArrayAgg('websites__script'),
+        ssl=ArrayAgg('websites__certificate_secure'), heap_size=ArrayAgg('websites__last_heap_size'),
+        website_pks=ArrayAgg('websites__pk'))
+    columns = ['title', 'status', 'percentage', 'authors', 'year', 'journal', 'pubmed_id',
+               'abstract', 'original_url', 'derived_url', 'contact_mail', 'user_kwds',
+               'scripts', 'ssl', 'heap_size', 'website_pks']
+    numeric_cols = {4}
+    email_col = {10}
+    return prepare_csv_export(qs, columns, request, numeric_cols, email_col)
+
+
+def export_curated_csv(request):
+    columns = ['title', 'status', 'percentage', 'authors', 'year', 'journal', 'pubmed_id', 'description', 'url', 'tag_tags', 'website']
+    qs = CuratedWebsite.objects.all().prefetch_related('tags').annotate(tag_tags=ArrayAgg('tags__name'))
+    numeric_cols = {4}
+    email_col = {}
+    return prepare_csv_export(qs, columns, request, numeric_cols, email_col)
+
+
+def prepare_csv_export(qs, columns, request, numeric_cols, email_col):
+    response = HttpResponse(content_type='text/csv')
+    writer = csv.writer(response, delimiter ='\t')
+    header_line = []
+    for k in range(0, len(columns)):
+        if str(k) in request.GET:
+            header_line.append(columns[k])
+    writer.writerow(header_line)
+    filter = {}
+    for k in range(0, len(columns)):
+        if str(k) in request.GET and len(columns) > k:
+            filter_string = request.GET.get(str(k))
+            if len(filter_string) > 0 and filter_string != ";":
+                field_name = columns[k]
+                if k in email_col:
+                    filter_string = filter_string.replace("[at]", "@")
+                if k in numeric_cols:
+                    min_str, max_str = filter_string.split(';')
+                    if min_str and max_str:
+                        filter["{}__range".format(field_name)] = (float(min_str), float(max_str))
+                    elif min_str:
+                        filter["{}__gte".format(field_name)] = float(min_str)
+                    elif max_str:
+                        filter["{}__lte".format(field_name)] = float(max_str)
+                else:
+                    filter["{}__icontains".format(field_name)] = filter_string
+    if filter:
+        qs = qs.filter(**filter)
+    csv_content = []
+    for k in range(0, len(columns)):
+        if str(k) in request.GET:
+            field_name = columns[k]
+            values = qs.values_list(field_name)
+            if k in email_col:
+                new_values = []
+                for i in range(0, len(values)):
+                    new_value = []
+                    for j in range(0, len(values[i][0])):
+                        new_value.append(str(len(values[i][0][j])).replace("@", "[at]"))
+                    new_values.append(str(new_value).replace("@", "[at]"))
+            csv_content.append(values)
+    writer.writerows(list(map(list, zip(*csv_content))))
+    response['Content-Disposition'] = 'attachment; filename="export.csv"'
+    return response
 
 
 def index(request):
@@ -140,7 +210,7 @@ def autocomplete(request):
         if filter:
             qs = qs.filter(**filter)
         listed_cols = {1, 2, 3, 8, 9, 10, 11, 12, 13, 14, 15}
-        ignore_cols = {4, 14, 15}
+        ignore_cols = {4, 15}
         field_name = columns[int(request.GET.get('q'))]
         if int(request.GET.get('q')) in ignore_cols:
             return JsonResponse(list(), safe=False)

@@ -175,13 +175,27 @@ $(document).ready(function () {
             ['10 rows', '25 rows', '50 rows']
         ],
         buttons: [
-            'pageLength', 'excel', 'csv', {extend: 'colvis',
+            'pageLength', {
+                    extend: 'csv',
+                    text: 'CSV',
+                    action: exportCSV
+                }, {extend: 'colvis',
           action: function ( e, dt, node, config ) {
             $.fn.dataTable.ext.buttons.collection.action.call(this, e, dt, node, config);
           }}
         ]
     });
 
+    function exportCSV(e, dt, node, config) {
+        var filter_str = ""
+        filters = createTableSearchData(0);
+        for (var i = 0, keys = Object.keys(filters), ii = keys.length; i < ii; i++) {
+            if(keys[i] != "q") {
+                filter_str += (filter_str == "" ? "?" : "&")+keys[i]+"="+encodeURIComponent(filters[keys[i]]);
+            }
+        }
+        window.open(export_csv_url+filter_str);
+    }
     var hidden_columns = getHiddenColumns();
     table.on( 'buttons-action', function ( e, buttonApi, dataTable, node, config ) {
         if(config.columns != undefined) {

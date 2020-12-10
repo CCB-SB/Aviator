@@ -18,4 +18,6 @@ urlpatterns = [
     path('api', views.api, name='api'),
     path('curated', views.curated, name='curated'),
     path('curated_autocomplete', views.curated_autocomplete, name='curated_autocomplete'),
+    path('export_publications_csv', views.export_publications_csv, name='export_publications_csv'),
+    path('export_curated_csv', views.export_curated_csv, name='export_curated_csv'),
 ]

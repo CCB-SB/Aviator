@@ -290,12 +290,26 @@ $(document).ready(function () {
             ['10 rows', '25 rows', '50 rows']
         ],
         buttons: [
-            'pageLength', 'excel', 'csv', {extend: 'colvis',
+            'pageLength', {
+                    extend: 'csv',
+                    text: 'CSV',
+                    action: exportCSV
+                },{extend: 'colvis',
           action: function ( e, dt, node, config ) {
             $.fn.dataTable.ext.buttons.collection.action.call(this, e, dt, node, config);
           }}
         ]
     });
+    function exportCSV(e, dt, node, config) {
+        var filter_str = ""
+        filters = createTableSearchData(0);
+        for (var i = 0, keys = Object.keys(filters), ii = keys.length; i < ii; i++) {
+            if(keys[i] != "q") {
+                filter_str += (filter_str == "" ? "?" : "&")+keys[i]+"="+encodeURIComponent(filters[keys[i]]);
+            }
+        }
+        window.open(export_csv_url+filter_str);
+    }
 
     var hidden_columns = getHiddenColumns();
     table.on( 'buttons-action', function ( e, buttonApi, dataTable, node, config ) {
@@ -351,7 +365,7 @@ function email(address) {
 
 function createTableSearchData(column) {
     data = {};
-    for(var i=0; i <= 14; ++i) {
+    for(var i=0; i <= 15; ++i) {
         if(i==4 && $('#cs_from_'+i).val() != undefined) {
             data[i] = $('#cs_from_'+i).val()+";"+$('#cs_to_'+i).val();
         } else if($('#cs_'+i).val() != undefined) {
@@ -364,5 +378,5 @@ function createTableSearchData(column) {
 
 function filterAuthor(author_name) {
     document.getElementById("cs_3").value = author_name;
-  author_column.search(author_name).draw();
+    author_column.search(author_name).draw();
 }
