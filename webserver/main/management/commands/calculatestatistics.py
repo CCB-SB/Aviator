@@ -1,7 +1,7 @@
 from django.core.management.base import BaseCommand
 from django.conf import settings
 from django.contrib.postgres.aggregates import BoolOr
-
+from django.core.mail import send_mail
 from main.models import Website, WebsiteCall, WebsiteStatus, CuratedWebsite
 
 from datetime import timedelta, date, datetime
@@ -70,6 +70,24 @@ class Command(BaseCommand):
                 s += n % 10
                 n //= 10
             return s
+
+        #Automated Email message (offline 3 days and online before)
+        def handleAutomatedMessage(website):
+            if (website.states[len(website.states) - 1] is not None) and (not website.states[len(website.states) - 1]):
+                if website.states[len(website.states) - 2] is not None and (not website.states[len(website.states) - 2]):
+                    if website.states[len(website.states) - 3] is not None and (not website.states[len(website.states) - 3]):
+                        if website.states[len(website.states) - 4] is not None and (website.states[len(website.states) - 4]):
+                            try:
+                                send_mail(
+                                    'Your website has been offline for 3 days',
+                                    f'This is an autoamted email from aviator to inform you, that your website {website.url} has been offline for 3 days',
+                                    'no-reply@aviator.com',
+                                    [website.contact_mail],
+                                    fail_silently=False,
+                                )
+                            except Exception as e:
+                                self.stdout.write(str(e.message))
+
         today = date.today()
         today_dt = datetime.now()
         website_updates = []
@@ -100,6 +118,7 @@ class Command(BaseCommand):
                 website.states.insert(0, None)
                 website.dates.insert(0, (website.dates[len(website.dates) - 1] - timedelta(days=1)).date())
             website_updates.append(website)
+            handleAutomatedMessage(website)
         CuratedWebsite.objects.bulk_update(website_updates, ["dates", "states", "status"])
 
         website_updates = []

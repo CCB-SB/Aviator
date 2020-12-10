@@ -1,4 +1,4 @@
-PMID	title	api_url	authors	year	journal	description	url	keywords
-28472498	PHP Test	http://35.246.143.13/TestServer.php	TestA1, TestA2	2018	TestJ1	TestText1	https://ccb-microbe.cs.uni-saarland.de/busybee	Genomics;Epigenomics
-32374865	Perl Test	http://35.246.143.13:8080/TestServer	TestA2, TestA3	2019	TestJ23	TestText2	https://www.ccb.uni-saarland.de/mieaa2	Metagenomics
-32379325	Node.js Test	https://nar.bihealth.de/nar-cgi/TestServer.cgi	TestA2, TestA4	2020	TestJ23	TestText3	http://genetrail.bioinf.uni-sb.de	Epistasis
+PMID	title	api_url	authors	year	journal	description	url	keywords	contact_mail
+28472498	PHP Test	http://35.246.143.13/TestServer.php	TestA1, TestA2	2018	TestJ1	TestText1	https://ccb-microbe.cs.uni-saarland.de/busybee	Genomics;Epigenomics	test@test.test
+32374865	Perl Test	http://35.246.143.13:8080/TestServer	TestA2, TestA3	2019	TestJ23	TestText2	https://www.ccb.uni-saarland.de/mieaa2	Metagenomics	test@test.test
+32379325	Node.js Test	https://nar.bihealth.de/nar-cgi/TestServer.cgi	TestA2, TestA4	2020	TestJ23	TestText3	http://genetrail.bioinf.uni-sb.de	Epistasis	test@test.test

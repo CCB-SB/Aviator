@@ -35,6 +35,7 @@ class Command(BaseCommand):
             cw.authors = cw_dict["authors"][cw.pubmed_id].split(", ")
             cw.journal = cw_dict["journal"][cw.pubmed_id]
             cw.api_url = cw_dict["api_url"][cw.pubmed_id]
+            cw.contact_mail = cw_dict["contact_mail"][cw.pubmed_id]
             cw.url = cw_dict["url"][cw.pubmed_id]
             if Website.objects.filter(original_url=cw.url).count() > 0:
                 cw.website = Website.objects.filter(original_url=cw.url)[0]
@@ -67,6 +68,7 @@ class Command(BaseCommand):
                                       journal=row["journal"],
                                       url=row["url"],
                                       api_url=row["api_url"],
+                                      contact_mail=row["contact_mail"],
                                       website=website)
                     kwds = row["keywords"].split(';')
                     cw.save()
