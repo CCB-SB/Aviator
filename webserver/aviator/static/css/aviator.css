@@ -14,7 +14,13 @@
 body {
   background-color: #141a20;
 }
-
+iframe {
+    border-width: 0px;
+    border-top-width: 0px;
+    border-right-width: 0px;
+    border-bottom-width: 0px;
+    border-left-width: 0px;
+}
 .content-container {
     width: calc(100% - 2rem);
     margin: 1rem;

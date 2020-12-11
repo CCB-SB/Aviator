@@ -116,6 +116,47 @@
   </div>
 </div>
 
+<div class="modal fade" role="dialog" tabindex="-1" id="exportCSVModal">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <form action="{% url 'main:curated' %}" target="iframe"  method="post">
+      {% csrf_token %}
+        <div class="modal-header">
+          <h3 class="modal-title">Download CSV</h3>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <br>
+            <p>Please solve the Captcha</p>
+            {{ form.captcha }}
+            <input id="exportCSVColumns" type="hidden" name="columns" value="">
+            <input id="exportCSVFilter"  type="hidden" name="filter" value="">
+            <input id="exportCSVFilter0"  type="hidden" name="0" value="">
+            <input id="exportCSVFilter1"  type="hidden" name="1" value="">
+            <input id="exportCSVFilter2"  type="hidden" name="2" value="">
+            <input id="exportCSVFilter3"  type="hidden" name="3" value="">
+            <input id="exportCSVFilter4"  type="hidden" name="4" value="">
+            <input id="exportCSVFilter5"  type="hidden" name="5" value="">
+            <input id="exportCSVFilter6"  type="hidden" name="6" value="">
+            <input id="exportCSVFilter7"  type="hidden" name="7" value="">
+            <input id="exportCSVFilter8"  type="hidden" name="8" value="">
+            <input id="exportCSVFilter9"  type="hidden" name="9" value="">
+            <input id="exportCSVFilter10"  type="hidden" name="10" value="">
+            <iframe id="iframe" name="iframe" height="40"><html><p>Please solve the Captcha</p></html></iframe>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-outline-dark" data-dismiss="modal">Close</button>
+          <input class="btn btn-outline-dark" type="submit" value="Download">
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
 <div class="modal fade" role="dialog" tabindex="-1" id="descriptionModal">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -143,19 +184,32 @@
   function showDescription(text) {
     document.getElementById("description-text").innerHTML = text;
   }
+  function showExportCSVModal(text) {
+    //var filter_str = ""
+    var columns_str = ""
+    filters = createTableSearchData(0);
+    for (var i = 0, keys = Object.keys(filters), ii = keys.length; i < ii; i++) {
+        if(keys[i] != "q") {
+            //filter_str += ("&")+keys[i]+"="+encodeURIComponent(filters[keys[i]]);
+            columns_str += (columns_str == "" ? "" : ";")+keys[i];
+            document.getElementById("exportCSVFilter"+keys[i]).value = filters[keys[i]];
+        }
+    }
+    document.getElementById("exportCSVColumns").value = columns_str;
+    //document.getElementById("exportCSVFilter").value = filter_str;
+    $('#exportCSVModal').modal('toggle');
+  }
 </script>
 
 <script src="{% static 'js/datatables_pipeline.js' %}"></script>
 <script>
   var tbl_data_url = "{% url 'main:curated_data' %}";
   var autocomplete_url = "{% url 'main:curated_autocomplete' %}";
-  var export_csv_url = "{% url 'main:export_curated_csv' %}";
 </script>
 <script src="{% static 'js/curated_table.js' %}"></script>
 <script>
   $(document).ready(function () {
   });
-
 </script>
 </body>
 </html>

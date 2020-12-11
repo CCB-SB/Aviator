@@ -17,3 +17,5 @@ dependencies:
     - django-cache-memoize
     - django-datatables-view==1.19.1
     - django-choices==1.7.1
+    - django-simple-captcha
+    - testfixtures

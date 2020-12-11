@@ -175,27 +175,22 @@ $(document).ready(function () {
             ['10 rows', '25 rows', '50 rows']
         ],
         buttons: [
-            'pageLength', {
-                    extend: 'csv',
-                    text: 'CSV',
-                    action: exportCSV
-                }, {extend: 'colvis',
+            'pageLength', {text: 'CSV', action: showExportCSVModal},
+            {extend: 'colvis',
           action: function ( e, dt, node, config ) {
             $.fn.dataTable.ext.buttons.collection.action.call(this, e, dt, node, config);
           }}
         ]
     });
 
-    function exportCSV(e, dt, node, config) {
-        var filter_str = ""
-        filters = createTableSearchData(0);
-        for (var i = 0, keys = Object.keys(filters), ii = keys.length; i < ii; i++) {
-            if(keys[i] != "q") {
-                filter_str += (filter_str == "" ? "?" : "&")+keys[i]+"="+encodeURIComponent(filters[keys[i]]);
-            }
-        }
-        window.open(export_csv_url+filter_str);
-    }
+      function onClick(e) {
+        e.preventDefault();
+        grecaptcha.ready(function() {
+          grecaptcha.execute('reCAPTCHA_site_key', {action: 'submit'}).then(function(token) {
+              // Add your logic to submit to your backend server here.
+          });
+        });
+      }
     var hidden_columns = getHiddenColumns();
     table.on( 'buttons-action', function ( e, buttonApi, dataTable, node, config ) {
         if(config.columns != undefined) {

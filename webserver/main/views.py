@@ -18,44 +18,26 @@ from django.views.generic import TemplateView
 from .stats import get_index_stats, get_all_statistics
 from itertools import chain
 import csv
-
-
-def export_publications_csv(request):
-    qs = Publication.objects.all().prefetch_related('websites').annotate(
-        status=ArrayAgg('websites__status'), percentage=ArrayAgg('websites__percentage'),
-        original_url=ArrayAgg('websites__original_url'),
-        derived_url=ArrayAgg('websites__derived_url'), scripts=ArrayAgg('websites__script'),
-        ssl=ArrayAgg('websites__certificate_secure'), heap_size=ArrayAgg('websites__last_heap_size'),
-        website_pks=ArrayAgg('websites__pk'))
-    columns = ['title', 'status', 'percentage', 'authors', 'year', 'journal', 'pubmed_id',
-               'abstract', 'original_url', 'derived_url', 'contact_mail', 'user_kwds',
-               'scripts', 'ssl', 'heap_size', 'website_pks']
-    numeric_cols = {4}
-    email_col = {10}
-    return prepare_csv_export(qs, columns, request, numeric_cols, email_col)
-
-
-def export_curated_csv(request):
-    columns = ['title', 'status', 'percentage', 'authors', 'year', 'journal', 'pubmed_id', 'description', 'url', 'tag_tags', 'website']
-    qs = CuratedWebsite.objects.all().prefetch_related('tags').annotate(tag_tags=ArrayAgg('tags__name'))
-    numeric_cols = {4}
-    email_col = {}
-    return prepare_csv_export(qs, columns, request, numeric_cols, email_col)
+from .forms import CaptchaForm
 
 
 def prepare_csv_export(qs, columns, request, numeric_cols, email_col):
     response = HttpResponse(content_type='text/csv')
     writer = csv.writer(response, delimiter ='\t')
     header_line = []
+    shown = []
+    if "columns" in request.POST:
+        shown = request.POST["columns"].split(';')
     for k in range(0, len(columns)):
-        if str(k) in request.GET:
+        if str(k) in shown:
             header_line.append(columns[k])
     writer.writerow(header_line)
     filter = {}
     for k in range(0, len(columns)):
-        if str(k) in request.GET and len(columns) > k:
-            filter_string = request.GET.get(str(k))
-            if len(filter_string) > 0 and filter_string != ";":
+        if str(k) in shown and len(columns) > k:
+            filter_string = request.POST.get(str(k))
+            if len(filter_string) > 0 and filter_string != ";" and filter_string != "%3B":
+                return HttpResponse(str(k)+": ["+filter_string+"]")
                 field_name = columns[k]
                 if k in email_col:
                     filter_string = filter_string.replace("[at]", "@")
@@ -73,7 +55,7 @@ def prepare_csv_export(qs, columns, request, numeric_cols, email_col):
         qs = qs.filter(**filter)
     csv_content = []
     for k in range(0, len(columns)):
-        if str(k) in request.GET:
+        if str(k) in shown:
             field_name = columns[k]
             values = qs.values_list(field_name)
             if k in email_col:
@@ -114,15 +96,46 @@ def get_publication_datatable_info():
 
 
 def publications(request):
-    context = {'search_column': -1, 'search_string': ''}
-    if request.method == 'POST':
+    if request.POST:
+        form = CaptchaForm(request.POST)
+        if form.is_valid():
+            qs = Publication.objects.all().prefetch_related('websites').annotate(
+                status=ArrayAgg('websites__status'), percentage=ArrayAgg('websites__percentage'),
+                original_url=ArrayAgg('websites__original_url'),
+                derived_url=ArrayAgg('websites__derived_url'), scripts=ArrayAgg('websites__script'),
+                ssl=ArrayAgg('websites__certificate_secure'), heap_size=ArrayAgg('websites__last_heap_size'),
+                website_pks=ArrayAgg('websites__pk'))
+            columns = ['title', 'status', 'percentage', 'authors', 'year', 'journal', 'pubmed_id',
+                       'abstract', 'original_url', 'derived_url', 'contact_mail', 'user_kwds',
+                       'scripts', 'ssl', 'heap_size', 'website_pks']
+            numeric_cols = {4}
+            email_col = {10}
+            return prepare_csv_export(qs, columns, request, numeric_cols, email_col)
+        else:
+            return HttpResponse("Wrong Captcha")
+    else:
+        form = CaptchaForm()
+    context = {'search_column': -1, 'search_string': '', 'form': form}
+    if request.method == 'POST' and 'search_column' in request.POST:
         context['search_column'] = request.POST['search_column']
         context['search_string'] = request.POST['search_string']
     return render(request, 'publications.html', context)
 
 def curated(request):
-    context = {'search_column': -1, 'search_string': ''}
-    if request.method == 'POST':
+    if request.POST:
+        form = CaptchaForm(request.POST)
+        if form.is_valid():
+            columns = ['title', 'status', 'percentage', 'authors', 'year', 'journal', 'pubmed_id', 'description', 'url', 'tag_tags', 'website']
+            qs = CuratedWebsite.objects.all().prefetch_related('tags').annotate(tag_tags=ArrayAgg('tags__name'))
+            numeric_cols = {4}
+            email_col = {}
+            return prepare_csv_export(qs, columns, request, numeric_cols, email_col)
+        else:
+            return HttpResponse("Wrong Captcha")
+    else:
+        form = CaptchaForm()
+    context = {'search_column': -1, 'search_string': '', 'form': form}
+    if request.method == 'POST' and 'search_column' in request.POST:
         context['search_column'] = request.POST['search_column']
         context['search_string'] = request.POST['search_string']
     return render(request, 'curated.html', context)
