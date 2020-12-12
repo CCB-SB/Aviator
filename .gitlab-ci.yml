@@ -178,6 +178,24 @@ parsewebsitecalls-production:
   <<: *parsewebsitecalls
   <<: *production_vars
 
+.update_websitecalls_and_stats: &update_websitecalls_and_stats
+  script:
+    - *setup_docker_tls
+    - docker-compose -f webserver/production.yml run --rm django python manage.py parsewebsitecalls ${TELEMETRY_PATH} ${FOLDERID_URL_PATH} ${FILTER_PATH}
+    - docker-compose -f webserver/production.yml run --rm django python manage.py calculatestatistics
+    - rm -rf ${TELEMETRY_PATH}
+  <<: *manage_only_master_remote
+
+update_websitecalls_and_stats-staging:
+  stage: managedb-staging
+  <<: *update_websitecalls_and_stats
+  <<: *staging_vars
+
+update_websitecalls_and_stats-production:
+  stage: managedb-production
+  <<: *parsewebsitecalls
+  <<: *production_vars
+
 .parsepaperdata: &parsepaperdata
   script:
     - *setup_docker_tls
