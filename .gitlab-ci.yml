@@ -21,7 +21,6 @@ before_script:
   - mkdir -p webserver/.envs/.production
   - echo "$DJANGO_ENV" > webserver/.envs/.production/.django
   - echo "$POSTGRES_ENV" > webserver/.envs/.production/.postgres
-
   - echo "CI_REPOSITORY_URL=${CI_REPOSITORY_URL}" > webserver/.git_env
 
 .staging_vars: &staging_vars
@@ -34,7 +33,7 @@ before_script:
 .production_vars: &production_vars
   variables:
     DOCKER_TLS_VERIFY: "1"
-    DOCKER_HOST: "tcp://ccb-web.cs.uni-saarland.de:2376"
+    DOCKER_HOST: "tcp://ccb-compute2.cs.uni-saarland.de:2376"
     DOCKER_CERT_PATH: "certs"
     IS_PROD: "1"
     COMPOSE_HTTP_TIMEOUT: "180"
