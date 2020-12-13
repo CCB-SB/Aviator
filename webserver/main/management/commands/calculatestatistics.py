@@ -73,20 +73,23 @@ class Command(BaseCommand):
 
         #Automated Email message (offline 3 days and online before)
         def handleAutomatedMessage(website):
-            if (website.states[len(website.states) - 1] is not None) and (not website.states[len(website.states) - 1]):
-                if website.states[len(website.states) - 2] is not None and (not website.states[len(website.states) - 2]):
-                    if website.states[len(website.states) - 3] is not None and (not website.states[len(website.states) - 3]):
-                        if website.states[len(website.states) - 4] is not None and (website.states[len(website.states) - 4]):
-                            try:
-                                send_mail(
-                                    'Your website has been offline for 3 days',
-                                    f'This is an automated email from aviator to inform you, that your website {website.url} has been offline for 3 days',
-                                    'no-reply@aviator.com',
-                                    [website.contact_mail],
-                                    fail_silently=False,
-                                )
-                            except Exception as e:
-                                self.stdout.write(str(e.message))
+            if website.days_reminder > 0:
+                remind = True
+                for i in range(1, website.days_reminder + 1):
+                    if (website.states[len(website.states) - i] is None) or (website.states[len(website.states) - i]):
+                        remind = False
+                        break
+                if remind and (website.states[len(website.states) - (website.days_reminder + 1)]):
+                    try:
+                        send_mail(
+                            'Your website has been offline for 3 days',
+                            f'This is an automated email from aviator to inform you, that your website {website.url} has been offline for 3 days',
+                            'no-reply@aviator.ccb.uni-saarland.de',
+                            [website.contact_mail],
+                            fail_silently=False,
+                        )
+                    except Exception as e:
+                        self.stdout.write(str(e.message))
 
         today = date.today()
         today_dt = datetime.now()

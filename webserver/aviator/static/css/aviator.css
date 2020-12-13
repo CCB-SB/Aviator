@@ -278,6 +278,11 @@ input[type="search"]::-webkit-search-cancel-button {
   display: inline-block;
 }
 /* Author Info */
+.custom-control-label > input[type="number"] {
+   width: 2.8rem;
+  background-color: var(--primary);
+  color: var(--font-color);
+}
 .custom-control-input.is-valid~.custom-control-label, .was-validated .custom-control-input:valid~.custom-control-label {
     color: var(--primary);
 }
@@ -288,7 +293,7 @@ input[type="search"]::-webkit-search-cancel-button {
     background-color: var(--primary);
 }
 .contact-container > form > div > label {
-    color: white;
+  color: var(--font-color);
 }
 @media only screen and (min-width: 80rem) and (max-width: 120rem) {
 	.contact-container {
@@ -314,13 +319,13 @@ input[type="search"]::-webkit-search-cancel-button {
 }
 .bootstrap-select > .dropdown-menu > .bs-searchbox > input {
   background-color: var(--primary);
-    color: white;
+  color: var(--font-color);
 }
 .bootstrap-select > .dropdown-menu > .inner > ul > li > .dropdown-item {
   background-color: var(--secondary);
-    color: white;
+  color: var(--font-color);
 }
 .filter-option {
   background-color: var(--secondary );
-    color: white;
+  color: var(--font-color);
 }

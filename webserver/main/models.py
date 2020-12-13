@@ -74,3 +74,4 @@ class CuratedWebsite(models.Model):
     states = ArrayField(models.NullBooleanField(), default=list)
     percentage = models.FloatField(null=True, default=None)
     contact_mail = models.EmailField(null=True, blank=True)
+    days_reminder = models.IntegerField(default=0)

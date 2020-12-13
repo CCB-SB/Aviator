@@ -73,7 +73,7 @@
         <br>
         <div class="custom-control custom-checkbox mb-3">
           <input type="checkbox" class="custom-control-input" id="messageValidation">
-          <label class="custom-control-label" for="messageValidation">I want to get an automated message to the given email address, if the website is down for more than three days.</label>
+          <label class="custom-control-label" for="messageValidation">I want to get an automated message to the given email address, if the website is down for more than <input type="number" id="days_reminder" name="days_reminder" min="1" max="28" value="3" width="2"> days.</label>
         </div>
         <br>
         <button type="submit" class="btn btn-outline-light">Submit</button>
@@ -93,7 +93,8 @@
     text += "Abstract: " + document.getElementById("input_tooldesc").value + "\r\n";
     text += "Tags: "+document.getElementsByClassName("filter-option-inner-inner")[0].innerHTML + "\r\n\r\n";
     text += "Comments: "+document.getElementById("input_comments").value + "\r\n";
-    text += "I want to be informed, if the website is down for more than three days: "+ (document.getElementById("messageValidation").checked ? "Yes" : "No") + "\r\n";
+    text += "I want to be informed, if the website is down: "+ (document.getElementById("messageValidation").checked ? "Yes" : "No") + "\r\n";
+    text += "Days before reminder: "+ (document.getElementById("days_reminder").value) + "\r\n";
 
     //document.getElementById("mail_body").value = encodeURIComponent(text);
     document.getElementById("mail_body").value = (text);
