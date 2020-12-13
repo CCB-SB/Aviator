@@ -198,10 +198,10 @@ div.dataTables_wrapper li.paginate_button a {
 .dt-button.dropdown-item.active{
     background-color: var(--primary) !important;
 }
-td > a {
+td > div > div > p > a {
   color: var(--font-color);
 }
-td > a:hover {
+td > div > div > p > a:hover {
   color: var(--hover-font-color);
 }
 .ui-autocomplete ui-front {
@@ -329,3 +329,45 @@ input[type="search"]::-webkit-search-cancel-button {
   background-color: var(--secondary );
   color: var(--font-color);
 }
+/* Collapsible table cell text*/
+  .module {
+    position: relative;
+  }
+
+  .module .collapse, .module .collapsing {
+    height: 5.5rem;
+  }
+
+  .module .collapse {
+    display: block;
+    overflow: hidden;
+  }
+
+  .module .collapse.show {
+    height: auto;
+  }
+
+  .read-more {
+    position: absolute;
+    top: 4.5rem;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 1;
+
+    /*background-image: linear-gradient(to bottom, transparent 60%, var(--primary));
+    background-image: linear-gradient(transparent 10%, rgba(255,255,255,.05));*/
+
+    opacity: 1;
+    transition: all .3s linear;
+  }
+  .odd > td > div > .read-more {
+    background-image: linear-gradient(transparent 10%, #3f444a);
+  }
+  .even > td > div > .read-more {
+    background-image: linear-gradient(transparent 10%, #353a40);
+  }
+
+  .read-more:not(.collapsed) {
+    opacity: 0;
+  }

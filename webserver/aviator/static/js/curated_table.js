@@ -21,6 +21,13 @@ $(document).ready(function () {
     var scolumn = null;
     var foreign_filter_exists = true;
     var description_counter = 0;
+    var collapse_counter = 0;
+    function createCellText(text, without_p = false) {
+        return '<div class="module"><a class="read-more collapsed" '+
+            'data-toggle="collapse" href="#collapse'+(++collapse_counter)+'" role="button"></a><div class="collapse" '+
+            'id="collapse'+(collapse_counter)+'" aria-expanded="false">'+
+            (without_p ? '' : '<p>')+text+(without_p ? '' : '</p>')+'</div></div>';
+    }
     var table = $('#table').DataTable({
       fnDrawCallback: function( settings ) {
           setTimeout(function(){
@@ -46,15 +53,16 @@ $(document).ready(function () {
         pagingType: "input",
         autoWidth: false,
         columns: [
-            {
-                data: "title"
-            }, {
+            {"data": "title", render: function ( data ) {
+				  return createCellText(data);
+				}
+            },{
                 "data": "status", render: function ( data ) {
-                  return "<div style='display:none'>" + data + "</div><span class='" + (data === "TEMP_OFFLINE" ? "orange" : (data === "ONLINE" ? "green" : (data === "OFFLINE" ? "red" : "grey"))) + "-circle'></span>";
+                  return createCellText("<div style='display:none'>" + data + "</div><span class='" + (data === "TEMP_OFFLINE" ? "orange" : (data === "ONLINE" ? "green" : (data === "OFFLINE" ? "red" : "grey"))) + "-circle'></span>");
                 }
             }, {
                 "data": "percentage", render: function ( data ) {
-                  return "<div style='display:none'>" + (data < 10 ? ("00" + data) : (data < 100 ? ("0" + data) : data)) + "</div>" + (data === null ? "No Data" : (data+"% Online"));;
+                  return createCellText("<div style='display:none'>" + (data < 10 ? ("00" + data) : (data < 100 ? ("0" + data) : data)) + "</div>" + (data === null ? "No Data" : (data+"% Online")), true);
                 }
             }, {
                 "data": "authors", render: function ( data ) {
@@ -65,22 +73,25 @@ $(document).ready(function () {
 				          str += ", ";
                       }
                   }
-				  return str;
+				  return createCellText(str);
 				}
-            }, {
-                data: "year",
-            }, {
-                data: "journal"
-            }, {
-                data: "pubmed_id"
+            }, {"data": "year", render: function ( data ) {
+				  return createCellText(data);
+				}
+            }, {"data": "journal", render: function ( data ) {
+				  return createCellText(data);
+				}
+            }, {"data": "pubmed_id", render: function ( data ) {
+				  return createCellText(data);
+				}
             }, {
                 "data": "description", render: function ( data ) {
 				  ++description_counter;
-				  return "<div style='display:none' id='description" + description_counter + "'>" + data + "</div><button class=\"btn btn-outline-light my-2 my-sm-0\" type=\"button\" data-toggle=\"modal\" onclick=\"showDescription(document.getElementById('description" + description_counter + "').innerHTML)\" data-target=\"#descriptionModal\">Abstract</button>";
+				  return createCellText("<div style='display:none' id='description" + description_counter + "'>" + data + "</div><button class=\"btn btn-outline-light my-2 my-sm-0\" type=\"button\" data-toggle=\"modal\" onclick=\"showDescription(document.getElementById('description" + description_counter + "').innerHTML)\" data-target=\"#descriptionModal\">Abstract</button>", true);
 				}
             }, {
                 data: "url", render: function ( data ) {
-				return "<a href=\""+data+"\">"+data+"</a>";
+				return createCellText("<a href=\""+data+"\">"+data+"</a>");
 			  }
             },{
                 "data": "tag_tags", render: function ( data ) {
@@ -88,11 +99,11 @@ $(document).ready(function () {
 				  for(var n=0; n < data.length; n++) {
                       str += (n > 0 ? ", " : "") + "<a href=\"#\" onclick=\"filterTags('"+data[n]+"');return false;\">"+data[n]+"</a>";
                   }
-				  return str;
+				  return createCellText(str);
 				}
             },
           { data: "website_pk", render: function ( data ) {
-            return "<a class='btn btn-outline-light' href='details/"+data[0]+"'>Auto-Generated Data</a>"
+            return createCellText("<a class='btn btn-outline-light' href='details/"+data[0]+"'>Auto-Generated Data</a>")
           }
         }
         ],

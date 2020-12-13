@@ -20,6 +20,14 @@ $(document).ready(function () {
     var scolumn = null;
     var foreign_filter_exists = true;
     var abstract_counter = 0;
+    var collapse_counter = 0;
+    function createCellText(text, without_p = false) {
+        return '<div class="module"><a class="read-more collapsed" '+
+            'data-toggle="collapse" href="#collapse'+(++collapse_counter)+'" role="button"></a><div class="collapse" '+
+            'id="collapse'+(collapse_counter)+'" aria-expanded="false">'+
+            (without_p ? '' : '<p>')+text+(without_p ? '' : '</p>')+'</div></div>';
+    }
+
     var table = $('#table').DataTable({
       fnDrawCallback: function( settings ) {
           setTimeout(function(){
@@ -44,11 +52,12 @@ $(document).ready(function () {
         order: [[0, "asc"]],
         pagingType: "input",
         autoWidth: false,
-        columns: [
-            {
-                data: "title"
+        columns: [{
+            "data": "title", render: function ( data ) {
+                return createCellText(data);
+                }
             }, {
-                "data": "status", render: function ( data ) {
+            "data": "status", render: function ( data ) {
           var str = "";
           if (data != null) {
             for (var i=0; i < data.length; i++) {
@@ -61,7 +70,7 @@ $(document).ready(function () {
               }
             }
           }
-          return str;
+          return createCellText(str);
         }
             }, {
                 "data": "percentage", render: function ( data ) {
@@ -77,7 +86,7 @@ $(document).ready(function () {
               }
             }
           }
-          return str;
+          return createCellText(str, true);
         }
             }, {
                 "data": "authors", render: function ( data ) {
@@ -88,18 +97,21 @@ $(document).ready(function () {
 				          str += ", ";
                       }
                   }
-				  return str;
+				  return createCellText(str);
 				}
-            }, {
-                data: "year",
-            }, {
-                data: "journal"
-            }, {
-                data: "pubmed_id"
+            }, {"data": "year", render: function ( data ) {
+				  return createCellText(data);
+				}
+            },{"data": "journal", render: function ( data ) {
+				  return createCellText(data);
+				}
+            },{"data": "pubmed_id", render: function ( data ) {
+				  return createCellText(data);
+				}
             }, {
                 "data": "abstract", render: function ( data ) {
 				  ++abstract_counter;
-				  return "<div style='display:none' id='abstract" + abstract_counter + "'>" + data.replaceAll('""""""""', '"') + "</div><button class=\"btn btn-outline-light my-2 my-sm-0\" type=\"button\" data-toggle=\"modal\" onclick=\"abstract(document.getElementById('abstract" + abstract_counter + "').innerHTML)\" data-target=\"#abstractModal\">Abstract</button>";
+				  return createCellText("<div style='display:none' id='abstract" + abstract_counter + "'>" + data.replaceAll('""""""""', '"') + "</div><button class=\"btn btn-outline-light my-2 my-sm-0\" type=\"button\" data-toggle=\"modal\" onclick=\"abstract(document.getElementById('abstract" + abstract_counter + "').innerHTML)\" data-target=\"#abstractModal\">Abstract</button>", true);
 				}
             }, {
                 data: "original_url", render: function ( data ) {
@@ -112,7 +124,7 @@ $(document).ready(function () {
 					}
 				  }
 				}
-				return str;
+				return createCellText(str);
 			  }
             }, { data: "derived_url", render: function ( data ) {
             var str = "";
@@ -124,7 +136,7 @@ $(document).ready(function () {
                 }
               }
             }
-            return str;
+            return createCellText(str);
           }
       },
       { data: "contact_mail", render: function ( data ) {
@@ -137,10 +149,10 @@ $(document).ready(function () {
             }
           }
           if(i == 0) {
-            return "<a href=\"#\" onclick=\"email(this.innerHTML);return false;\">"+data+"</a>";
+            return createCellText("<a href=\"#\" onclick=\"email(this.innerHTML);return false;\">"+data+"</a>");
           }
         }
-        return str;
+        return createCellText(str);
       }
       },
       { "data": "user_kwds", render: function ( data ) {
@@ -153,7 +165,7 @@ $(document).ready(function () {
             }
           }
         }
-        return str;
+        return createCellText(str);
       }
       },
       { "data": "scripts", render: function ( data ) {
@@ -166,7 +178,7 @@ $(document).ready(function () {
             }
           }
         }
-        return str;
+        return createCellText(str);
       }
       },
       { "data": "ssl", render: function ( data ) {
@@ -179,7 +191,7 @@ $(document).ready(function () {
             }
           }
         }
-        return str;
+        return createCellText(str);
       }
       },
       { "data": "heap_size", render: function ( data ) {
@@ -194,7 +206,7 @@ $(document).ready(function () {
         } else {
             str = "NA";
         }
-        return str;
+        return createCellText(str);
       }
       },
       { data: "website_pks", render: function ( data ) {
@@ -207,10 +219,10 @@ $(document).ready(function () {
             }
           }
           if(i == 0) {
-            return "<a class='btn btn-outline-light' href='details/"+data+"'>Show Details</a>"
+            return createCellText("<a class='btn btn-outline-light' href='details/"+data+"'>Show Details</a>")
           }
         }
-        return str;
+        return createCellText(str);
       }
     }
         ],
