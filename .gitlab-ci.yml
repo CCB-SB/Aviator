@@ -111,12 +111,14 @@ deploy-production:
   when: manual
   environment:
     name: production
-    url: https://ccb-web.cs.uni-saarland.de/aviator
+    url: https://ccb-compute2.cs.uni-saarland.de/aviator
 
 .filldb: &filldb
   script:
     - *setup_docker_tls
-    - docker-compose -f webserver/production.yml run --rm django python manage.py fill_db
+    - docker-compose -f webserver/production.yml run --rm django python manage.py parsepaperdata ${PUBLICATIONS_PATH} ${FILTER_PATH}
+    - docker-compose -f webserver/production.yml run --rm django python manage.py parsecurated ${CURATED_PATH}
+    - docker-compose -f webserver/production.yml run --rm django python manage.py parsekeywords ${KEYWORDS_PATH}
   <<: *manage_only_master_remote
 
 filldb-staging:
