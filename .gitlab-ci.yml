@@ -182,10 +182,10 @@ parsewebsitecalls-production:
 .update_websitecalls_and_stats: &update_websitecalls_and_stats
   script:
     - *setup_docker_tls
-    - FOLDERS=$(find ${TELEMETRY_PATH}* -mindepth 1 -maxdepth 1 -type d)
+    - FOLDERS=$(docker-compose -f webserver/production.yml run --rm django find ${TELEMETRY_PATH} -mindepth 1 -maxdepth 1 -type d)
     - docker-compose -f webserver/production.yml run --rm django python manage.py parsewebsitecalls ${TELEMETRY_PATH} ${FOLDERID_URL_PATH} ${FILTER_PATH}
     - docker-compose -f webserver/production.yml run --rm django python manage.py calculatestatistics
-    - echo $FOLDERS | xargs -n1 rm -rf
+    - echo $FOLDERS | docker-compose -f webserver/production.yml run --rm django xargs -n1 rm -rf
   <<: *manage_only_master_remote
 
 update_websitecalls_and_stats-staging:
