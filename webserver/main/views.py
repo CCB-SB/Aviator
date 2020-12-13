@@ -66,7 +66,7 @@ def prepare_csv_export(qs, columns, header, request, numeric_cols, email_col, ig
                     new_values.append(str(new_value))
                 csv_content.append(new_values)
             else:
-                csv_content.append(values)
+                csv_content.append([x[0] for x in values])
     writer.writerows(list(map(list, zip(*csv_content))))
     response['Content-Disposition'] = 'attachment; filename="aviator_'+name+'.csv"'
     return response
