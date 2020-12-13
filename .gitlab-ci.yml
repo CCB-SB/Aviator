@@ -21,7 +21,6 @@ before_script:
   - mkdir -p webserver/.envs/.production
   - echo "$DJANGO_ENV" > webserver/.envs/.production/.django
   - echo "$POSTGRES_ENV" > webserver/.envs/.production/.postgres
-
   - echo "CI_REPOSITORY_URL=${CI_REPOSITORY_URL}" > webserver/.git_env
 
 .staging_vars: &staging_vars
@@ -34,7 +33,7 @@ before_script:
 .production_vars: &production_vars
   variables:
     DOCKER_TLS_VERIFY: "1"
-    DOCKER_HOST: "tcp://ccb-web.cs.uni-saarland.de:2376"
+    DOCKER_HOST: "tcp://ccb-compute2.cs.uni-saarland.de:2376"
     DOCKER_CERT_PATH: "certs"
     IS_PROD: "1"
     COMPOSE_HTTP_TIMEOUT: "180"
@@ -176,6 +175,25 @@ parsewebsitecalls-staging:
 parsewebsitecalls-production:
   stage: managedb-production
   <<: *parsewebsitecalls
+  <<: *production_vars
+
+.update_websitecalls_and_stats: &update_websitecalls_and_stats
+  script:
+    - *setup_docker_tls
+    - FOLDERS=$(find ${TELEMETRY_PATH}/* -mindepth 1 -maxdepth 1 -type d)
+    - docker-compose -f webserver/production.yml run --rm django python manage.py parsewebsitecalls ${TELEMETRY_PATH} ${FOLDERID_URL_PATH} ${FILTER_PATH}
+    - docker-compose -f webserver/production.yml run --rm django python manage.py calculatestatistics
+    - echo $FOLDERS | xargs -n1 rm -rf
+  <<: *manage_only_master_remote
+
+update_websitecalls_and_stats-staging:
+  stage: managedb-staging
+  <<: *update_websitecalls_and_stats
+  <<: *staging_vars
+
+update_websitecalls_and_stats-production:
+  stage: managedb-production
+  <<: *update_websitecalls_and_stats
   <<: *production_vars
 
 .parsepaperdata: &parsepaperdata
