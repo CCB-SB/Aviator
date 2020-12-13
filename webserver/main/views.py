@@ -21,7 +21,7 @@ import csv
 from .forms import CaptchaForm
 
 
-def prepare_csv_export(qs, columns, request, numeric_cols, email_col):
+def prepare_csv_export(qs, columns, header, request, numeric_cols, email_col, ignore_cols, name):
     response = HttpResponse(content_type='text/csv')
     writer = csv.writer(response, delimiter ='\t')
     header_line = []
@@ -29,15 +29,14 @@ def prepare_csv_export(qs, columns, request, numeric_cols, email_col):
     if "columns" in request.POST:
         shown = request.POST["columns"].split(';')
     for k in range(0, len(columns)):
-        if str(k) in shown:
-            header_line.append(columns[k])
+        if str(k) in shown and (k not in ignore_cols):
+            header_line.append(header[k])
     writer.writerow(header_line)
     filter = {}
     for k in range(0, len(columns)):
-        if str(k) in shown and len(columns) > k:
+        if str(k) in shown and len(columns) > k and (k not in ignore_cols):
             filter_string = request.POST.get(str(k))
             if len(filter_string) > 0 and filter_string != ";" and filter_string != "%3B":
-                return HttpResponse(str(k)+": ["+filter_string+"]")
                 field_name = columns[k]
                 if k in email_col:
                     filter_string = filter_string.replace("[at]", "@")
@@ -55,7 +54,7 @@ def prepare_csv_export(qs, columns, request, numeric_cols, email_col):
         qs = qs.filter(**filter)
     csv_content = []
     for k in range(0, len(columns)):
-        if str(k) in shown:
+        if str(k) in shown and (k not in ignore_cols):
             field_name = columns[k]
             values = qs.values_list(field_name)
             if k in email_col:
@@ -69,7 +68,7 @@ def prepare_csv_export(qs, columns, request, numeric_cols, email_col):
             else:
                 csv_content.append(values)
     writer.writerows(list(map(list, zip(*csv_content))))
-    response['Content-Disposition'] = 'attachment; filename="export.csv"'
+    response['Content-Disposition'] = 'attachment; filename="aviator_'+name+'.csv"'
     return response
 
 
@@ -108,9 +107,12 @@ def publications(request):
             columns = ['title', 'status', 'percentage', 'authors', 'year', 'journal', 'pubmed_id',
                        'abstract', 'original_url', 'derived_url', 'contact_mail', 'user_kwds',
                        'scripts', 'ssl', 'heap_size', 'website_pks']
+            header = ['Title', 'Status', 'Last 30 days', 'Authors', 'Year', 'Journal', 'Pubmed', 'Abstract',
+                      'Original URL', 'Derived URL', 'Contact Mail', 'Keywords', 'Programming Languages', 'SSL', 'RAM Usage', 'Websites']
             numeric_cols = {4}
-            email_col = {10}
-            return prepare_csv_export(qs, columns, request, numeric_cols, email_col)
+            email_cols = {10}
+            ignore_cols = {15}
+            return prepare_csv_export(qs, columns, header, request, numeric_cols, email_cols, ignore_cols, "publications")
         else:
             return HttpResponse("Wrong Captcha")
     else:
@@ -121,15 +123,18 @@ def publications(request):
         context['search_string'] = request.POST['search_string']
     return render(request, 'publications.html', context)
 
+
 def curated(request):
     if request.POST:
         form = CaptchaForm(request.POST)
         if form.is_valid():
             columns = ['title', 'status', 'percentage', 'authors', 'year', 'journal', 'pubmed_id', 'description', 'url', 'tag_tags', 'website']
+            header = ['Title', 'Status', 'Last 30 days', 'Authors', 'Year', 'Journal', 'Pubmed', 'Abstract', 'URL', 'Keywords', 'Website']
             qs = CuratedWebsite.objects.all().prefetch_related('tags').annotate(tag_tags=ArrayAgg('tags__name'))
             numeric_cols = {4}
-            email_col = {}
-            return prepare_csv_export(qs, columns, request, numeric_cols, email_col)
+            email_cols = {}
+            ignore_cols = {10}
+            return prepare_csv_export(qs, columns, header, request, numeric_cols, email_cols, ignore_cols, "curated")
         else:
             return HttpResponse("Wrong Captcha")
     else:
@@ -139,6 +144,7 @@ def curated(request):
         context['search_column'] = request.POST['search_column']
         context['search_string'] = request.POST['search_string']
     return render(request, 'curated.html', context)
+
 
 def details(request, pk):
     context = {}
@@ -165,6 +171,7 @@ def author(request):
 def api(request):
     context = {}
     return render(request, 'api.html', context)
+
 
 # cache for 6 hours
 @cache_page(60 * 60 * 6)
@@ -250,6 +257,7 @@ def autocomplete(request):
             return JsonResponse(remove_duplicates(list(hm[field_name] for hm in qs.order_by(field_name).values(field_name)))[:5], safe=False)
     return JsonResponse(list(), safe=False)
 
+
 def curated_autocomplete(request):
     def remove_duplicates(x):
         return list(dict.fromkeys(x))
@@ -303,6 +311,7 @@ def curated_autocomplete(request):
         else:
             return JsonResponse(remove_duplicates(list(hm[field_name] for hm in qs.order_by(field_name).values(field_name)))[:5], safe=False)
     return JsonResponse(list(), safe=False)
+
 
 class Table(BaseDatatableView):
     model = Publication
@@ -510,6 +519,7 @@ class Table(BaseDatatableView):
             return ret
         except Exception as e:
             return self.handle_exception(e)
+
 
 class CuratedTable(Table):
     model = CuratedWebsite
