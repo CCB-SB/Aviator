@@ -369,5 +369,22 @@ input[type="search"]::-webkit-search-cancel-button {
   }
 
   .read-more:not(.collapsed) {
+    position: absolute;
+    height: 1rem;
+    top: auto;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1;
+
+    opacity: 1;
+    /*background-image: linear-gradient(to bottom, transparent 60%, var(--primary));
+    background-image: linear-gradient(transparent 10%, rgba(255,255,255,.05));*/
+
+    opacity: 1;
+    transition: all .3s linear;
+
+  }
+  .read-more:not(.collapsed) {
     opacity: 0;
   }
