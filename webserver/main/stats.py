@@ -104,20 +104,9 @@ def get_all_statistics(pub_queryset, curated=False):
                                                paper=ArrayAgg("papers__journal")).values("paper") for e
                                            in p["paper"])
     tmp_offline_top_journals = {j: tmp_offline_all_journals.get(j, 0) for j in top_journals_online}
-    #################
-    offline_top_journals = {}
-    for j, c in journals2count.items():
-        if j in top_journals_online and j in tmp_offline_top_journals:
-            offline_top_journals[j] = c - top_journals_online[j] - tmp_offline_top_journals[j]
-    #offline_top_journals = {j: (c - top_journals_online[j] - tmp_offline_top_journals[j]) for j, c
-     #                       in journals2count.items()}
-    #################
-    journals = []
-    for j, _ in sorted(journals2count.items(), key=lambda e: e[1], reverse=True):
-        if j in offline_top_journals:
-            journals.append(j)
-    #journals = [j for j, _ in sorted(journals2count.items(), key=lambda e: e[1], reverse=True)]
-    #################
+    offline_top_journals = {j: (c - top_journals_online.get(j, 0) - tmp_offline_top_journals.get(j, 0)) for j, c
+                            in journals2count.items()}
+    journals = [j for j, _ in sorted(journals2count.items(), key=lambda e: e[1], reverse=True)]
     context["top10_journals_names"] = json.dumps(journals)
     context["top10_journals_online"] = json.dumps([top_journals_online[j] for j in journals])
     context["top10_journals_tmp_offline"] = json.dumps([tmp_offline_top_journals[j] for j in journals])

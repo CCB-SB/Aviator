@@ -119,8 +119,12 @@ $(document).ready(function () {
 				if (data != null) {
 				  var i = 0;
 				  for (i=0; i < data.length; i++) {
-					if(data[i] != null) {
-					  str += (i > 0 ? ", " : "") + "<a href=\""+data[i]+"\">"+data[i]+"</a>";
+					var url = data[i];
+					if(url != null) {
+				          if(!url.startswith("http")) {
+						  url = `http://${url}`
+					  }
+					  str += (i > 0 ? ", " : "") + `<a target="_blank" rel="noopener" href="${url}">${data[i]}</a>`;
 					}
 				  }
 				}
@@ -132,7 +136,7 @@ $(document).ready(function () {
               var i = 0;
               for (i=0; i < data.length; i++) {
                 if(data[i] != null) {
-                  str += (i > 0 ? ", " : "") + "<a href=\""+data[i]+"\">"+data[i]+"</a>";
+                  str += (i > 0 ? ", " : "") + `<a target="_blank" rel="noopener" href="${data[i]}">${data[i]}</a>`;
                 }
               }
             }
