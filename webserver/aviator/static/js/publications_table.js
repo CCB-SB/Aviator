@@ -121,7 +121,7 @@ $(document).ready(function () {
 				  for (i=0; i < data.length; i++) {
 					var url = data[i];
 					if(url != null) {
-				          if(!url.startswith("http")) {
+				          if(!url.startsWith("http")) {
 						  url = `http://${url}`
 					  }
 					  str += (i > 0 ? ", " : "") + `<a target="_blank" rel="noopener" href="${url}">${data[i]}</a>`;
