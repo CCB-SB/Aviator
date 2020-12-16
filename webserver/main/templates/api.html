@@ -1,38 +1,71 @@
 <!DOCTYPE html>
 {% load staticfiles %}
 {% url 'main:details' as details %}
-<html  lang="en">
-	<head>
-    <meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
-		<title>Aviator</title>
-		<link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet" type="text/css">
-		<link href="{% static 'css/aviator.css' %}" rel="stylesheet" type="text/css">
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+  <title>Aviator</title>
+  <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet" type="text/css">
+  <link href="{% static 'css/aviator.css' %}" rel="stylesheet" type="text/css">
 
-    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.4.1/styles/a11y-dark.min.css">
-    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.4.1/highlight.min.js"></script>
-    <script src="{% static 'js/jquery.min.js' %}"></script>
-    <script src="{% static 'js/popper.min.js' %}"></script>
-    <script src="{% static 'js/bootstrap.min.js' %}"></script>
-	</head>
-	<body>
-    {% include "navbar.html" %}
-    <div class="api-box">
+  <link rel="stylesheet"
+        href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.4.1/styles/a11y-dark.min.css">
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.4.1/highlight.min.js"></script>
+  <script src="{% static 'js/jquery.min.js' %}"></script>
+  <script src="{% static 'js/popper.min.js' %}"></script>
+  <script src="{% static 'js/bootstrap.min.js' %}"></script>
+</head>
+<body>
+{% include "navbar.html" %}
+<div class="api-box">
 
-      <h3>The API</h3>
-      <p>...Explanation text...</p>
-      <br>
-      <br>
+  <div class="card aviator-card">
+    <div class="card-body">
+      <p>
+        To monitor the tool functionality more effectively than over their entry page we
+        provide simple API snippets in different programming languages that can be integrated into
+        your web-server. The API endpoint computes and returns the digit sum for the "input"
+        parameter
+        provided as a GET request. This endpoint will only be queried with valid input values.
+      </p>
+      <p>
+        Example:
+      </p>
+      <p>
+        Endpoint: <a href="https://www.ccb.uni-saarland.de/mirmaster/aviator_api">https://www.ccb.uni-saarland.de/mirmaster/aviator_api</a><br>
+        Query: <a href="https://www.ccb.uni-saarland.de/mirmaster/aviator_api?input=47816514687315">https://www.ccb.uni-saarland.de/mirmaster/aviator_api?input=47816514687315</a><br>
+        Result: 66
+      </p>
+    </div>
+  </div>
+  <br>
+  <br>
 
+  <div class="row">
+    <div class="col-12">
       <div class="btn-group-container">
         <div class="btn-group" role="group" aria-label="Basic example">
-          <button id="api_btn_1" type="button" class="btn btn-secondary active" onclick="show_code(1)">Node.js</button>
-          <button id="api_btn_2" type="button" class="btn btn-secondary" onclick="show_code(2)">Perl</button>
-          <button id="api_btn_3" type="button" class="btn btn-secondary" onclick="show_code(3)">PHP</button>
+          <button id="api_btn_1" type="button" class="btn btn-secondary active"
+                  onclick="show_code(1)">
+            Node.js
+          </button>
+          <button id="api_btn_2" type="button" class="btn btn-secondary" onclick="show_code(2)">Perl
+          </button>
+          <button id="api_btn_3" type="button" class="btn btn-secondary" onclick="show_code(3)">PHP
+          </button>
+          <button id="api_btn_4" type="button" class="btn btn-secondary" onclick="show_code(4)">
+            Python/Django
+          </button>
         </div>
       </div>
+    </div>
+  </div>
 
+
+  <div class="row" style="margin-top: 1rem">
+    <div class="col-12">
       <div id="api_box_1" class="code-box JavaScript">
 <pre><code>const http = require('http');
 const url = require('url');
@@ -43,7 +76,7 @@ http.createServer(function (req, res) {
   res.end(input ? input.toString().split("").map(Number).reduce(
     (a, b) => a + b, 0).toString() : "NaN");
 }).listen(8080);</code></pre>
-    </div>
+      </div>
 
       <div id="api_box_2" class="code-box Perl" style="display: none;">
 <pre><code>#!/usr/bin/perl
@@ -63,7 +96,7 @@ unless ($number=~/^\d+$/) {
     print $digit_sum;
 }
 exit 0;</code></pre>
-    </div>
+      </div>
 
       <div id="api_box_3" class="code-box php" style="display: none;">
 <pre><code>&lt;?php
@@ -71,22 +104,30 @@ exit 0;</code></pre>
   echo array_sum(str_split($_GET['input']));
 ?&gt;</code></pre>
       </div>
+      <div id="api_box_4" class="code-box python" style="display: none;">
+<pre><code>def aviator_api(request):
+    if "input" in request.GET:
+        return HttpResponse(sum(int(e) for e in request.GET["input"]), content_type="text/plain")
+    return HttpResponse()</code></pre>
+      </div>
 
     </div>
-	</body>
+  </div>
+</div>
+</body>
 </html>
 <script>
-function show_code(num) {
+  function show_code(num) {
     var btns = document.querySelectorAll('button[id^="api_btn_"]');
     for (var i = 0; i < btns.length; ++i) {
-        btns[i].className = btns[i].className.replace(" active", "");
+      btns[i].className = btns[i].className.replace(" active", "");
     }
-    document.getElementById("api_btn_"+num).className += " active";
+    document.getElementById("api_btn_" + num).className += " active";
     var divs = document.querySelectorAll('div[id^="api_box_"]');
     for (var i = 0; i < divs.length; ++i) {
-        divs[i].style.display = "none";
+      divs[i].style.display = "none";
     }
-    document.getElementById("api_box_"+num).style.display = "block";
-}
+    document.getElementById("api_box_" + num).style.display = "block";
+  }
 </script>
 <script>hljs.initHighlightingOnLoad();</script>

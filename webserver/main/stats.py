@@ -108,9 +108,9 @@ def get_all_statistics(pub_queryset, curated=False):
                             in journals2count.items()}
     journals = [j for j, _ in sorted(journals2count.items(), key=lambda e: e[1], reverse=True)]
     context["top10_journals_names"] = json.dumps(journals)
-    context["top10_journals_online"] = json.dumps([top_journals_online[j] for j in journals])
-    context["top10_journals_tmp_offline"] = json.dumps([tmp_offline_top_journals[j] for j in journals])
-    context["top10_journals_offline"] = json.dumps([offline_top_journals[j] for j in journals])
+    context["top10_journals_online"] = json.dumps([top_journals_online.get(j, 0) for j in journals])
+    context["top10_journals_tmp_offline"] = json.dumps([tmp_offline_top_journals.get(j, 0) for j in journals])
+    context["top10_journals_offline"] = json.dumps([offline_top_journals.get(j, 0) for j in journals])
     context["publications_per_year"] = list(pub_queryset.values("year").annotate(
         count=Count("year")).order_by("-count"))
     year2count = {e["year"]: e["count"] for e in context["publications_per_year"]}

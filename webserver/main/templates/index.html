@@ -44,13 +44,13 @@
       <p>
         To add your published web-server to AVIATOR a simple <a
               href="{% url 'main:api' %}">API endpoint</a> and a <a
-              href="{% url 'main:author' %}">registration</a>  is needed.
+              href="{% url 'main:author' %}">registration</a> is needed.
       </p>
 
       <p>Related literature:</p>
       <p>F. Kern, T. Fehlmann, A. Keller; <a
-                href="https://academic.oup.com/nar/article/48/22/12523/6018434"
-                target="_blank" rel="noopener">On the lifetime of bioinformatics web services</a> <em>Nucleic
+              href="https://academic.oup.com/nar/article/48/22/12523/6018434"
+              target="_blank" rel="noopener">On the lifetime of bioinformatics web services</a> <em>Nucleic
         Acids Res</em> 2020 doi: 10.1093/nar/gkaa1125</p>
     </div>
   </div>
@@ -97,8 +97,12 @@
     </button>
   </form>
 
-  <div class="chart-container" style="position: relative; width: 40vw">
-    <canvas id="myChart" height="150" width="400"></canvas>
+  <div class="card aviator-card">
+    <div class="card-body">
+      <div class="chart-container" style="position: relative; width: 40vw">
+        <canvas id="myChart" height="150" width="400"></canvas>
+      </div>
+    </div>
   </div>
 
 </div>
