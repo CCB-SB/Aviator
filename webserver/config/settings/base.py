@@ -164,6 +164,7 @@ ADMIN_URL = 'admin/'
 # https://docs.djangoproject.com/en/dev/ref/settings/#admins
 ADMINS = [
     ("""Pascal Hirsch""", 's9pahirs@stud.uni-saarland.de'),
+    ("AVIATOR MS Teams", 'e70cefc0.uni-saarland.de@emea.teams.ms'),
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#managers
 MANAGERS = ADMINS
@@ -193,4 +194,3 @@ CACHE_TIMEOUT = 6 * 60 * 60
 
 TEMP_OFFLINE_DAYS = 14
 TEMPORAL_INFO_DAYS = 30
-
