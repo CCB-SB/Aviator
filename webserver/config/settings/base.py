@@ -53,7 +53,6 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # APPS
 # ------------------------------------------------------------------------------
 DJANGO_APPS = [
-    'captcha',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -62,11 +61,12 @@ DJANGO_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.admin',
 ]
+
 THIRD_PARTY_APPS = [
-    # Third-party apps go here
-    ]
+    'captcha',
+]
+
 LOCAL_APPS = [
-    # Your stuff: custom apps go here
     'aviator.admin_commands.apps.AdminConfig',
     'main.apps.MainConfig',
 ]
@@ -193,3 +193,4 @@ CACHE_TIMEOUT = 6 * 60 * 60
 
 TEMP_OFFLINE_DAYS = 14
 TEMPORAL_INFO_DAYS = 30
+

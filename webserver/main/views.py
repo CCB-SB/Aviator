@@ -22,7 +22,7 @@ def filter_queryset(qs, filter_col2v, colnames, email_field):
         field_name = colnames[col]
         if field_name in email_field:
             v = v.replace("[at]", "@")
-        elif field_name in numeric_fields:
+        if field_name in numeric_fields:
             min_str, max_str = v.split(';')
             if min_str and max_str:
                 qs_filter["{}__range".format(field_name)] = (float(min_str), float(max_str))
@@ -113,7 +113,7 @@ def get_publication_datatable_info():
 
 
 def publications(request):
-    if request.POST and not 'search_column' in request.POST:
+    if request.POST and 'search_column' not in request.POST:
         form = CaptchaForm(request.POST)
         if form.is_valid():
             qs = Publication.objects.all().prefetch_related('websites').annotate(
@@ -146,7 +146,7 @@ def publications(request):
 
 
 def curated(request):
-    if request.POST and not 'search_column' in request.POST:
+    if request.POST and 'search_column' not in request.POST:
         form = CaptchaForm(request.POST)
         if form.is_valid():
             columns = ['title', 'status', 'percentage', 'authors', 'year', 'journal', 'pubmed_id',
@@ -222,9 +222,6 @@ def statistics(request):
 
 
 def autocomplete(request):
-    def remove_duplicates(x):
-        return list(dict.fromkeys(x))
-
     if 'q' in request.GET:
         qs = Publication.objects.all().prefetch_related('websites').annotate(
             status=ArrayAgg('websites__status'), percentage=ArrayAgg('websites__percentage'),

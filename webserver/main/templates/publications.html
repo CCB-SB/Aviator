@@ -133,7 +133,7 @@
 <div class="modal fade" role="dialog" tabindex="-1" id="exportCSVModal">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
-      <form action="{% url 'main:publications' %}" target="iframe"  method="post">
+      <form target="_blank" action="{% url 'main:publications' %}" onsubmit="setTimeout(function(){grecaptcha.reset(); $('#exportCSVModal').modal('toggle')}, 500)"  method="post">
       {% csrf_token %}
         <div class="modal-header">
           <h3 class="modal-title">Download CSV</h3>
@@ -143,8 +143,6 @@
         </div>
         <div class="modal-body">
           <div class="form-group">
-            <br>
-            <p>Please solve the Captcha</p>
             {{ form.captcha }}
             <input id="exportCSVColumns" type="hidden" name="columns" value="">
             <input id="exportCSVFilter"  type="hidden" name="filter" value="">
@@ -164,7 +162,6 @@
             <input id="exportCSVFilter13"  type="hidden" name="13" value="">
             <input id="exportCSVFilter14"  type="hidden" name="14" value="">
             <input id="exportCSVFilter15"  type="hidden" name="15" value="">
-            <iframe id="iframe" name="iframe" height="40" style="display:none;"><html><p>Please solve the Captcha</p></html></iframe>
           </div>
         </div>
         <div class="modal-footer">
