@@ -95,7 +95,7 @@ def get_publication_datatable_info():
 
 
 def publications(request):
-    if request.POST:
+    if request.POST and not 'search_column' in request.POST:
         form = CaptchaForm(request.POST)
         if form.is_valid():
             qs = Publication.objects.all().prefetch_related('websites').annotate(
@@ -107,7 +107,7 @@ def publications(request):
             columns = ['title', 'status', 'percentage', 'authors', 'year', 'journal', 'pubmed_id',
                        'abstract', 'original_url', 'derived_url', 'contact_mail', 'user_kwds',
                        'scripts', 'ssl', 'heap_size', 'website_pks']
-            header = ['Title', 'Status', 'Last 30 days', 'Authors', 'Year', 'Journal', 'Pubmed', 'Abstract',
+            header = ['Title', 'Status', 'Last 30 days', 'Authors', 'Year', 'Journal', 'PubMed', 'Abstract',
                       'Original URL', 'Derived URL', 'Contact Mail', 'Keywords', 'Programming Languages', 'SSL', 'RAM Usage', 'Websites']
             numeric_cols = {4}
             email_cols = {10}
@@ -125,11 +125,11 @@ def publications(request):
 
 
 def curated(request):
-    if request.POST:
+    if request.POST and not 'search_column' in request.POST:
         form = CaptchaForm(request.POST)
         if form.is_valid():
             columns = ['title', 'status', 'percentage', 'authors', 'year', 'journal', 'pubmed_id', 'description', 'url', 'tag_tags', 'website']
-            header = ['Title', 'Status', 'Last 30 days', 'Authors', 'Year', 'Journal', 'Pubmed', 'Abstract', 'URL', 'Keywords', 'Website']
+            header = ['Title', 'Status', 'Last 30 days', 'Authors', 'Year', 'Journal', 'PubMed', 'Abstract', 'URL', 'Keywords', 'Website']
             qs = CuratedWebsite.objects.all().prefetch_related('tags').annotate(tag_tags=ArrayAgg('tags__name'))
             numeric_cols = {4}
             email_cols = {}

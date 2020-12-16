@@ -2,152 +2,235 @@
 {% load staticfiles %}
 {% url 'main:details' as details %}
 <html lang="en">
-	<head>
-    <meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
-		<title>Aviator</title>
-		<link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet" type="text/css">
-		<link href="{% static 'css/chart.min.css' %}" rel="stylesheet" type="text/css">
-		<link href="{% static 'css/aviator.css' %}" rel="stylesheet" type="text/css">
-    <script src="{% static 'js/jquery.min.js' %}"></script>
-    <script src="{% static 'js/popper.min.js' %}"></script>
-    <script src="{% static 'js/bootstrap.min.js' %}"></script>
-    <script src="{% static 'js/chart.min.js' %}"></script>
-	</head>
-	<body>
-    {% include "navbar.html" %}
-    <div class="center-box">
-      Aviator - Online Webtool Database<br><br>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+  <title>AVIATOR</title>
+  <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet" type="text/css">
+  <link href="{% static 'css/chart.min.css' %}" rel="stylesheet" type="text/css">
+  <link href="{% static 'css/aviator.css' %}" rel="stylesheet" type="text/css">
+  <script src="{% static 'js/jquery.min.js' %}"></script>
+  <script src="{% static 'js/popper.min.js' %}"></script>
+  <script src="{% static 'js/bootstrap.min.js' %}"></script>
+  <script src="{% static 'js/chart.min.js' %}"></script>
+</head>
+<body>
+{% include "navbar.html" %}
+<div class="center-box">
+  <div class="card aviator-card">
+    <div class="card-body">
+      <p>
+        AVIATOR is a web-server monitoring the availability of other published web-servers.
+        It allows researchers to monitor their own tools or to asses if a tool they would like to
+        access is <b>temporarily</b> or <b>permanently</b> offline.
+        AVIATOR is composed of two modules:
+      </p>
+      <ul>
+        <li><a
+                href="{% url 'main:publications' %}">Publications</a>: web-servers collected
+          automatically from literature
+        </li>
+        <li><a href="{% url 'main:curated' %}">Curated</a>: web-servers manually added by their
+          authors
+        </li>
+      </ul>
+      <p>
+        The web-server URL or an API endpoint provided by the authors are queried twice per day. In
+        addition to providing an availability overview we provide the possibility for authors to be
+        notified if their webserver is offline for an unexpected period of time.
+      </p>
+      <br>
+      <p>
+        To add your published web-server to AVIATOR a simple <a
+              href="{% url 'main:api' %}">API endpoint</a> and a <a
+              href="{% url 'main:author' %}">registration</a>  is needed.
+      </p>
 
-    <form class="form-inline my-2 my-lg-0 index-search-form" action="{% url 'main:publications' %}" method="post">
-      {% csrf_token %}
-        <div class="dropdown index-search-dd">
-          <button class="btn btn-secondary dropdown-toggle" type="button" id="ddBtnI" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            Title&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-          </button>
-          <div class="dropdown-menu" aria-labelledby="ddBtn1">
-            <a class="dropdown-item" onclick="document.getElementById('ddBtnI').innerHTML = this.innerHTML;document.getElementById('search_column_i').value = 0;return false;">Title&nbsp;&nbsp;&nbsp;&nbsp;</a>
-            <a class="dropdown-item" onclick="document.getElementById('ddBtnI').innerHTML = this.innerHTML;document.getElementById('search_column_i').value = 3;return false;">Authors&nbsp;&nbsp;</a>
-            <a class="dropdown-item" onclick="document.getElementById('ddBtnI').innerHTML = this.innerHTML;document.getElementById('search_column_i').value = 5;return false;">Journal&nbsp;&nbsp;</a>
-            <a class="dropdown-item" onclick="document.getElementById('ddBtnI').innerHTML = this.innerHTML;document.getElementById('search_column_i').value = 6;return false;">Pubmed ID&nbsp;&nbsp;</a>
-            <a class="dropdown-item" onclick="document.getElementById('ddBtnI').innerHTML = this.innerHTML;document.getElementById('search_column_i').value = 7;return false;">Abstract&nbsp;&nbsp;</a>
-            <a class="dropdown-item" onclick="document.getElementById('ddBtnI').innerHTML = this.innerHTML;document.getElementById('search_column_i').value = 8;return false;">Original URL</a>
-            <a class="dropdown-item" onclick="document.getElementById('ddBtnI').innerHTML = this.innerHTML;document.getElementById('search_column_i').value = 9;return false;">Derived URL</a>
-          </div>
-        </div>
-      <input id="search_column_i" name="search_column" class="form-control mr-sm-2" type="hidden" placeholder="Search" aria-label="Search" value="0">
-      <input id="index_search" name="search_string" class="form-control mr-sm-2 index-search-text" type="search" placeholder="Search" aria-label="Search">
-      <button class="btn btn-outline-light my-2 my-sm-0" type="submit index-search-btn" onclick="">Search</button>
-    </form>
+      <p>Related literature:</p>
+      <p>F. Kern, T. Fehlmann, A. Keller; <a
+                href="https://academic.oup.com/nar/article/48/22/12523/6018434"
+                target="_blank" rel="noopener">On the lifetime of bioinformatics web services</a> <em>Nucleic
+        Acids Res</em> 2020 doi: 10.1093/nar/gkaa1125</p>
+    </div>
+  </div>
 
-      <br><br>
-      <canvas id="myChart" width="400" height="300"></canvas>
-    </div><
-	</body>
-</html>
+  <form id="search_form" class="form-inline my-2 my-lg-0 index-search-form"
+        action="{% url 'main:publications' %}"
+        method="post">
+    {% csrf_token %}
+    <div class="dropdown index-search-dd">
+      <button class="btn btn-secondary dropdown-toggle" type="button" id="ddBtnI"
+              data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        Authors&nbsp;&nbsp;
+      </button>
+      <div class="dropdown-menu" aria-labelledby="ddBtn1">
+        <a class="dropdown-item"
+           onclick="document.getElementById('ddBtnI').innerHTML = this.innerHTML;document.getElementById('search_column_i').value = 0;return false;">Title&nbsp;&nbsp;&nbsp;&nbsp;</a>
+        <a class="dropdown-item"
+           onclick="document.getElementById('ddBtnI').innerHTML = this.innerHTML;document.getElementById('search_column_i').value = 3;return false;">Authors&nbsp;&nbsp;</a>
+        <a class="dropdown-item"
+           onclick="document.getElementById('ddBtnI').innerHTML = this.innerHTML;document.getElementById('search_column_i').value = 5;return false;">Journal&nbsp;&nbsp;</a>
+        <a class="dropdown-item"
+           onclick="document.getElementById('ddBtnI').innerHTML = this.innerHTML;document.getElementById('search_column_i').value = 6;return false;">PubMed
+          ID&nbsp;&nbsp;</a>
+        <a class="dropdown-item"
+           onclick="document.getElementById('ddBtnI').innerHTML = this.innerHTML;document.getElementById('search_column_i').value = 7;return false;">Abstract&nbsp;&nbsp;</a>
+        <a class="dropdown-item"
+           onclick="document.getElementById('ddBtnI').innerHTML = this.innerHTML;document.getElementById('search_column_i').value = 8;return false;">Original
+          URL</a>
+        <a class="dropdown-item"
+           onclick="document.getElementById('ddBtnI').innerHTML = this.innerHTML;document.getElementById('search_column_i').value = 9;return false;">Derived
+          URL</a>
+      </div>
+    </div>
+    <input id="search_column_i" name="search_column" class="form-control mr-sm-2" type="hidden"
+           placeholder="Search" aria-label="Search" value="3">
+    <input id="index_search" name="search_string" class="form-control mr-sm-2 index-search-text"
+           type="search" placeholder="Search" aria-label="Search">
+    <button id="search_btn" class="btn btn-outline-light my-2 my-sm-0 index-search-btn"
+            type="submit">
+      Search
+    </button>
+    <button id="example_btn" class="btn btn-outline-light my-2 my-sm-0 index-search-btn">
+      Example
+    </button>
+  </form>
+
+  <div class="chart-container" style="position: relative; width: 40vw">
+    <canvas id="myChart" height="150" width="400"></canvas>
+  </div>
+
+</div>
 <script>
-  function createIndexSearchData() {
-    data = {};
-    data[$('#search_column_i').val()] = $('#index_search').val();
-    data["q"] = $('#search_column_i').val();
-    console.log(data);
-    return data;
-  }
-  $( function() {
-    $( "#index_search" ).autocomplete({
-      source: function(request, response) {
-        $.getJSON("{% url 'main:autocomplete' %}", createIndexSearchData(), response);
-      },
-      minLength: 1
-    });
-    if ($( "#index_search" ).autocomplete().data("ui-autocomplete") != undefined) {
-        $( "#index_search" ).autocomplete().data("ui-autocomplete")._renderItem = function (ul, item) {
-            var newText = String(item.value).replace(
-            new RegExp(this.term, "gi"),
-            "<span style='color: white;'><strong>$&</strong></span>");
-            return $("<li></li>")
-            .data("item.autocomplete", item)
-            .append("<div>" + newText + "</div>")
-            .appendTo(ul);
-        };
+  $(document).ready(function () {
+    function createIndexSearchData() {
+      data = {};
+      data[$('#search_column_i').val()] = $('#index_search').val();
+      data["q"] = $('#search_column_i').val();
+      console.log(data);
+      return data;
     }
-  } );
-</script>
-<script>
-var ctx = document.getElementById('myChart').getContext('2d');
-Chart.defaults.global.defaultFontColor = "#dee2e6";
-var myChart = new Chart(ctx, {
-    type: 'bar',
-    data: {
+
+    $(function () {
+      $("#index_search").autocomplete({
+        source: function (request, response) {
+          $.getJSON("{% url 'main:autocomplete' %}", createIndexSearchData(), response);
+        },
+        minLength: 1
+      });
+      if ($("#index_search").autocomplete().data("ui-autocomplete") != undefined) {
+        $("#index_search").autocomplete().data("ui-autocomplete")._renderItem = function (ul, item) {
+          var newText = String(item.value).replace(
+                  new RegExp(this.term, "gi"),
+                  "<span style='color: white;'><strong>$&</strong></span>");
+          return $("<li></li>")
+                  .data("item.autocomplete", item)
+                  .append("<div>" + newText + "</div>")
+                  .appendTo(ul);
+        };
+      }
+    });
+
+    $("#search_btn").click(function () {
+      // disable button
+      $(this).prop("disabled", true);
+      // add spinner to button
+      $(this).html(`<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> `);
+
+      // submit after 1 sec
+      setTimeout(function () {
+        $('#search_form').submit();
+      }, 1000)
+    })
+
+    $("#example_btn").click(function () {
+      // fill fields with example
+      document.getElementById('index_search').value = 'Keller A';
+      document.getElementById('search_column_i').value = 3;
+
+      $("#search_btn").click()
+    })
+
+    var ctx = document.getElementById('myChart').getContext('2d');
+    Chart.defaults.global.defaultFontColor = "#dee2e6";
+
+    var myChart = new Chart(ctx, {
+      height: '100px',
+      maintainAspectRatio: false,
+      type: 'bar',
+      data: {
         labels: ['Publications', 'Websites'],
         datasets: [{
-            label: 'Offline',
-            data: [0, {{ offline_count }}],
-            backgroundColor: [
-                'rgba(255, 99, 132, 0.2)',
-                'rgba(255, 99, 132, 0.2)'
-            ],
-            borderColor: [
-                'rgba(255, 99, 132, 1)',
-                'rgba(255, 99, 132, 1)'
-            ],
-            borderWidth: 2
-        },{
-            label: 'Temporarily offline',
-            data: [0, {{ temp_offline_count }}],
-            backgroundColor: [
-              'rgba(255, 206, 86, 0.2)',
-              'rgba(255, 206, 86, 0.2)',
-            ],
-            borderColor: [
-                'rgba(255, 206, 86, 1)',
-                'rgba(255, 206, 86, 1)',
-            ],
-            borderWidth: 2
-        },{
-            label: 'Online',
-            data: [0, {{ online_count }}],
-            backgroundColor: [
-                'rgba(75, 192, 192, 0.2)',
-                'rgba(75, 192, 192, 0.2)',
-            ],
-            borderColor: [
-                'rgba(75, 192, 192, 1)',
-                'rgba(75, 192, 192, 1)',
-            ],
-            borderWidth: 2
-        },{
-            label: 'Publications',
-            data: [{{ paper_count }}, 0],
-            backgroundColor: [
-                'rgba(54, 162, 235, 0.2)',
-                'rgba(255, 206, 86, 0.2)',
+          label: 'Offline',
+          data: [0, {{ offline_count }}],
+          backgroundColor: [
+            'rgba(255, 99, 132, 0.2)',
+            'rgba(255, 99, 132, 0.2)'
+          ],
+          borderColor: [
+            'rgba(255, 99, 132, 1)',
+            'rgba(255, 99, 132, 1)'
+          ],
+          borderWidth: 2
+        }, {
+          label: 'Temporarily offline',
+          data: [0, {{ temp_offline_count }}],
+          backgroundColor: [
+            'rgba(255, 206, 86, 0.2)',
+            'rgba(255, 206, 86, 0.2)',
+          ],
+          borderColor: [
+            'rgba(255, 206, 86, 1)',
+            'rgba(255, 206, 86, 1)',
+          ],
+          borderWidth: 2
+        }, {
+          label: 'Online',
+          data: [0, {{ online_count }}],
+          backgroundColor: [
+            'rgba(75, 192, 192, 0.2)',
+            'rgba(75, 192, 192, 0.2)',
+          ],
+          borderColor: [
+            'rgba(75, 192, 192, 1)',
+            'rgba(75, 192, 192, 1)',
+          ],
+          borderWidth: 2
+        }, {
+          label: 'Publications',
+          data: [{{ paper_count }}, 0],
+          backgroundColor: [
+            'rgba(54, 162, 235, 0.2)',
+            'rgba(255, 206, 86, 0.2)',
 
-            ],
-            borderColor: [
-              'rgba(54, 162, 235, 1)',
-              'rgba(255, 206, 86, 1)',
-            ],
-            borderWidth: 2
+          ],
+          borderColor: [
+            'rgba(54, 162, 235, 1)',
+            'rgba(255, 206, 86, 1)',
+          ],
+          borderWidth: 2
         }]
-    },
-    options: {
-    title: {
-        display: true,
-        text: 'Database'
-    },
+      },
+      options: {
+        title: {
+          display: true,
+          text: 'Statistics'
+        },
         scales: {
-            yAxes: [{
-                ticks: {
-                    beginAtZero: true
-                },
-              stacked: true,
-            }],
+          yAxes: [{
+            ticks: {
+              beginAtZero: true
+            },
+            stacked: true,
+          }],
           xAxes: [{
-                              stacked: true
+            stacked: true
           }],
         }
-    }
-});
+      }
+    });
+  })
 </script>
+</body>
+</html>
