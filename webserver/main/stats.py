@@ -41,13 +41,13 @@ def get_all_statistics(pub_queryset, curated=False):
         CWebsite = namedtuple("CWebsite", ["id", "status", "states", "journal", "year"])
         websites = [CWebsite(*e) for e in
                     pub_queryset.values_list("website__id", "status", "states", "journal", "year")]
-        website_papers = {w: [(w.journal, w.year)] for w in websites}
+        website_papers = {w.id: [(w.journal, w.year)] for w in websites}
     else:
         websites = [w for w in
                     Website.objects.filter(papers__in=pub_queryset).distinct().prefetch_related(
                         "papers")]
         website_papers = {
-            w: [(p.journal, p.year) for p in w.papers.all() if p.id in publication_ids] for w in
+            w.id: [(p.journal, p.year) for p in w.papers.all() if p.id in publication_ids] for w in
             websites}
 
     context = dict()
@@ -81,11 +81,11 @@ def get_all_statistics(pub_queryset, curated=False):
                     elif any(e is False for e in srange):
                         stat1_offline[i] += 1
         if w.status == WebsiteStatus.ONLINE:
-            online_websites.add(w)
+            online_websites.add(w.id)
         elif w.status == WebsiteStatus.TEMP_OFFLINE:
-            tmp_offline_websites.add(w)
+            tmp_offline_websites.add(w.id)
         elif w.status == WebsiteStatus.OFFLINE:
-            offline_websites.add(w)
+            offline_websites.add(w.id)
 
     # website_states = list(qs.values('pubmed_id', 'websites__states'))
     # latest_date = WebsiteCall.objects.latest("datetime").datetime
