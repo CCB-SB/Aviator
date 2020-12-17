@@ -451,21 +451,21 @@ class Table(BaseDatatableView):
             # apply filters
             qs = self.filter_queryset(qs)
 
-            # number of records after filtering
-            total_display_records = qs.count()
-
             stats = get_all_statistics(qs)
+
+            # number of records after filtering
+            total_display_records = stats["paper_count"]
 
             # apply ordering
             qs = self.ordering(qs)
 
-            website_states = list(qs.values('pubmed_id', 'websites__states'))
+            website_states = [{"pubmed_id": e["pubmed_id"], "websites__states": s} for e in qs.annotate(states=ArrayAgg("websites__states")).values('pubmed_id', 'states') for s in e["states"]]
             latest_date = WebsiteCall.objects.latest("datetime").datetime
 
             state_dates = [(latest_date - timedelta(days=day_delta)).date().strftime("%Y-%m-%d") for
                            day_delta in range(settings.TEMPORAL_INFO_DAYS, -1, -1)]
 
-            # apply pagintion
+            # apply pagination
             qs = self.paging(qs)
 
             # prepare output data
@@ -500,7 +500,6 @@ class CuratedTable(Table):
     columns = ['title', 'status', 'percentage', 'authors', 'year', 'journal', 'pubmed_id',
                'description', 'url', 'tag_tags', 'website_pk']
     max_display_length = 500
-
     escape_values = False
 
     def get_initial_queryset(self):
