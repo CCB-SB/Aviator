@@ -15,10 +15,9 @@ class Command(BaseCommand):
         except:
             raise CommandError('Please provide an input file')
 
-        tag_tbl = pd.read_csv(csv_file, delimiter='\t')
+        tags = [l.strip() for l in open(csv_file)]
         new_tags = list()
-        for line, values in tag_tbl.iterrows():
-            tag = values[0]
+        for tag in tags:
             if Tag.objects.filter(name=tag).count() == 0:
                 new_tags.append(Tag(name=tag))
         Tag.objects.bulk_create(new_tags)
