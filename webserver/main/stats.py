@@ -38,8 +38,8 @@ def get_all_statistics(pub_queryset, curated=False):
     # top 10 journals, online, offline, tmp offline
     # per year online, offline, tmp offline
     if curated:
-        website_ids = set(e.website for e in pub_queryset)
-        websites = [w for w in pub_queryset.values_list("id", "status", "states") if w[0] in website_ids]
+        website_ids = set(e.website.id for e in pub_queryset)
+        websites = [w for w in pub_queryset.values_list("website__id", "status", "states") if w[0] in website_ids]
     else:
         website_ids = set(e[0] for e in pub_queryset.values_list("websites").distinct())
         websites = [w for w in Website.objects.all().values_list("id", "status", "states") if w[0] in website_ids]
@@ -87,8 +87,8 @@ def get_all_statistics(pub_queryset, curated=False):
     context['stat1_online'] = json.dumps(stat1_online)
     context['stat1_offline'] = json.dumps(stat1_offline)
     context['stat1_tmp_offline'] = json.dumps(stat1_tmp_offline)
-    context["top10_journals"] = list(pub_queryset.values("journal").annotate(
-        count=Count("journal")).order_by("-count")[:10])
+    journal_counts = Counter(e[0] for e in pub_queryset.values_list("journal"))
+    context["top10_journals"] = [{"journal": e[0], "count": e[1]} for e in journal_counts.most_common(10)]
     journals2count = {e["journal"]: e["count"] for e in context["top10_journals"]}
     if curated:
         top_journals_online = Counter(e["journal"] for e in pub_queryset.filter(
@@ -111,8 +111,8 @@ def get_all_statistics(pub_queryset, curated=False):
     context["top10_journals_online"] = json.dumps([top_journals_online.get(j, 0) for j in journals])
     context["top10_journals_tmp_offline"] = json.dumps([tmp_offline_top_journals.get(j, 0) for j in journals])
     context["top10_journals_offline"] = json.dumps([offline_top_journals.get(j, 0) for j in journals])
-    context["publications_per_year"] = list(pub_queryset.values("year").annotate(
-        count=Count("year")).order_by("-count"))
+    year_counts = Counter(e[0] for e in pub_queryset.values_list("year"))
+    context["publications_per_year"] = [{"year": e[0], "count": e[1]} for e in sorted(year_counts.items(), key=lambda e: e[0])]
     year2count = {e["year"]: e["count"] for e in context["publications_per_year"]}
     if curated:
         years_online = Counter(e["year"] for e in pub_queryset.filter(

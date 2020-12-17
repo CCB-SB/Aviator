@@ -1,17 +1,13 @@
 
 var author_column = null;
 var tags_column = null;
+var numeric_cols = [2, 4];
 $(document).ready(function () {
-    var numeric_cols = [4];
+
     let cookie_name = "curated_hidden_columns";
     let standard_hidden_columns = [];
     let save_days = 60;
 
-    var render_format_num = {
-        display: function (data, type, row, meta) {
-            return table_display_helper.numberWithCommas(data);
-        }
-    };
     async function apply_foreign_filter() {
         if (foreign_filter_exists && scolumn != null) {
           foreign_filter_exists = false;
@@ -62,7 +58,7 @@ $(document).ready(function () {
                 }
             }, {
                 "data": "percentage", render: function ( data ) {
-                  return createCellText("<div style='display:none'>" + (data < 10 ? ("00" + data) : (data < 100 ? ("0" + data) : data)) + "</div>" + (data === null ? "No Data" : (data+"% Online")), true);
+                  return createCellText("<div style='display:none'>" + (data < 10 ? ("00" + data) : (data < 100 ? ("0" + data) : data)) + "</div>" + (data === null ? "No Data" : (parseFloat(data.toFixed(2)) + "% Online")), true);
                 }
             }, {
                 "data": "authors", render: function ( data ) {
@@ -82,7 +78,7 @@ $(document).ready(function () {
 				  return createCellText(data);
 				}
             }, {"data": "pubmed_id", render: function ( data ) {
-				  return createCellText(data);
+				  return createCellText(`<a target="_blank" rel="noopener" href="https://pubmed.ncbi.nlm.nih.gov/${data}/">${data}</a>`);
 				}
             }, {
                 "data": "description", render: function ( data ) {
@@ -103,7 +99,7 @@ $(document).ready(function () {
 				}
             },
           { data: "website_pk", render: function ( data ) {
-            return createCellText("<a class='btn btn-outline-light' href='details/"+data[0]+"'>Auto-Generated Data</a>")
+            return createCellText("<a class='btn btn-outline-light' href='details/"+data[0]+"'>Show Details</a>")
           }
         }
         ],
@@ -126,18 +122,18 @@ $(document).ready(function () {
                                 .search($(this).prev().val() + ";" + $(this).val())
                                 .draw();
                         });
-                    $( "#cs_from_"+i ).autocomplete({
-                      source: function(request, response) {
-                        $.getJSON(autocomplete_url, createTableSearchData(i), response);
-                      },
-                      minLength: 1
-                    });
-                    $( "#cs_to_"+i ).autocomplete({
-                      source: function(request, response) {
-                        $.getJSON(autocomplete_url, createTableSearchData(i), response);
-                      },
-                      minLength: 1
-                    });
+                    // $( "#cs_from_"+i ).autocomplete({
+                    //   source: function(request, response) {
+                    //     $.getJSON(autocomplete_url, createTableSearchData(i), response);
+                    //   },
+                    //   minLength: 1
+                    // });
+                    // $( "#cs_to_"+i ).autocomplete({
+                    //   source: function(request, response) {
+                    //     $.getJSON(autocomplete_url, createTableSearchData(i), response);
+                    //   },
+                    //   minLength: 1
+                    // });
                 } else {
                     $('<input id="cs_'+i+'" class="form-control" type="text" value="'+(search_column == i ? search_string : "")+'"></th>')
                         .appendTo($(column.footer()).empty())
@@ -182,8 +178,8 @@ $(document).ready(function () {
             })
         },
         lengthMenu: [
-            [10, 25, 50],
-            ['10 rows', '25 rows', '50 rows']
+            [5, 10, 25, 50],
+            ['5 rows', '10 rows', '25 rows', '50 rows']
         ],
         buttons: [
             'pageLength', {text: 'CSV', action: showExportCSVModal},
@@ -194,14 +190,6 @@ $(document).ready(function () {
         ]
     });
 
-      function onClick(e) {
-        e.preventDefault();
-        grecaptcha.ready(function() {
-          grecaptcha.execute('reCAPTCHA_site_key', {action: 'submit'}).then(function(token) {
-              // Add your logic to submit to your backend server here.
-          });
-        });
-      }
     var hidden_columns = getHiddenColumns();
     table.on( 'buttons-action', function ( e, buttonApi, dataTable, node, config ) {
         if(config.columns != undefined) {
@@ -253,9 +241,9 @@ function email(address) {
 }
 
 function createTableSearchData(column) {
-    data = {};
+    var data = {};
     for(var i=0; i <= 14; ++i) {
-        if(i==4 && $('#cs_from_'+i).val() != undefined) {
+        if(numeric_cols.indexOf(i) !== -1 && $('#cs_from_'+i).val() != undefined) {
             data[i] = $('#cs_from_'+i).val()+";"+$('#cs_to_'+i).val();
         } else if($('#cs_'+i).val() != undefined) {
             data[i] = $('#cs_'+i).val();

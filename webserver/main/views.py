@@ -16,7 +16,12 @@ from .forms import CaptchaForm
 
 def filter_queryset(qs, filter_col2v, colnames, email_field):
     numeric_fields = {"year"}
-    numeric_agg_field = {"percentage": "websites__percentage"}
+    if hasattr(qs.model, "websites"):
+        numeric_agg_field = {"percentage": "websites__percentage"}
+    elif hasattr(qs.model, "website"):
+        numeric_agg_field = {"percentage": "website__percentage"}
+    else:
+        numeric_agg_field = {}
     qs_filter = {}
     for col, v in filter_col2v.items():
         field_name = colnames[col]
@@ -254,7 +259,7 @@ def curated_autocomplete(request):
             tag_tags=ArrayAgg('tags__name'))
         email_fields = {}
         filter_col2v = {k: request.GET[str(k)] for k in range(0, len(columns)) if
-                        str(k) in request.GET}
+                        str(k) in request.GET and request.GET[str(k)] not in {"", ";"}}
         qs = filter_queryset(qs, filter_col2v, columns, email_fields)
 
         listed_cols = {3, 9}
@@ -545,8 +550,8 @@ class CuratedTable(Table):
 
             website_states = list(qs.values('pubmed_id', 'states'))
             latest_date = WebsiteCall.objects.latest("datetime").datetime
-            if CuratedWebsite.objects.all().count() > 0:
-                dates = CuratedWebsite.objects.all()[0].dates
+            if CuratedWebsite.objects.exists():
+                dates = CuratedWebsite.objects.first().dates
                 latest_date = dates[len(dates) - 1]
 
             state_dates = [(latest_date - timedelta(days=day_delta)).date().strftime("%Y-%m-%d") for
