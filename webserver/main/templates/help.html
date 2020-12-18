@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+{% load staticfiles %}
+{% url 'main:details' as details %}
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+  <title>AVIATOR</title>
+  <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet" type="text/css">
+  <link href="{% static 'css/chart.min.css' %}" rel="stylesheet" type="text/css">
+  <link href="{% static 'css/aviator.css' %}" rel="stylesheet" type="text/css">
+  <script src="{% static 'js/jquery.min.js' %}"></script>
+  <script src="{% static 'js/popper.min.js' %}"></script>
+  <script src="{% static 'js/bootstrap.min.js' %}"></script>
+  <script src="{% static 'js/chart.min.js' %}"></script>
+</head>
+<body>
+{% include "navbar.html" %}
+<div class="center-box">
+  <div class="card aviator-card">
+    <div class="card-body">
+      <p>
+        AVIATOR is a web-server monitoring the availability of other published web-servers.
+        It allows researchers to monitor their own tools or to asses if a tool they would like to
+        access is <b>temporarily</b> or <b>permanently</b> offline.
+        AVIATOR is composed of two modules:
+      </p>
+      <ul>
+        <li><a
+                href="{% url 'main:publications' %}">Publications</a>: web-servers collected
+          automatically from literature
+        </li>
+        <li><a href="{% url 'main:curated' %}">Curated</a>: web-servers manually added by their
+          authors
+        </li>
+      </ul>
+      <p>
+        The web-server URL or an API endpoint provided by the authors are queried twice per day. In
+        addition to providing an availability overview we provide the possibility for authors to be
+        notified if their webserver is offline for an unexpected period of time.
+      </p>
+      <br>
+      <p>
+        To add your published web-server to AVIATOR a simple <a
+              href="{% url 'main:api' %}">API endpoint</a> and a <a
+              href="{% url 'main:author' %}">registration</a> is needed.
+      </p>
+
+      <p>Related literature:</p>
+      <p>F. Kern, T. Fehlmann, A. Keller; <a
+              href="https://academic.oup.com/nar/article/48/22/12523/6018434"
+              target="_blank" rel="noopener">On the lifetime of bioinformatics web services</a> <em>Nucleic
+        Acids Res</em> 2020 doi: 10.1093/nar/gkaa1125</p>
+    </div>
+  </div>
+</div>
+</body>
+</html>
