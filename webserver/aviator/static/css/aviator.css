@@ -49,21 +49,19 @@ iframe {
 
 /* Index */
 .index-search-form {
-  padding-top: 4rem;
   width: 100%;
 }
 
 .index-search-dd {
-  width: 9rem !important;
-  top: -0.4rem;
+  width: 7rem !important;
 }
 
 .index-search-text {
-  width: calc(100% - 24rem) !important;
+  width: calc(100% - 24.5rem) !important;
 }
 
 .index-search-btn {
-  width: 6rem !important;
+  width: 8rem !important;
   margin-left: 0.5rem;
 }
 
@@ -83,7 +81,6 @@ iframe {
   width: 80vw;
   text-align: center;
   color: var(--font-color);
-  font-size: 2vw;
 }
 
 .aviator-card {

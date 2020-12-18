@@ -59,7 +59,7 @@
       </div>
     </div>
 
-    <form id="search_form" class="form-inline my-2 my-lg-0 index-search-form"
+    <form id="search_form" class="form-inline my-2 my-lg-0 index-search-form mt-xl-3"
           action="{% url 'main:publications' %}"
           method="post">
       {% csrf_token %}
@@ -101,7 +101,7 @@
       </button>
     </form>
 
-    <div class="card aviator-card">
+    <div class="card aviator-card mt-xl-3">
       <div class="card-body">
         <div class="chart-container" style="position: relative; width: 40vw">
           <canvas id="myChart" height="150" width="400"></canvas>

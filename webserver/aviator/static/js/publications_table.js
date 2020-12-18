@@ -313,12 +313,13 @@ $(document).ready(function () {
             ['10 rows', '25 rows', '50 rows']
         ],
         buttons: [
-            'pageLength', {text: 'CSV', action: showExportCSVModal},
+            'pageLength', {text: '<i class="fas fa-download"></i> CSV', action: showExportCSVModal},
             {
                 extend: 'colvis',
                 action: function (e, dt, node, config) {
                     $.fn.dataTable.ext.buttons.collection.action.call(this, e, dt, node, config);
-                }
+                },
+                text: '<i class="fas fa-eye-slash"></i> Column visibility'
             }
         ]
     });
