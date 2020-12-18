@@ -222,7 +222,10 @@ def paperData(request):
 
 
 def statistics(request):
-    context = get_all_statistics(Publication.objects.all())
+    context = get_all_statistics(
+        Publication.objects.all().prefetch_related('websites').annotate(
+            website_pks=ArrayAgg('websites'),
+            status=ArrayAgg('websites__status')))
     return render(request, 'statistics.html', context)
 
 
@@ -234,7 +237,7 @@ def autocomplete(request):
             derived_url=ArrayAgg('websites__derived_url'), scripts=ArrayAgg('websites__script'),
             ssl=ArrayAgg('websites__certificate_secure'),
             heap_size=ArrayAgg('websites__last_heap_size'),
-            website_pks=ArrayAgg('websites__pk'))
+            website_pks=ArrayAgg('websites'))
         columns = ['title', 'status', 'percentage', 'authors', 'year', 'journal', 'pubmed_id',
                    'abstract', 'original_url', 'derived_url', 'contact_mail', 'user_kwds',
                    'scripts', 'ssl', 'heap_size', 'website_pks']
