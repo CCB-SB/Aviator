@@ -461,3 +461,12 @@ input[type="search"]::-webkit-search-cancel-button {
 .read-more:not(.collapsed) {
   opacity: 0;
 }
+
+.footer {
+  background-color: var(--secondary);
+  /*position: absolute;*/
+  width: 100%;
+  height: 60px;
+  line-height: 60px;
+  bottom: 0
+}

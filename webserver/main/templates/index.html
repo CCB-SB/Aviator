@@ -17,95 +17,101 @@
 </head>
 <body>
 {% include "navbar.html" %}
-<div class="center-box">
-  <div class="card aviator-card">
-    <div class="card-body">
-      <p>
-        AVIATOR is a web-server monitoring the availability of other published web-servers.
-        It allows researchers to monitor their own tools or to asses if a tool they would like to
-        access is <b>temporarily</b> or <b>permanently</b> offline.
-        AVIATOR is composed of two modules:
-      </p>
-      <ul>
-        <li><a
-                href="{% url 'main:publications' %}">Publications</a>: web-servers collected
-          automatically from literature
-        </li>
-        <li><a href="{% url 'main:curated' %}">Curated</a>: web-servers manually added by their
-          authors
-        </li>
-      </ul>
-      <p>
-        The web-server URL or an API endpoint provided by the authors are queried twice per day. In
-        addition to providing an availability overview we provide the possibility for authors to be
-        notified if their webserver is offline for an unexpected period of time.
-      </p>
-      <br>
-      <p>
-        To add your published web-server to AVIATOR a simple <a
-              href="{% url 'main:api' %}">API endpoint</a> and a <a
-              href="{% url 'main:author' %}">registration</a> is needed.
-      </p>
+<div class="container-fluid">
+  <div class="center-box">
+    <div class="card aviator-card">
+      <div class="card-body">
+        <p>
+          AVIATOR is a web-server monitoring the availability of other published web-servers.
+          It allows researchers to monitor their own tools or to asses if a tool they would like to
+          access is <b>temporarily</b> or <b>permanently</b> offline.
+          AVIATOR is composed of two modules:
+        </p>
+        <ul>
+          <li><a
+                  href="{% url 'main:publications' %}">Publications</a>: web-servers collected
+            automatically from literature
+          </li>
+          <li><a href="{% url 'main:curated' %}">Curated</a>: web-servers manually added by their
+            authors
+          </li>
+        </ul>
+        <p>
+          The web-server URL or an API endpoint provided by the authors are queried twice per day.
+          In
+          addition to providing an availability overview we provide the possibility for authors to
+          be
+          notified if their webserver is offline for an unexpected period of time.
+        </p>
+        <br>
+        <p>
+          To add your published web-server to AVIATOR a simple <a
+                href="{% url 'main:api' %}">API endpoint</a> and a <a
+                href="{% url 'main:author' %}">registration</a> is needed.
+        </p>
 
-      <p>Related literature:</p>
-      <p>F. Kern, T. Fehlmann, A. Keller; <a
-              href="https://academic.oup.com/nar/article/48/22/12523/6018434"
-              target="_blank" rel="noopener">On the lifetime of bioinformatics web services</a> <em>Nucleic
-        Acids Res</em> 2020 doi: 10.1093/nar/gkaa1125</p>
+        <p>Related literature:</p>
+        <p>F. Kern, T. Fehlmann, A. Keller; <a
+                href="https://academic.oup.com/nar/article/48/22/12523/6018434"
+                target="_blank" rel="noopener">On the lifetime of bioinformatics web services</a>
+          <em>Nucleic
+            Acids Res</em> 2020 doi: 10.1093/nar/gkaa1125</p>
+      </div>
     </div>
-  </div>
 
-  <form id="search_form" class="form-inline my-2 my-lg-0 index-search-form"
-        action="{% url 'main:publications' %}"
-        method="post">
-    {% csrf_token %}
-    <div class="dropdown index-search-dd">
-      <button class="btn btn-secondary dropdown-toggle" type="button" id="ddBtnI"
-              data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        Authors&nbsp;&nbsp;
+    <form id="search_form" class="form-inline my-2 my-lg-0 index-search-form"
+          action="{% url 'main:publications' %}"
+          method="post">
+      {% csrf_token %}
+      <div class="dropdown index-search-dd">
+        <button class="btn btn-secondary dropdown-toggle" type="button" id="ddBtnI"
+                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Authors&nbsp;&nbsp;
+        </button>
+        <div class="dropdown-menu" aria-labelledby="ddBtn1">
+          <a class="dropdown-item"
+             onclick="document.getElementById('ddBtnI').innerHTML = this.innerHTML;document.getElementById('search_column_i').value = 0;return false;">Title&nbsp;&nbsp;&nbsp;&nbsp;</a>
+          <a class="dropdown-item"
+             onclick="document.getElementById('ddBtnI').innerHTML = this.innerHTML;document.getElementById('search_column_i').value = 3;return false;">Authors&nbsp;&nbsp;</a>
+          <a class="dropdown-item"
+             onclick="document.getElementById('ddBtnI').innerHTML = this.innerHTML;document.getElementById('search_column_i').value = 5;return false;">Journal&nbsp;&nbsp;</a>
+          <a class="dropdown-item"
+             onclick="document.getElementById('ddBtnI').innerHTML = this.innerHTML;document.getElementById('search_column_i').value = 6;return false;">PubMed
+            ID&nbsp;&nbsp;</a>
+          <a class="dropdown-item"
+             onclick="document.getElementById('ddBtnI').innerHTML = this.innerHTML;document.getElementById('search_column_i').value = 7;return false;">Abstract&nbsp;&nbsp;</a>
+          <a class="dropdown-item"
+             onclick="document.getElementById('ddBtnI').innerHTML = this.innerHTML;document.getElementById('search_column_i').value = 8;return false;">Original
+            URL</a>
+          <a class="dropdown-item"
+             onclick="document.getElementById('ddBtnI').innerHTML = this.innerHTML;document.getElementById('search_column_i').value = 9;return false;">Derived
+            URL</a>
+        </div>
+      </div>
+      <input id="search_column_i" name="search_column" class="form-control mr-sm-2" type="hidden"
+             placeholder="Search" aria-label="Search" value="3">
+      <input id="index_search" name="search_string" class="form-control mr-sm-2 index-search-text"
+             type="search" placeholder="Search" aria-label="Search">
+      <button id="search_btn" class="btn btn-outline-light my-2 my-sm-0 index-search-btn"
+              type="submit">
+        <i class="fas fa-search"></i> Search
       </button>
-      <div class="dropdown-menu" aria-labelledby="ddBtn1">
-        <a class="dropdown-item"
-           onclick="document.getElementById('ddBtnI').innerHTML = this.innerHTML;document.getElementById('search_column_i').value = 0;return false;">Title&nbsp;&nbsp;&nbsp;&nbsp;</a>
-        <a class="dropdown-item"
-           onclick="document.getElementById('ddBtnI').innerHTML = this.innerHTML;document.getElementById('search_column_i').value = 3;return false;">Authors&nbsp;&nbsp;</a>
-        <a class="dropdown-item"
-           onclick="document.getElementById('ddBtnI').innerHTML = this.innerHTML;document.getElementById('search_column_i').value = 5;return false;">Journal&nbsp;&nbsp;</a>
-        <a class="dropdown-item"
-           onclick="document.getElementById('ddBtnI').innerHTML = this.innerHTML;document.getElementById('search_column_i').value = 6;return false;">PubMed
-          ID&nbsp;&nbsp;</a>
-        <a class="dropdown-item"
-           onclick="document.getElementById('ddBtnI').innerHTML = this.innerHTML;document.getElementById('search_column_i').value = 7;return false;">Abstract&nbsp;&nbsp;</a>
-        <a class="dropdown-item"
-           onclick="document.getElementById('ddBtnI').innerHTML = this.innerHTML;document.getElementById('search_column_i').value = 8;return false;">Original
-          URL</a>
-        <a class="dropdown-item"
-           onclick="document.getElementById('ddBtnI').innerHTML = this.innerHTML;document.getElementById('search_column_i').value = 9;return false;">Derived
-          URL</a>
-      </div>
-    </div>
-    <input id="search_column_i" name="search_column" class="form-control mr-sm-2" type="hidden"
-           placeholder="Search" aria-label="Search" value="3">
-    <input id="index_search" name="search_string" class="form-control mr-sm-2 index-search-text"
-           type="search" placeholder="Search" aria-label="Search">
-    <button id="search_btn" class="btn btn-outline-light my-2 my-sm-0 index-search-btn"
-            type="submit">
-      Search
-    </button>
-    <button id="example_btn" class="btn btn-outline-light my-2 my-sm-0 index-search-btn">
-      Example
-    </button>
-  </form>
+      <button id="example_btn" class="btn btn-outline-light my-2 my-sm-0 index-search-btn">
+        <i class="fas fa-search"></i> Example
+      </button>
+    </form>
 
-  <div class="card aviator-card">
-    <div class="card-body">
-      <div class="chart-container" style="position: relative; width: 40vw">
-        <canvas id="myChart" height="150" width="400"></canvas>
+    <div class="card aviator-card">
+      <div class="card-body">
+        <div class="chart-container" style="position: relative; width: 40vw">
+          <canvas id="myChart" height="150" width="400"></canvas>
+        </div>
       </div>
     </div>
   </div>
-
 </div>
+
+{% include "footer.html" %}
 <script>
   $(document).ready(function () {
     function createIndexSearchData() {

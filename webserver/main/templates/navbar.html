@@ -1,12 +1,16 @@
+{% load staticfiles %}
+
 {% url 'main:index' as index %}
 {% url 'main:overview' as overview %}
 {% url 'main:publications' as publications %}
 {% url 'main:author' as author %}
 {% url 'main:statistics' as statistics %}
 {% url 'main:api' as api %}
+{% url 'main:help' as help %}
 {% url 'main:curated' as curated %}
 
 <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<script src="https://kit.fontawesome.com/44be9d4f34.js" crossorigin="anonymous"></script>
 <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
@@ -15,25 +19,29 @@
   <div class="navbar-login-container" id="navbarSupportedContent">
     <ul class="navbar-nav mr-auto">
       <li class="nav-item {% if request.path == index %}active{% endif %}">
-        <a class="nav-link" href="{{ index }}">Home</a>
+        <a class="nav-link" href="{{ index }}"><i class="fas fa-home"></i> Home</a>
       </li>
       <li class="nav-item {% if request.path == publications %}active{% endif %}">
-        <a class="nav-link" href="{{ publications }}">Publications</a>
+        <a class="nav-link" href="{{ publications }}"><i class="fas fa-table"></i> Publications</a>
       </li>
       <li class="nav-item {% if request.path == curated %}active{% endif %}">
-        <a class="nav-link" href="{{ curated }}">Curated</a>
+        <a class="nav-link" href="{{ curated }}"><i class="fas fa-tools"></i> Curated</a>
       </li>
       <li class="nav-item {% if request.path == author %}active{% endif %}">
-        <a class="nav-link" href="{{ author }}">Contact</a>
+        <a class="nav-link" href="{{ author }}"><i class="fas fa-paper-plane"></i> Contact</a>
       </li>
       <li class="nav-item {% if request.path == statistics %}active{% endif %}">
-        <a class="nav-link" href="{{ statistics }}">Statistics</a>
+        <a class="nav-link" href="{{ statistics }}"><i class="fas fa-chart-bar"></i> Statistics</a>
       </li>
       <li class="nav-item {% if request.path == api %}active{% endif %}">
-        <a class="nav-link" href="{{ api }}">API</a>
+        <a class="nav-link" href="{{ api }}"><i class="fas fa-cloud"></i> API</a>
+      </li>
+      <li class="nav-item {% if request.path == help %}active{% endif %}">
+        <a class="nav-link" href="{{ help }}"><i class="fas fa-info-circle"></i> Help</a>
       </li>
     </ul>
-    <form id="nav_search_form" class="form-inline my-2 my-lg-0" action="{% url 'main:publications' %}" method="post">
+    <form id="nav_search_form" class="form-inline my-2 my-lg-0"
+          action="{% url 'main:publications' %}" method="post">
       {% csrf_token %}
       <div class="dropdown">
         <button class="btn btn-secondary dropdown-toggle" type="button" id="ddBtnN"
@@ -64,7 +72,23 @@
              placeholder="Search" aria-label="Search" value="0">
       <input id="nav_search" name="search_string" class="form-control mr-sm-2" type="search"
              placeholder="Search" aria-label="Search">
-      <button id="nav_search_btn" class="btn btn-outline-light my-2 my-sm-0" type="submit" onclick="">Search</button>
+      <button id="nav_search_btn" class="btn btn-outline-light my-2 my-sm-0" type="submit"
+              onclick=""><i class="fas fa-search"></i> Search
+      </button>
+      <div>
+        <a href="https://www.ccb.uni-saarland.de/" target="_blank" rel="noopener">
+          <img src="{% static 'images/logo_ccb_white_h80.png' %}"
+               alt="Chair for Clinical Bioinformatics" hspace="10"
+               style="width:83px;height:40px;border:0;">
+        </a>
+      </div>
+      <div>
+        <a href="http://www.uni-saarland.de/nc/en/home.html" target="_blank" rel="noopener">
+          <img src="{% static 'images/logo_uds_white_h80.png' %}"
+               alt="University of Saarland, Germany" hspace="10"
+               style="width:100px;height:40px;border:0;">
+        </a>
+      </div>
     </form>
   </div>
 </nav>
