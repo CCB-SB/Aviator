@@ -61,7 +61,7 @@ def filter_queryset(qs, filter_col2v, colnames, email_field):
 
 def prepare_csv_export(qs, columns, header, request, email_fields, ignore_fields, name):
     response = HttpResponse(content_type='text/csv')
-    writer = csv.writer(response, delimiter='\t')
+    writer = csv.writer(response, delimiter=',')
     header_line = []
     shown = []
     if "columns" in request.POST:
