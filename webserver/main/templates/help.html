@@ -26,17 +26,70 @@
       </div>
       <div class="card-body">
         <ul>
-          <li><a href="#publications">Publications</a></li>
-          <li><a href="#curated">Curated</a></li>
+          <li><a href="#publications"><i class="fas fa-table"></i>  Publications</a></li>
+          <li><a href="#curated"><i class="fas fa-tools"></i> Curated</a></li>
         </ul>
       </div>
     </div>
   </div>
+
+  <section id="browser-compat">
+    <div class="center-box">
+      <div class="card mb-3 aviator-card">
+        <div class="card-header"><i class="fas fa-columns"></i> Browser compatibility</div>
+        <div class="card-body">
+          <h5 class="card-title mb-3">Our web server supports a variety of common operating systems
+            and browsers:</h5>
+          <table class="table table-striped" style="color: var(--font-color);">
+            <thead>
+            <tr>
+              <th scope="col">OS</th>
+              <th scope="col">Version</th>
+              <th scope="col"><i class="fab fa-chrome"></i> Chrome</th>
+              <th scope="col"><i class="fab fa-firefox"></i> Firefox</th>
+              <th scope="col"><i class="fab fa-edge"></i> Microsoft Edge</th>
+              <th scope="col"><i class="fab fa-safari"></i> Safari</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+              <th scope="row"><i class="fab fa-linux"></i> Linux</th>
+              <td>Manjaro (64 bit) 20.0.1</td>
+              <td>85.0.4183.83</td>
+              <td>83.0</td>
+              <td>N/A</td>
+              <td>N/A</td>
+            </tr>
+            <tr>
+              <th scope="row"><i class="fab fa-apple"></i> macOS</th>
+              <td>Mojave 10.14.6</td>
+              <td>85.0.4183.83</td>
+              <td>83.0</td>
+              <td>N/A</td>
+              <td>14.0.2</td>
+            </tr>
+            <tr>
+              <th scope="row"><i class="fab fa-windows"></i> Windows</th>
+              <td>10</td>
+              <td>85.0.4183.83</td>
+              <td>83.0</td>
+              <td>87.0.664.41</td>
+              <td>N/A</td>
+            </tr>
+            </tbody>
+          </table>
+          <p class="card-text">For the best experience we recommend to use either <i class="fab fa-chrome"></i> <em>Chrome</em> or
+            <i class="fab fa-firefox"></i> <em>Firefox</em>.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <section id="publications">
     <div class="center-box mt-xl-0">
       <div class="card aviator-card">
         <div class="card-header">
-          Publications
+          <i class="fas fa-table"></i> Publications
         </div>
         <div class="card-body">
           <p>
@@ -47,7 +100,7 @@
           <div class="row mb-xl-3">
             <div class="col-md-12">
               <img class="tutorial-img img-fluid w-100"
-                   src="{% static 'images/curated_table.png' %}" alt="Publications table"/>
+                   src="{% static 'images/publications_table.png' %}" alt="Publications table"/>
             </div>
           </div>
           <p>
@@ -66,13 +119,26 @@
 
             All displayed results can be downloaded over the CSV button.
           </p>
+          <div class="row mb-xl-3">
+            <div class="col-md-12">
+              <img class="tutorial-img img-fluid w-100"
+                   src="{% static 'images/publications_heatmap.png' %}" alt="Publications heatmap"/>
+            </div>
+          </div>
           <p>
             The ordering of the table has a direct effect on the availability heatmap shown below.
             The heatmap shows for every website and publication the availability of it during the
             last
             30 days.
             Values that were not collected are shown as grey.
-
+          </p>
+          <div class="row mb-xl-3">
+            <div class="col-md-12">
+              <img class="tutorial-img img-fluid w-100"
+                   src="{% static 'images/publications_bar.png' %}" alt="Publications bar plots"/>
+            </div>
+          </div>
+          <p>
             The bar plots below the heatmap show the statistics for the filtered table.
             Websites are considered temporarily offline, when they were not reachable, but have been
             online at least once in the last 14 days.
@@ -86,7 +152,7 @@
     <div class="center-box">
       <div class="card aviator-card">
         <div class="card-header">
-          Curated
+          <i class="fas fa-tools"></i> Curated
         </div>
         <div class="card-body">
           <p>
@@ -100,7 +166,7 @@
           <div class="row mb-xl-3">
             <div class="col-md-12">
               <img class="tutorial-img img-fluid w-100"
-                   src="{% static 'images/curated_table.png' %}" alt="Publications table"/>
+                   src="{% static 'images/curated_table.png' %}" alt="Curated table"/>
             </div>
           </div>
           <p>
@@ -122,74 +188,32 @@
 
             All displayed results can be downloaded over the CSV button.
           </p>
+          <div class="row mb-xl-3">
+            <div class="col-md-12">
+              <img class="tutorial-img img-fluid w-100"
+                   src="{% static 'images/curated_heatmap.png' %}" alt="Curated heatmap"/>
+            </div>
+          </div>
           <p>
             The ordering of the table has a direct effect on the availability heatmap shown below.
             The heatmap shows for every website and publication the availability of it during the
             last
             30 days.
             Values that were not collected are shown as grey.
+          </p>
+          <div class="row mb-xl-3">
+            <div class="col-md-12">
+              <img class="tutorial-img img-fluid w-100"
+                   src="{% static 'images/curated_bar.png' %}" alt="Curated bar plots"/>
+            </div>
+          </div>
 
+          <p>
             The bar plots below the heatmap show the statistics for the filtered table.
             Websites are considered temporarily offline, when they were not reachable, but have
             been
             online at least once in the last 14 days.
           </p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section id="browser-compat">
-    <div class="center-box">
-      <div class="card mb-3 aviator-card">
-        <div class="card-header">Browser compatibility</div>
-        <div class="card-body">
-          <h5 class="card-title mb-3">Our web server supports a variety of common operating systems
-            and browsers:</h5>
-          <table class="table table-striped" style="color: var(--font-color);">
-            <thead>
-            <tr>
-              <th scope="col">OS</th>
-              <th scope="col">Version</th>
-              <th scope="col">Chrome</th>
-              <th scope="col">Firefox</th>
-              <th scope="col">Microsoft Edge</th>
-              <th scope="col">Safari</th>
-              <th scope="col">Opera</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-              <th scope="row"><i class="fab fa-linux"></i> Linux</th>
-              <td>Manjaro (64 bit) 20.0.1</td>
-              <td>85.0.4183.83</td>
-              <td>83.0</td>
-              <td>N/A</td>
-              <td>N/A</td>
-              <td>Not tested</td>
-            </tr>
-            <tr>
-              <th scope="row"><i class="fab fa-apple"></i> macOS</th>
-              <td>Mojave 10.14.6</td>
-              <td>85.0.4183.83</td>
-              <td>83.0</td>
-              <td>N/A</td>
-              <td>13.0.4</td>
-              <td>65.0.3467.72</td>
-            </tr>
-            <tr>
-              <th scope="row"><i class="fab fa-windows"></i> Windows</th>
-              <td>10</td>
-              <td>85.0.4183.83</td>
-              <td>83.0</td>
-              <td>38.14393.0.0</td>
-              <td>N/A</td>
-              <td>65.03467.78</td>
-            </tr>
-            </tbody>
-          </table>
-          <p class="card-text">For the best experience we recommend to use either <em>Chrome</em> or
-            <em>Firefox</em>.</p>
         </div>
       </div>
     </div>
