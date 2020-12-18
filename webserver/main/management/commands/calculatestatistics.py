@@ -8,8 +8,8 @@ from datetime import timedelta, date, datetime
 
 from collections import defaultdict
 import random
-import urllib.request
-import math
+from urllib.request import Request, urlopen
+
 from tqdm import tqdm
 
 
@@ -97,14 +97,13 @@ class Command(BaseCommand):
         for website in tqdm(CuratedWebsite.objects.all()):
             first_check = False
             input = random.randint(10, 999)
-            result = sum_digits(input)
-            response = "0"
+            result = str(sum_digits(input))
             try:
-                web = urllib.request.urlopen(website.api_url + "?input="+str(input))
-                response = str(web.read())[2:-1]
+                req = Request(f"{website.api_url}?input={input}", headers={'User-Agent': 'AVIATOR/1.0'})
+                response = urlopen(req, timeout=30).read().decode()
             except Exception:
                 response = "0"
-            ok = response == str(result)
+            ok = response == result
             if not (len(website.dates) > 0 and website.dates[len(website.dates) - 1].date() == today):
                 first_check = True
                 website.dates.append(today_dt)
@@ -138,7 +137,7 @@ class Command(BaseCommand):
             offline = 0
             online = 0
             for day_delta in range(max_days, -1, -1):
-                d_date = (datetime.now() -timedelta(days=day_delta)).date()
+                d_date = (datetime.now() - timedelta(days=day_delta)).date()
                 state = None
                 for d in range(len(website.dates)):
                     if d_date == website.dates[d].date():

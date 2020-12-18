@@ -1,7 +1,7 @@
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, render
-from .models import Website, WebsiteCall, Publication, WebsiteStatus
-from collections import Counter
+from .models import Website, WebsiteCall, Publication, WebsiteStatus, CuratedWebsite
+from collections import Counter, namedtuple, defaultdict
 from django.core import serializers
 from django.core.paginator import Paginator
 from datetime import timedelta, date, datetime
@@ -21,7 +21,6 @@ def get_index_stats():
     context['website_count'] = Website.objects.count()
     context['paper_count'] = Publication.objects.count()
     context['online_count'] = Website.objects.filter(status=WebsiteStatus.ONLINE).count()
-    latest_time = WebsiteCall.objects.latest("datetime")
     context['temp_offline_count'] = Website.objects.filter(
         status=WebsiteStatus.TEMP_OFFLINE).count()
     context['offline_count'] = Website.objects.filter(status=WebsiteStatus.OFFLINE).count()
@@ -38,14 +37,28 @@ def get_all_statistics(pub_queryset, curated=False):
     # top 10 journals, online, offline, tmp offline
     # per year online, offline, tmp offline
     if curated:
-        website_ids = set(e.website for e in pub_queryset)
-        websites = [w for w in pub_queryset.values_list("id", "status", "states") if w[0] in website_ids]
+        p_websites = pub_queryset.values_list("journal", "year", "website__id", "states", "status",
+                                              "pubmed_id")
+        num_pubs = len(p_websites)
+        website_papers = {w[2]: [(w[0], w[1])] for w in p_websites}
+        website2states = dict()
+        for e in p_websites:
+            website_papers[e[2]].append((e[0], e[1]))
+            website2states[e[2]] = (e[3], e[4], e[5])
     else:
-        website_ids = set(e[0] for e in pub_queryset.values_list("websites").distinct())
-        websites = [w for w in Website.objects.all().values_list("id", "status", "states") if w[0] in website_ids]
+        p_websites = pub_queryset.annotate(website_states=ArrayAgg("websites__states")).values_list(
+            "journal", "year", "website_pks", "website_states", "status", "pubmed_id")
+        num_pubs = len(p_websites)
+        website_papers = defaultdict(list)
+        website2states = dict()
+        for e in p_websites:
+            for w_id, w_states, w_status in zip(e[2], e[3], e[4]):
+                website_papers[w_id].append((e[0], e[1]))
+                website2states[w_id] = (w_states, w_status, e[5])
+
     context = dict()
-    context['website_count'] = len(websites)
-    context['paper_count'] = pub_queryset.count()
+    context['website_count'] = len(website2states)
+    context['paper_count'] = num_pubs
     latest_time = WebsiteCall.objects.latest("datetime")
     temp_info_num_days = 15
     stat1_names = []
@@ -55,11 +68,11 @@ def get_all_statistics(pub_queryset, curated=False):
     stat1_online = [0 for _ in range(temp_info_num_days)]
     stat1_offline = [0 for _ in range(temp_info_num_days)]
     stat1_tmp_offline = [0 for _ in range(temp_info_num_days)]
-    online_count = 0
-    offline_count = 0
-    tmp_offline_count = 0
+
     tmp_offline_websites = set()
-    for w_id, w_status, w_states in websites:
+    online_websites = set()
+    offline_websites = set()
+    for w_id, (w_states, w_status, _) in website2states.items():
         for i in range(temp_info_num_days):
             if temp_info_num_days - i <= len(w_states):
                 pos = len(w_states) - temp_info_num_days + i
@@ -74,72 +87,63 @@ def get_all_statistics(pub_queryset, curated=False):
                     elif any(e is False for e in srange):
                         stat1_offline[i] += 1
         if w_status == WebsiteStatus.ONLINE:
-            online_count += 1
+            online_websites.add(w_id)
         elif w_status == WebsiteStatus.TEMP_OFFLINE:
-            tmp_offline_count += 1
             tmp_offline_websites.add(w_id)
         elif w_status == WebsiteStatus.OFFLINE:
-            offline_count += 1
-    context['online_count'] = online_count
-    context['offline_count'] = offline_count
-    context['temp_offline_count'] = tmp_offline_count
+            offline_websites.add(w_id)
+
+    latest_date = latest_time.datetime
+    if curated:
+        website_states = [{"pubmed_id": e[5], "websites__states": e[3]} for e in p_websites]
+        if CuratedWebsite.objects.exists():
+            dates = CuratedWebsite.objects.first().dates
+            latest_date = dates[len(dates) - 1]
+    else:
+        website_states = [{"pubmed_id": e[5], "websites__states": w_states} for e in p_websites for
+                          w_states in e[3]]
+
+    state_dates = [(latest_date - timedelta(days=day_delta)).date().strftime("%Y-%m-%d")
+                   for
+                   day_delta in range(settings.TEMPORAL_INFO_DAYS, -1, -1)]
+
+    context["website_states"] = website_states
+    context["state_dates"] = state_dates
+
+    context['online_count'] = len(online_websites)
+    context['offline_count'] = len(offline_websites)
+    context['temp_offline_count'] = len(tmp_offline_websites)
     context['stat1_names'] = json.dumps(stat1_names)
     context['stat1_online'] = json.dumps(stat1_online)
     context['stat1_offline'] = json.dumps(stat1_offline)
     context['stat1_tmp_offline'] = json.dumps(stat1_tmp_offline)
-    context["top10_journals"] = list(pub_queryset.values("journal").annotate(
-        count=Count("journal")).order_by("-count")[:10])
+    journal_counts = Counter(e[0] for papers in website_papers.values() for e in papers)
+    context["top10_journals"] = [{"journal": e[0], "count": e[1]} for e in
+                                 journal_counts.most_common(10)]
     journals2count = {e["journal"]: e["count"] for e in context["top10_journals"]}
-    if curated:
-        top_journals_online = Counter(e["journal"] for e in pub_queryset.filter(
-            journal__in=journals2count.keys()).filter(status=WebsiteStatus.ONLINE).values("journal"))
-        tmp_offline_all_journals = Counter(e for e in pub_queryset.filter(id__in=tmp_offline_websites).values("journal"))
-    else:
-        top_journals_online = Counter(e["journal"] for e in pub_queryset.filter(
-            journal__in=journals2count.keys()).annotate(
-            status=BoolOr(Q(websites__status=WebsiteStatus.ONLINE), output_field=BooleanField())).filter(
-            status=True).values("journal"))
-        tmp_offline_all_journals = Counter(e for p in
-                                           Website.objects.filter(id__in=tmp_offline_websites).annotate(
-                                               paper=ArrayAgg("papers__journal")).values("paper") for e
-                                           in p["paper"])
-    tmp_offline_top_journals = {j: tmp_offline_all_journals.get(j, 0) for j in top_journals_online}
-    #################
-    offline_top_journals = {}
-    for j, c in journals2count.items():
-        if j in top_journals_online and j in tmp_offline_top_journals:
-            offline_top_journals[j] = c - top_journals_online[j] - tmp_offline_top_journals[j]
-    #offline_top_journals = {j: (c - top_journals_online[j] - tmp_offline_top_journals[j]) for j, c
-     #                       in journals2count.items()}
-    #################
-    journals = []
-    for j, _ in sorted(journals2count.items(), key=lambda e: e[1], reverse=True):
-        if j in offline_top_journals:
-            journals.append(j)
-    #journals = [j for j, _ in sorted(journals2count.items(), key=lambda e: e[1], reverse=True)]
-    #################
+
+    top_journals_online = Counter(
+        e[0] for w in online_websites for e in website_papers[w] if e[0] in journals2count)
+    tmp_offline_top_journals = Counter(
+        e[0] for w in tmp_offline_websites for e in website_papers[w] if e[0] in journals2count)
+    offline_top_journals = Counter(
+        e[0] for w in offline_websites for e in website_papers[w] if e[0] in journals2count)
+
+    journals = [j for j, _ in sorted(journals2count.items(), key=lambda e: e[1], reverse=True)]
     context["top10_journals_names"] = json.dumps(journals)
-    context["top10_journals_online"] = json.dumps([top_journals_online[j] for j in journals])
-    context["top10_journals_tmp_offline"] = json.dumps([tmp_offline_top_journals[j] for j in journals])
-    context["top10_journals_offline"] = json.dumps([offline_top_journals[j] for j in journals])
-    context["publications_per_year"] = list(pub_queryset.values("year").annotate(
-        count=Count("year")).order_by("-count"))
+    context["top10_journals_online"] = json.dumps([top_journals_online.get(j, 0) for j in journals])
+    context["top10_journals_tmp_offline"] = json.dumps(
+        [tmp_offline_top_journals.get(j, 0) for j in journals])
+    context["top10_journals_offline"] = json.dumps(
+        [offline_top_journals.get(j, 0) for j in journals])
+
+    year_counts = Counter(e[1] for papers in website_papers.values() for e in papers)
+    context["publications_per_year"] = [{"year": e[0], "count": e[1]} for e in
+                                        sorted(year_counts.items(), key=lambda e: e[0])]
     year2count = {e["year"]: e["count"] for e in context["publications_per_year"]}
-    if curated:
-        years_online = Counter(e["year"] for e in pub_queryset.filter(
-            status=WebsiteStatus.ONLINE).values("year"))
-        tmp_offline_years = Counter(y for y in pub_queryset.filter(id__in=tmp_offline_websites).values("year"))
-    else:
-        years_online = Counter(e["year"] for e in pub_queryset.annotate(
-            status=BoolOr(Q(websites__status=WebsiteStatus.ONLINE),
-                          output_field=BooleanField())).filter(
-            status=True).values("year"))
-        tmp_offline_years = Counter(e for p in
-                                    Website.objects.filter(id__in=tmp_offline_websites).annotate(
-                                        paper=ArrayAgg("papers__year")).values("paper") for e
-                                    in p["paper"])
-    offline_years = {j: (c - years_online[j] - tmp_offline_years[j]) for j, c
-                     in year2count.items()}
+    years_online = Counter(e[1] for w in online_websites for e in website_papers[w])
+    tmp_offline_years = Counter(e[1] for w in tmp_offline_websites for e in website_papers[w])
+    offline_years = Counter(e[1] for w in offline_websites for e in website_papers[w])
     years = sorted(year2count.keys())
 
     context["pubs_per_year_names"] = json.dumps(years)

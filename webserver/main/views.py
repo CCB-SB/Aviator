@@ -2,62 +2,85 @@ from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, render
 from django.views.decorators.cache import cache_page
 from .models import Website, WebsiteCall, Publication, Tag, CuratedWebsite
-from collections import Counter
-from django.core import serializers
-from django.core.paginator import Paginator
-from datetime import timedelta, date, datetime
+from datetime import timedelta
 import json
-from django.contrib.postgres.aggregates import ArrayAgg, BoolOr, StringAgg
-from django.db.models.functions import TruncDate, Cast
-from django.db.models import Count
-from django.db import models
+from django.contrib.postgres.aggregates import ArrayAgg, BoolOr
+from django.db.models import Q, BooleanField
 from cache_memoize import cache_memoize
 from django.conf import settings
 from django_datatables_view.base_datatable_view import BaseDatatableView
-from django.views.generic import TemplateView
 from .stats import get_index_stats, get_all_statistics
-from itertools import chain
 import csv
 from .forms import CaptchaForm
 
 
-def prepare_csv_export(qs, columns, header, request, numeric_cols, email_col, ignore_cols, name):
+def filter_queryset(qs, filter_col2v, colnames, email_field):
+    numeric_fields = {"year"}
+    if hasattr(qs.model, "websites"):
+        numeric_agg_field = {"percentage": "websites__percentage"}
+    elif hasattr(qs.model, "website"):
+        numeric_agg_field = {"percentage": "website__percentage"}
+    else:
+        numeric_agg_field = {}
+    qs_filter = {}
+    for col, v in filter_col2v.items():
+        field_name = colnames[col]
+        if field_name in email_field:
+            v = v.replace("[at]", "@")
+        if field_name in numeric_fields:
+            min_str, max_str = v.split(';')
+            if min_str and max_str:
+                qs_filter["{}__range".format(field_name)] = (float(min_str), float(max_str))
+            elif min_str:
+                qs_filter["{}__gte".format(field_name)] = float(min_str)
+            elif max_str:
+                qs_filter["{}__lte".format(field_name)] = float(max_str)
+        elif field_name in numeric_agg_field:
+            min_str, max_str = v.split(';')
+            if min_str or max_str:
+                agg_filter = {}
+                if min_str and max_str:
+                    agg_filter["{}__range".format(numeric_agg_field[field_name])] = (
+                        float(min_str), float(max_str))
+                elif min_str:
+                    agg_filter["{}__gte".format(numeric_agg_field[field_name])] = float(min_str)
+                elif max_str:
+                    agg_filter["{}__lte".format(numeric_agg_field[field_name])] = float(max_str)
+                annot_addition = {
+                    "{}_filter".format(field_name): BoolOr(Q(**agg_filter),
+                                                           output_field=BooleanField())
+                }
+                qs = qs.annotate(**annot_addition)
+                qs_filter["{}_filter".format(field_name)] = True
+        else:
+            qs_filter["{}__icontains".format(field_name)] = v
+    if qs_filter:
+        qs = qs.filter(**qs_filter)
+    return qs
+
+
+def prepare_csv_export(qs, columns, header, request, email_fields, ignore_fields, name):
     response = HttpResponse(content_type='text/csv')
-    writer = csv.writer(response, delimiter ='\t')
+    writer = csv.writer(response, delimiter='\t')
     header_line = []
     shown = []
     if "columns" in request.POST:
         shown = request.POST["columns"].split(';')
     for k in range(0, len(columns)):
-        if str(k) in shown and (k not in ignore_cols):
+        if str(k) in shown and (header[k] not in ignore_fields):
             header_line.append(header[k])
     writer.writerow(header_line)
-    filter = {}
-    for k in range(0, len(columns)):
-        if str(k) in shown and len(columns) > k and (k not in ignore_cols):
-            filter_string = request.POST.get(str(k))
-            if len(filter_string) > 0 and filter_string != ";" and filter_string != "%3B":
-                field_name = columns[k]
-                if k in email_col:
-                    filter_string = filter_string.replace("[at]", "@")
-                if k in numeric_cols:
-                    min_str, max_str = filter_string.split(';')
-                    if min_str and max_str:
-                        filter["{}__range".format(field_name)] = (float(min_str), float(max_str))
-                    elif min_str:
-                        filter["{}__gte".format(field_name)] = float(min_str)
-                    elif max_str:
-                        filter["{}__lte".format(field_name)] = float(max_str)
-                else:
-                    filter["{}__icontains".format(field_name)] = filter_string
-    if filter:
-        qs = qs.filter(**filter)
+
+    filter_col2v = {k: request.POST[str(k)] for k in range(0, len(columns)) if
+                    str(k) in shown and (header[k] not in ignore_fields)}
+    qs = filter_queryset(qs, filter_col2v, columns, email_fields)
+
     csv_content = []
     for k in range(0, len(columns)):
-        if str(k) in shown and (k not in ignore_cols):
+        if str(k) in shown and (header[k] not in ignore_fields):
             field_name = columns[k]
             values = qs.values_list(field_name)
-            if k in email_col:
+            if field_name in email_fields:
                 new_values = []
                 for i in range(0, len(values)):
                     new_value = []
@@ -68,13 +91,17 @@ def prepare_csv_export(qs, columns, header, request, numeric_cols, email_col, ig
             else:
                 csv_content.append([x[0] for x in values])
     writer.writerows(list(map(list, zip(*csv_content))))
-    response['Content-Disposition'] = 'attachment; filename="aviator_'+name+'.csv"'
+    response['Content-Disposition'] = 'attachment; filename="aviator_' + name + '.csv"'
     return response
 
 
 def index(request):
     context = get_index_stats()
     return render(request, 'index.html', context)
+
+
+def help(request):
+    return render(request, 'help.html')
 
 
 def overview(request):
@@ -95,24 +122,27 @@ def get_publication_datatable_info():
 
 
 def publications(request):
-    if request.POST:
+    if request.POST and 'search_column' not in request.POST:
         form = CaptchaForm(request.POST)
         if form.is_valid():
             qs = Publication.objects.all().prefetch_related('websites').annotate(
                 status=ArrayAgg('websites__status'), percentage=ArrayAgg('websites__percentage'),
                 original_url=ArrayAgg('websites__original_url'),
                 derived_url=ArrayAgg('websites__derived_url'), scripts=ArrayAgg('websites__script'),
-                ssl=ArrayAgg('websites__certificate_secure'), heap_size=ArrayAgg('websites__last_heap_size'),
+                ssl=ArrayAgg('websites__certificate_secure'),
+                heap_size=ArrayAgg('websites__last_heap_size'),
                 website_pks=ArrayAgg('websites__pk'))
             columns = ['title', 'status', 'percentage', 'authors', 'year', 'journal', 'pubmed_id',
                        'abstract', 'original_url', 'derived_url', 'contact_mail', 'user_kwds',
                        'scripts', 'ssl', 'heap_size', 'website_pks']
-            header = ['Title', 'Status', 'Last 30 days', 'Authors', 'Year', 'Journal', 'Pubmed', 'Abstract',
-                      'Original URL', 'Derived URL', 'Contact Mail', 'Keywords', 'Programming Languages', 'SSL', 'RAM Usage', 'Websites']
-            numeric_cols = {4}
-            email_cols = {10}
-            ignore_cols = {15}
-            return prepare_csv_export(qs, columns, header, request, numeric_cols, email_cols, ignore_cols, "publications")
+            header = ['Title', 'Status', 'Last 30 days', 'Authors', 'Year', 'Journal', 'PubMed',
+                      'Abstract',
+                      'Original URL', 'Derived URL', 'Contact Mail', 'Keywords',
+                      'Programming Languages', 'SSL', 'RAM Usage', 'Websites']
+            email_fields = {"contact_mail"}
+            ignore_fields = {"website_pks"}
+            return prepare_csv_export(qs, columns, header, request, email_fields,
+                                      ignore_fields, "publications")
         else:
             return HttpResponse("Wrong Captcha")
     else:
@@ -125,16 +155,19 @@ def publications(request):
 
 
 def curated(request):
-    if request.POST:
+    if request.POST and 'search_column' not in request.POST:
         form = CaptchaForm(request.POST)
         if form.is_valid():
-            columns = ['title', 'status', 'percentage', 'authors', 'year', 'journal', 'pubmed_id', 'description', 'url', 'tag_tags', 'website']
-            header = ['Title', 'Status', 'Last 30 days', 'Authors', 'Year', 'Journal', 'Pubmed', 'Abstract', 'URL', 'Keywords', 'Website']
-            qs = CuratedWebsite.objects.all().prefetch_related('tags').annotate(tag_tags=ArrayAgg('tags__name'))
-            numeric_cols = {4}
-            email_cols = {}
-            ignore_cols = {10}
-            return prepare_csv_export(qs, columns, header, request, numeric_cols, email_cols, ignore_cols, "curated")
+            columns = ['title', 'status', 'percentage', 'authors', 'year', 'journal', 'pubmed_id',
+                       'description', 'url', 'tag_tags', 'website']
+            header = ['Title', 'Status', 'Last 30 days', 'Authors', 'Year', 'Journal', 'PubMed',
+                      'Abstract', 'URL', 'Keywords', 'Website']
+            qs = CuratedWebsite.objects.all().prefetch_related('tags').annotate(
+                tag_tags=ArrayAgg('tags__name'))
+            email_fields = {}
+            ignore_fields = {"website"}
+            return prepare_csv_export(qs, columns, header, request, email_fields,
+                                      ignore_fields, "curated")
         else:
             return HttpResponse("Wrong Captcha")
     else:
@@ -168,6 +201,7 @@ def author(request):
     context['tags'] = Tag.objects.all()
     return render(request, 'author.html', context)
 
+
 def api(request):
     context = {}
     return render(request, 'api.html', context)
@@ -192,143 +226,107 @@ def paperData(request):
 
 
 def statistics(request):
-    context = get_all_statistics(Publication.objects.all())
+    context = get_all_statistics(
+        Publication.objects.all().prefetch_related('websites').annotate(
+            website_pks=ArrayAgg('websites'),
+            status=ArrayAgg('websites__status')))
     return render(request, 'statistics.html', context)
 
 
 def autocomplete(request):
-    def remove_duplicates(x):
-        return list(dict.fromkeys(x))
     if 'q' in request.GET:
         qs = Publication.objects.all().prefetch_related('websites').annotate(
             status=ArrayAgg('websites__status'), percentage=ArrayAgg('websites__percentage'),
             original_url=ArrayAgg('websites__original_url'),
             derived_url=ArrayAgg('websites__derived_url'), scripts=ArrayAgg('websites__script'),
-            ssl=ArrayAgg('websites__certificate_secure'), heap_size=ArrayAgg('websites__last_heap_size'),
-            website_pks=ArrayAgg('websites__pk'))
+            ssl=ArrayAgg('websites__certificate_secure'),
+            heap_size=ArrayAgg('websites__last_heap_size'),
+            website_pks=ArrayAgg('websites'))
         columns = ['title', 'status', 'percentage', 'authors', 'year', 'journal', 'pubmed_id',
                    'abstract', 'original_url', 'derived_url', 'contact_mail', 'user_kwds',
                    'scripts', 'ssl', 'heap_size', 'website_pks']
-        numeric_cols = {4}
-        email_col = {10}
-        filter = {}
-        for k in range(0, len(columns)):
-            if str(k) in request.GET and len(columns) > k:
-                filter_string = request.GET.get(str(k))
-                if len(filter_string) > 0 and filter_string != ";":
-                    field_name = columns[k]
-                    if k in email_col:
-                        filter_string = filter_string.replace("[at]", "@")
-                    if k in numeric_cols:
-                        min_str, max_str = filter_string.split(';')
-                        if min_str and max_str:
-                            filter["{}__range".format(field_name)] = (float(min_str), float(max_str))
-                        elif min_str:
-                            filter["{}__gte".format(field_name)] = float(min_str)
-                        elif max_str:
-                            filter["{}__lte".format(field_name)] = float(max_str)
-                    else:
-                        filter["{}__icontains".format(field_name)] = filter_string
-        if filter:
-            qs = qs.filter(**filter)
+        email_fields = {"contact_mail"}
+
+        filter_col2v = {k: request.GET[str(k)] for k in range(0, len(columns)) if
+                        str(k) in request.GET}
+        qs = filter_queryset(qs, filter_col2v, columns, email_fields)
+
         listed_cols = {1, 2, 3, 8, 9, 10, 11, 12, 13, 14, 15}
-        ignore_cols = {4, 15}
-        field_name = columns[int(request.GET.get('q'))]
-        if int(request.GET.get('q')) in ignore_cols:
-            return JsonResponse(list(), safe=False)
-        elif int(request.GET.get('q')) in listed_cols:
-            search = request.GET.get(request.GET.get('q')).lower()
-            seen = {}
-            sList = []
-            values = qs.values(field_name)
-            for hm in values:
-                for item in hm[field_name]:
-                    if item in seen: continue
-                    if search not in item.lower(): continue
-                    seen[item] = 1
-                    sList.append(item)
-            sList.sort()
-            sList = sList[:5]
-            if int(request.GET.get('q')) in email_col:
-                for i in range(len(sList)):
-                    sList[i] = sList[i].replace("@", "[at]")
-            return JsonResponse(sList, safe=False)
-        else:
-            return JsonResponse(remove_duplicates(list(hm[field_name] for hm in qs.order_by(field_name).values(field_name)))[:5], safe=False)
+        ignore_cols = {2, 4, 15}
+        return generate_autocomplete_list(columns, email_fields, ignore_cols, listed_cols, qs,
+                                          request)
     return JsonResponse(list(), safe=False)
 
 
 def curated_autocomplete(request):
-    def remove_duplicates(x):
-        return list(dict.fromkeys(x))
     if 'q' in request.GET:
-        columns = ['title', 'status', 'percentage', 'authors', 'year', 'journal', 'pubmed_id', 'description', 'url', 'tag_tags', 'website']
-        qs = CuratedWebsite.objects.all().prefetch_related('tags').annotate(tag_tags=ArrayAgg('tags__name'))
-        numeric_cols = {4}
-        email_col = {}
-        filter = {}
-        for k in range(0, len(columns)):
-            if str(k) in request.GET and len(columns) > k:
-                filter_string = request.GET.get(str(k))
-                if len(filter_string) > 0 and filter_string != ";":
-                    field_name = columns[k]
-                    if k in email_col:
-                        filter_string = filter_string.replace("[at]", "@")
-                    if k in numeric_cols:
-                        min_str, max_str = filter_string.split(';')
-                        if min_str and max_str:
-                            filter["{}__range".format(field_name)] = (float(min_str), float(max_str))
-                        elif min_str:
-                            filter["{}__gte".format(field_name)] = float(min_str)
-                        elif max_str:
-                            filter["{}__lte".format(field_name)] = float(max_str)
-                    else:
-                        filter["{}__icontains".format(field_name)] = filter_string
-        if filter:
-            qs = qs.filter(**filter)
+        columns = ['title', 'status', 'percentage', 'authors', 'year', 'journal', 'pubmed_id',
+                   'description', 'url', 'tag_tags', 'website']
+        qs = CuratedWebsite.objects.all().prefetch_related('tags').annotate(
+            tag_tags=ArrayAgg('tags__name'))
+        email_fields = {}
+        filter_col2v = {k: request.GET[str(k)] for k in range(0, len(columns)) if
+                        str(k) in request.GET and request.GET[str(k)] not in {"", ";"}}
+        qs = filter_queryset(qs, filter_col2v, columns, email_fields)
+
         listed_cols = {3, 9}
         ignore_cols = {10}
-        field_name = columns[int(request.GET.get('q'))]
-        if int(request.GET.get('q')) in ignore_cols:
-            return JsonResponse(list(), safe=False)
-        elif int(request.GET.get('q')) in listed_cols:
-            search = request.GET.get(request.GET.get('q')).lower()
-            seen = {}
-            sList = []
-            values = qs.values(field_name)
-            for hm in values:
-                for item in hm[field_name]:
-                    if item in seen: continue
-                    if search not in item.lower(): continue
-                    seen[item] = 1
-                    sList.append(item)
-            sList.sort()
-            sList = sList[:5]
-            if int(request.GET.get('q')) in email_col:
-                for i in range(len(sList)):
-                    sList[i] = sList[i].replace("@", "[at]")
-            return JsonResponse(sList, safe=False)
-        else:
-            return JsonResponse(remove_duplicates(list(hm[field_name] for hm in qs.order_by(field_name).values(field_name)))[:5], safe=False)
+        return generate_autocomplete_list(columns, email_fields, ignore_cols, listed_cols, qs,
+                                          request)
     return JsonResponse(list(), safe=False)
+
+
+def generate_autocomplete_list(columns, email_fields, ignore_cols, listed_cols, qs,
+                               request):
+    def remove_duplicates(x):
+        return list(dict.fromkeys(x))
+
+    field_name = columns[int(request.GET.get('q'))]
+    if int(request.GET.get('q')) in ignore_cols:
+        return JsonResponse(list(), safe=False)
+    elif int(request.GET.get('q')) in listed_cols:
+        search = request.GET.get(request.GET.get('q')).lower()
+        seen = {}
+        sList = []
+        values = qs.values(field_name)
+        for hm in values:
+            for item in hm[field_name]:
+                if item in seen: continue
+                if search not in item.lower(): continue
+                seen[item] = 1
+                sList.append(item)
+        sList.sort()
+        sList = sList[:5]
+        if columns[int(request.GET.get('q'))] in email_fields:
+            for i in range(len(sList)):
+                sList[i] = sList[i].replace("@", "[at]")
+        return JsonResponse(sList, safe=False)
+    else:
+        return JsonResponse(remove_duplicates(
+            list(hm[field_name] for hm in qs.order_by(field_name).values(field_name)))[:5],
+                            safe=False)
 
 
 class Table(BaseDatatableView):
     model = Publication
     columns = ['title', 'status', 'percentage', 'authors', 'year', 'journal', 'pubmed_id',
                'abstract', 'original_url', 'derived_url', 'contact_mail', 'user_kwds',
-                'scripts', 'ssl', 'heap_size', 'website_pks']
+               'scripts', 'ssl', 'heap_size', 'website_pks']
     max_display_length = 500
 
     escape_values = False
 
-    def get_initial_queryset(self):
-        return Publication.objects.all().prefetch_related('websites').annotate(
-            status=ArrayAgg('websites__status'), percentage=ArrayAgg('websites__percentage'),
-            original_url=ArrayAgg('websites__original_url'),
-            derived_url=ArrayAgg('websites__derived_url'), scripts=ArrayAgg('websites__script'),
-            ssl=ArrayAgg('websites__certificate_secure'), heap_size=ArrayAgg('websites__last_heap_size'),
-            website_pks=ArrayAgg('websites__pk'))
+    def get_initial_queryset(self, without_annots=False):
+        if without_annots:
+            return Publication.objects.all()
+        else:
+            return Publication.objects.all().prefetch_related('websites').annotate(
+                status=ArrayAgg('websites__status'), percentage=ArrayAgg('websites__percentage'),
+                original_url=ArrayAgg('websites__original_url'),
+                derived_url=ArrayAgg('websites__derived_url'), scripts=ArrayAgg('websites__script'),
+                ssl=ArrayAgg('websites__certificate_secure'),
+                heap_size=ArrayAgg('websites__last_heap_size'),
+                website_pks=ArrayAgg('websites__pk'))
 
     def render_column(self, row, column):
         # We want to render user as a custom column
@@ -337,26 +335,11 @@ class Table(BaseDatatableView):
         return super(Table, self).render_column(row, column)
 
     def filter_queryset(self, qs):
-        filter_keys = [k for k in self.request.GET.keys() if "[value]" in k and "columns" in k]
-        numeric_cols = {4}
-        filter = {}
-        for k in filter_keys:
-            if len(self.request.GET[k]) > 0:
-                col = int(k.split('[')[1].split(']')[0])
-                field_name = self.columns[col]
-                if col in numeric_cols:
-                    min_str, max_str = self.request.GET[k].split(';')
-                    if min_str and max_str:
-                        filter["{}__range".format(field_name)] = (float(min_str), float(max_str))
-                    elif min_str:
-                        filter["{}__gte".format(field_name)] = float(min_str)
-                    elif max_str:
-                        filter["{}__lte".format(field_name)] = float(max_str)
-                else:
-                    filter["{}__icontains".format(field_name)] = self.request.GET[k]
-        if filter:
-            qs = qs.filter(**filter)
-        return qs
+        filter_keys = [k for k in self.request.GET.keys() if
+                       "[value]" in k and "columns" in k and len(self.request.GET[k]) > 0]
+        filter_col2v = {int(k.split('[')[1].split(']')[0]): self.request.GET[k] for k in
+                        filter_keys}
+        return filter_queryset(qs, filter_col2v, self.columns, email_field={})
 
     def prepare_results(self, qs):
         data = []
@@ -473,25 +456,20 @@ class Table(BaseDatatableView):
             qs = self.get_initial_queryset()
 
             # store the total number of records (before filtering)
-            total_records = qs.count()
+            total_records = self.get_initial_queryset(without_annots=True).count()
 
             # apply filters
             qs = self.filter_queryset(qs)
 
-            # number of records after filtering
-            total_display_records = qs.count()
-
-            stats = get_all_statistics(qs)
-
             # apply ordering
             qs = self.ordering(qs)
 
-            website_states = list(qs.values('pubmed_id', 'websites__states'))
-            latest_date = WebsiteCall.objects.latest("datetime").datetime
+            stats = get_all_statistics(qs, curated=False)
 
-            state_dates = [(latest_date-timedelta(days=day_delta)).date().strftime("%Y-%m-%d") for day_delta in range(settings.TEMPORAL_INFO_DAYS, -1, -1)]
+            # number of records after filtering
+            total_display_records = stats["paper_count"]
 
-            # apply pagintion
+            # apply pagination
             qs = self.paging(qs)
 
             # prepare output data
@@ -512,9 +490,11 @@ class Table(BaseDatatableView):
                        'data': data
                        }
             ret['website_states'] = {
-                           "states": website_states,
-                           "dates": state_dates
-                       }
+                "states": stats["website_states"],
+                "dates": stats["state_dates"]
+            }
+            del stats["website_states"]
+            del stats["state_dates"]
             ret['statistics'] = stats
             return ret
         except Exception as e:
@@ -523,13 +503,14 @@ class Table(BaseDatatableView):
 
 class CuratedTable(Table):
     model = CuratedWebsite
-    columns = ['title', 'status', 'percentage', 'authors', 'year', 'journal', 'pubmed_id', 'description', 'url', 'tag_tags', 'website_pk']
+    columns = ['title', 'status', 'percentage', 'authors', 'year', 'journal', 'pubmed_id',
+               'description', 'url', 'tag_tags', 'website_pk']
     max_display_length = 500
-
     escape_values = False
 
     def get_initial_queryset(self):
-        return CuratedWebsite.objects.all().prefetch_related('tags').annotate(tag_tags=ArrayAgg('tags__name'), website_pk=ArrayAgg('website'))
+        return CuratedWebsite.objects.all().prefetch_related('tags').annotate(
+            tag_tags=ArrayAgg('tags__name'), website_pk=ArrayAgg('website'))
 
     def get_context_data(self, *args, **kwargs):
         try:
@@ -564,23 +545,15 @@ class CuratedTable(Table):
             # apply filters
             qs = self.filter_queryset(qs)
 
-            # number of records after filtering
-            total_display_records = qs.count()
-
-            stats = get_all_statistics(qs, True)
-
             # apply ordering
             qs = self.ordering(qs)
 
-            website_states = list(qs.values('pubmed_id', 'states'))
-            latest_date = WebsiteCall.objects.latest("datetime").datetime
-            if CuratedWebsite.objects.all().count() > 0:
-                dates = CuratedWebsite.objects.all()[0].dates
-                latest_date = dates[len(dates) - 1]
+            stats = get_all_statistics(qs, curated=True)
 
-            state_dates = [(latest_date-timedelta(days=day_delta)).date().strftime("%Y-%m-%d") for day_delta in range(settings.TEMPORAL_INFO_DAYS, -1, -1)]
+            # number of records after filtering
+            total_display_records = stats["paper_count"]
 
-            # apply pagintion
+            # apply pagination
             qs = self.paging(qs)
 
             # prepare output data
@@ -601,9 +574,11 @@ class CuratedTable(Table):
                        'data': data
                        }
             ret['website_states'] = {
-                           "states": website_states,
-                           "dates": state_dates
-                       }
+                "states": stats["website_states"],
+                "dates": stats["state_dates"]
+            }
+            del stats["website_states"]
+            del stats["state_dates"]
             ret['statistics'] = stats
             return ret
         except Exception as e:

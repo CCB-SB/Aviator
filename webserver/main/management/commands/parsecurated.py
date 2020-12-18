@@ -17,7 +17,7 @@ class Command(BaseCommand):
         except:
             raise CommandError('Please provide an input folder')
 
-        cw_tbl = pd.read_csv(csv_file, sep='\t', index_col="PMID")
+        cw_tbl = pd.read_csv(csv_file, sep='\t', index_col="PubMed ID")
         cw_tbl.index = cw_tbl.index.astype(str)
         cw_dict = cw_tbl.to_dict()
         cw_to_update = list(CuratedWebsite.objects.filter(pubmed_id__in=cw_tbl.index))
@@ -29,47 +29,61 @@ class Command(BaseCommand):
                 return s.split(delimiter)
 
         for cw in cw_to_update:
-            cw.title = cw_dict["title"][cw.pubmed_id]
-            cw.description = cw_dict["description"][cw.pubmed_id]
+            cw.title = cw_dict["Tool"][cw.pubmed_id]
+            cw.description = cw_dict["Abstract"][cw.pubmed_id]
             cw.year = cw_dict["year"][cw.pubmed_id]
-            cw.authors = cw_dict["authors"][cw.pubmed_id].split(", ")
+            cw.authors = cw_dict["Authors"][cw.pubmed_id].split(", ")
             cw.journal = cw_dict["journal"][cw.pubmed_id]
-            cw.api_url = cw_dict["api_url"][cw.pubmed_id]
-            cw.contact_mail = cw_dict["contact_mail"][cw.pubmed_id]
-            cw.url = cw_dict["url"][cw.pubmed_id]
-            if Website.objects.filter(original_url=cw.url).count() > 0:
-                cw.website = Website.objects.filter(original_url=cw.url)[0]
-            if Website.objects.filter(derived_url=cw.url).count() > 0:
-                cw.website = Website.objects.filter(derived_url=cw.url)[0]
-            kwds = split_w_nan(cw_dict["keywords"][cw.pubmed_id], ';')
+            cw.api_url = cw_dict["API"][cw.pubmed_id]
+            cw.contact_mail = cw_dict["Email"][cw.pubmed_id]
+            cw.url = cw_dict["URL"][cw.pubmed_id]
+            cw.days_reminder = cw_dict["Days before reminder"][cw.pubmed_id]
+            other_url = cw.url.replace("http:", "https:") if cw.url.startswith(
+                "http:") else cw.url.replace("https:", "http:")
+            if Website.objects.filter(original_url=cw.url).exists():
+                cw.website = Website.objects.get(original_url=cw.url)
+            elif Website.objects.filter(original_url=other_url).exists():
+                cw.website = Website.objects.get(original_url=other_url)
+            elif Website.objects.filter(derived_url=cw.url).exists():
+                cw.website = Website.objects.get(derived_url=cw.url)
+            elif Website.objects.filter(derived_url=other_url).exists():
+                cw.website = Website.objects.get(derived_url=other_url)
+            kwds = split_w_nan(cw_dict["Tags"][cw.pubmed_id], ', ')
             for kwd in kwds:
-                if Tag.objects.filter(name=kwd).count() > 0:
-                    cw.tags.add(Tag.objects.filter(name=kwd)[0])
-            #Bulk Update With many to many relation doesn't seem to work
+                if Tag.objects.filter(name=kwd).exists():
+                    cw.tags.add(Tag.objects.get(name=kwd))
+            # Bulk Update With many to many relation doesn't seem to work
             cw.save()
 
-        #CuratedWebsite.objects.bulk_update(cw_to_update, ["title", "description", "year", "authors", "journal", "api_url", "url", "tags"])#
         cw_to_update_ids = set(cw.pubmed_id for cw in cw_to_update)
 
         def get_cw_models(tbl):
             for i, row in tbl.iterrows():
                 website = None
-                if Website.objects.filter(original_url=row["url"]).count() > 0:
-                    website = Website.objects.filter(original_url=row["url"])[0]
-                if Website.objects.filter(derived_url=row["url"]).count() > 0:
-                    website = Website.objects.filter(derived_url=row["url"])[0]
+                other_url = row["URL"].replace("http:", "https:") if row["URL"].startswith(
+                    "http:") else row["URL"].replace("https:", "http:")
+                if Website.objects.filter(original_url=row["URL"]).exists():
+                    website = Website.objects.get(original_url=row["URL"])
+                if Website.objects.filter(derived_url=row["URL"]).exists():
+                    website = Website.objects.get(derived_url=row["URL"])
+                if Website.objects.filter(original_url=other_url).exists():
+                    website = Website.objects.get(original_url=other_url)
+                if Website.objects.filter(derived_url=other_url).exists():
+                    website = Website.objects.get(derived_url=other_url)
+
                 if website is not None:
                     cw = CuratedWebsite(pubmed_id=i,
-                                      authors=str(row["authors"]).split(", "),
-                                      title=row["title"],
-                                      description=row["description"],
-                                      year=row["year"],
-                                      journal=row["journal"],
-                                      url=row["url"],
-                                      api_url=row["api_url"],
-                                      contact_mail=row["contact_mail"],
-                                      website=website)
-                    kwds = row["keywords"].split(';')
+                                        authors=str(row["Authors"]).split(", "),
+                                        title=row["Tool"],
+                                        description=row["Abstract"],
+                                        year=row["year"],
+                                        journal=row["journal"],
+                                        url=row["URL"],
+                                        api_url=row["API"],
+                                        contact_mail=row["Email"],
+                                        days_reminder=row["Days before reminder"],
+                                        website=website)
+                    kwds = row["Tags"].split(';')
                     cw.save()
                     for kwd in kwds:
                         if Tag.objects.filter(name=kwd).count() > 0:
@@ -79,7 +93,7 @@ class Command(BaseCommand):
 
         new_cws = cw_tbl[~cw_tbl.index.isin(cw_to_update_ids)]
         new_cw_mdls = list(get_cw_models(new_cws))
-        #CuratedWebsite.objects.bulk_create(new_cw_mdls)
+        # CuratedWebsite.objects.bulk_create(new_cw_mdls)
 
         self.stdout.write(self.style.SUCCESS(
             f'Successfully added {len(new_cw_mdls)} new curated websites and updated {len(cw_to_update)} curated websites'))

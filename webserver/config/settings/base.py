@@ -53,7 +53,6 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # APPS
 # ------------------------------------------------------------------------------
 DJANGO_APPS = [
-    'captcha',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -62,11 +61,12 @@ DJANGO_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.admin',
 ]
+
 THIRD_PARTY_APPS = [
-    # Third-party apps go here
-    ]
+    'captcha',
+]
+
 LOCAL_APPS = [
-    # Your stuff: custom apps go here
     'aviator.admin_commands.apps.AdminConfig',
     'main.apps.MainConfig',
 ]
@@ -164,6 +164,7 @@ ADMIN_URL = 'admin/'
 # https://docs.djangoproject.com/en/dev/ref/settings/#admins
 ADMINS = [
     ("""Pascal Hirsch""", 's9pahirs@stud.uni-saarland.de'),
+    ("AVIATOR MS Teams", 'e70cefc0.uni-saarland.de@emea.teams.ms'),
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#managers
 MANAGERS = ADMINS

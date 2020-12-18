@@ -4,7 +4,7 @@ from djchoices import DjangoChoices, ChoiceItem
 
 
 class Publication(models.Model):
-    title = models.TextField()
+    title = models.TextField(db_index=True)
     abstract = models.TextField()
     authors = ArrayField(models.TextField(), blank=True, default=list)
     year = models.SmallIntegerField(db_index=True)
@@ -44,6 +44,7 @@ class Website(models.Model):
     percentage = models.FloatField(null=True, default=None)
     last_heap_size = models.IntegerField(default=0)
 
+
 class WebsiteCall(models.Model):
     website = models.ForeignKey(Website, related_name='calls', on_delete=models.CASCADE)
     datetime = models.DateTimeField(db_index=True)
@@ -69,7 +70,8 @@ class CuratedWebsite(models.Model):
     api_url = models.CharField(max_length=100)
     tags = models.ManyToManyField(Tag, related_name='curated')
     website = models.OneToOneField(Website, related_name='curated', on_delete=models.CASCADE)
-    status = models.CharField(max_length=1, choices=WebsiteStatus.choices, default=WebsiteStatus.UNKNOWN)
+    status = models.CharField(max_length=1, choices=WebsiteStatus.choices,
+                              default=WebsiteStatus.UNKNOWN)
     dates = ArrayField(models.DateTimeField(), default=list)
     states = ArrayField(models.NullBooleanField(), default=list)
     percentage = models.FloatField(null=True, default=None)

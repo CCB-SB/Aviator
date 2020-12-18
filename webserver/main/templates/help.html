@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+{% load staticfiles %}
+{% url 'main:details' as details %}
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+  <title>AVIATOR</title>
+  <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet" type="text/css">
+  <link href="{% static 'css/chart.min.css' %}" rel="stylesheet" type="text/css">
+  <link href="{% static 'css/aviator.css' %}" rel="stylesheet" type="text/css">
+  <script src="{% static 'js/jquery.min.js' %}"></script>
+  <script src="{% static 'js/popper.min.js' %}"></script>
+  <script src="{% static 'js/bootstrap.min.js' %}"></script>
+  <script src="{% static 'js/chart.min.js' %}"></script>
+</head>
+<body>
+{% include "navbar.html" %}
+
+<div class="container-fluid">
+  <div class="center-box">
+    <div class="card aviator-card">
+      <div class="card-header">
+        Help
+      </div>
+      <div class="card-body">
+        <ul>
+          <li><a href="#publications">Publications</a></li>
+          <li><a href="#curated">Curated</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <section id="publications">
+    <div class="center-box">
+      <div class="card aviator-card">
+        <div class="card-header">
+          Publications
+        </div>
+        <div class="card-body">
+          <p>
+            On this page AVIATOR presents the availability of automatically collected
+            web-servers from literature.
+            The availability is checked for each automatically derived URL, twice per day.
+          </p>
+          <p>
+            The table can be filtered according to every column by typing the in highlighted fields.
+
+            Filtering of authors and automatically derived author keywords is in addition possible
+            by
+            clicking on the author name / keyword.
+            Per default only 11 columns are shown. The displayed columns can be controlled over the
+            "Column visibility" dropdown, and your selection will be remembered if you open the page
+            again later.
+            Sorting according to multiple columns is possible by clicking on the columns while
+            holding
+            the "shift" key.
+
+            All displayed results can be downloaded over the CSV button.
+          </p>
+          <p>
+            The ordering of the table has a direct effect on the availability heatmap shown below.
+            The heatmap shows for every website and publication the availability of it during the
+            last
+            30 days.
+            Values that were not collected are shown as grey.
+
+            The bar plots below the heatmap show the statistics for the filtered table.
+            Websites are considered temporarily offline, when they were not reachable, but have been
+            online at least once in the last 14 days.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="curated">
+    <div class="center-box">
+      <div class="card aviator-card">
+        <div class="card-header">
+          Curated
+        </div>
+        <div class="card-body">
+          <p>
+            On this page AVIATOR presents the availability of manually curated and <a
+                  href="{% url 'main:author' %}">registered</a> web-servers (typically by their
+            authors).
+            The availability is checked via the <a href="{% url 'main:api' %}">AVIATOR API</a>.
+            In addition to the API check the tool URL is checked as well and additional information are provided via the "Website Data" column.
+          </p>
+          <p>
+            The table can be filtered according to every column by typing the in highlighted fields.
+
+            Filtering of authors and automatically derived author keywords is in addition possible
+            by clicking on the author name / keyword.
+          </p>
+          <p>
+            Per default only 11 columns are shown. The displayed columns can be controlled over the
+            "Column visibility" dropdown, and your selection will be remembered if you open the page
+            again later.
+            Sorting according to multiple columns is possible by clicking on the columns while
+            holding
+            the "shift" key.
+
+            All displayed results can be downloaded over the CSV button.
+          </p>
+          <p>
+            The ordering of the table has a direct effect on the availability heatmap shown below.
+            The heatmap shows for every website and publication the availability of it during the
+            last
+            30 days.
+            Values that were not collected are shown as grey.
+
+            The bar plots below the heatmap show the statistics for the filtered table.
+            Websites are considered temporarily offline, when they were not reachable, but have been
+            online at least once in the last 14 days.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+{% include "footer.html" %}
+
+</body>
+</html>

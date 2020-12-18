@@ -1,128 +1,106 @@
-Tag
-Genetics
-Gene expression
-Gene regulation
-Gene expression profiling
-Transcription factors and regulatory sites
-Functional, regulatory and non-coding RNA
-Genetic variation
-DNA polymorphism
-Genotyping
-Genotype and phenotype
-Population genetics
-Gene functional annotation
-Gene and protein families
-Gene prediction
-Enrichment analysis
-Genome visualisation
-Protein sequence analysis
-Protein structure analysis
-Protein folds and structural domains
-Gene and protein families
-Protein structural motifs and surfaces
-Protein sites, features and motifs
-Transcription factors and regulatory sites
-Protein interactions
-Protein modelling
-Protein fold recognition
-Protein structure prediction
-Protein secondary structure prediction
-Protein binding site prediction
-Protein property calculation
-Protein subcellular localisation prediction
-Protein folding, stability and design
+Backbone modelling
+Cell biology
+Comparative genomics
 DNA
-RNA
-Genetic mapping
-Read mapping
-Functional, regulatory and non-coding RNA
-Methylation analysis
 DNA polymorphism
-SNP detection
+DNA vaccine design
+Enrichment analysis
+Epigenomics
+Epitope mapping
+Formatting
+Functional genomics
+Functional, regulatory and non-coding RNA
+Gene and protein families
+Gene expression
+Gene expression profiling
+Gene functional annotation
+Gene prediction
+Gene regulation
+Genetic mapping
+Genetics
+Genetic variation
+Genome annotation
+Genome visualisation
+Genomics
+Genotype and phenotype
+Genotyping
+Image analysis
+Immunoinformatics
+Immunoproteins and antigens
+Infectious disease
+Ligand-binding site prediction
+Machine learning
+MappingGenome annotation
+Metabolomics
+Metagenomics
+Methylation analysis
+Molecular docking
+Molecular dynamics
+Molecular interactions, pathways and networks
+Molecular modelling
+Nucleic acid feature detection
 Nucleic acid sequence analysis
 Nucleic acid sites, features and motifs
-Nucleic acid feature detection
-Transcription factor binding site prediction
-Transcription factors and regulatory sites
-Transcriptional regulatory element prediction
 Nucleic acid structure analysis
-RNA secondary structure prediction
-Sequence sites, features and motifs
-Sequence similarity search
-Sequence alignment
-Sequence motif recognition
-Sequence annotation
-Sequence visualisation
-Nucleic acid sequence analysis
-Nucleic acid feature detection
-Transcription factors and regulatory sites
-Protein sequence analysis
-Protein feature detection
-Sequence assembly
-MappingGenome annotation
-PCR primer design
-Phylogenetics
-Structure analysis
-Molecular modelling
-Molecular docking
-Molecular dynamics
-Structure prediction
-Structure visualisation
-Protein structure analysis
-Protein folds and structural domains
-Protein structural motifs and surfaces
-Protein modelling
-Protein model validation
-Protein structure prediction
-Protein secondary structure prediction
-Nucleic acid structure analysis
-RNA secondary structure prediction
-Small molecules
-Genomics
-Functional genomics
-Comparative genomics
-Population genomics
-Phylogenomics
-Metagenomics
-Transcriptomics
-Epigenomics
-Proteomics
-Structural genomics
-Metabolomics
-Pharmacogenomics
-Virology
-Virulence prediction
-Virtual screening
-Peptide immunogenicity prediction
-Epitope mapping
-DNA vaccine design
-Protein structure prediction
-Side chain modelling
-Backbone modelling
-Ligand-binding site prediction
-Protein-ligand docking
-Immunoinformatics
-Subcellular localisation prediction
-Immunoproteins and antigens
-Transmembrane protein prediction
-Molecular dynamics
-Molecular docking
-Public health and epidemiology
-Infectious disease
+Oncology
 Pathology
-Sequencing
-Sequencing quality control
-Sequence assembly
-Genome annotation
-Systems biology
-Cell biology
-Molecular interactions, pathways and networks
 Pathway or network prediction
 Pathway or network visualisation
+PCR primer design
+Peptide immunogenicity prediction
+Pharmacogenomics
+Phylogenetics
+Phylogenomics
 Phylogeny
-Pathology
-Oncology
-Formatting
-Machine learning
-Image analysis
+Population genetics
+Population genomics
+Protein binding site prediction
+Protein feature detection
+Protein folding, stability and design
+Protein fold recognition
+Protein folds and structural domains
+Protein interactions
+Protein-ligand docking
+Protein modelling
+Protein model validation
+Protein property calculation
+Protein secondary structure prediction
+Protein sequence analysis
+Protein sites, features and motifs
+Protein structural motifs and surfaces
+Protein structure analysis
+Protein structure prediction
+Protein subcellular localisation prediction
+Proteomics
+Public health and epidemiology
+Read mapping
+RNA
+RNA secondary structure prediction
+Sequence alignment
+Sequence annotation
+Sequence assembly
+Sequence motif recognition
+Sequence similarity search
+Sequence sites, features and motifs
+Sequence visualisation
+Sequencing
+Sequencing quality control
+Side chain modelling
+Small molecules
+SNP detection
 Spectral analysis
+Structural genomics
+Structure analysis
+Structure prediction
+Structure visualisation
+Subcellular localisation prediction
+Systems biology
+Tag
+Transcriptional regulatory element prediction
+Transcription factor binding site prediction
+Transcription factors and regulatory sites
+Transcriptomics
+Transmembrane protein prediction
+Virology
+Virtual screening
+Virulence prediction

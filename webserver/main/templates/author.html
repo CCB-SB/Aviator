@@ -18,7 +18,7 @@
 	<body>
     {% include "navbar.html" %}
     <div class="contact-container">
-      <form action="mailto:example@aviator.com" method="get" enctype="text/plain" name="EmailForm" onsubmit="return prepareEmail();">
+      <form action="mailto:aviator.ccb@gmail.com" method="get" enctype="text/plain" name="EmailForm" onsubmit="return prepareEmail();">
         <input type="hidden" name="subject" id="mail_subject" value="">
         <input type="hidden" name="body" id="mail_body" value="">
         <div class="form-group">
@@ -31,8 +31,8 @@
         </div>
         <br>
         <div class="form-group">
-          <label for="input_pubmed">Pubmed ID</label>
-          <input type="text" class="form-control" id="input_pubmed" placeholder="Pubmed ID">
+          <label for="input_pubmed">PubMed ID</label>
+          <input type="text" class="form-control" id="input_pubmed" placeholder="PubMed ID">
         </div>
         <div class="form-group">
           <label for="input_toolname">Tool Name</label>
@@ -86,7 +86,7 @@
     var text = "Name: "+document.getElementById("input_name").value + "\r\n";
     text += "Email: "+document.getElementById("input_email").value + "\r\n\r\n";
     text += "Tool: "+document.getElementById("input_toolname").value + "\r\n";
-    text += "Pubmed ID: "+document.getElementById("input_pubmed").value + "\r\n";
+    text += "PubMed ID: "+document.getElementById("input_pubmed").value + "\r\n";
     text += "URL: "+document.getElementById("input_url").value + "\r\n";
     text += "API: "+document.getElementById("api_url").value + "\r\n";
     text += "Authors: " + document.getElementById("input_authors").value + "\r\n";
