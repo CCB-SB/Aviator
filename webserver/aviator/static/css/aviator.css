@@ -11,10 +11,6 @@
   --secondary: #343a40;
 }
 
-body {
-  background-color: #141a20;
-}
-
 iframe {
   border-width: 0px;
   border-top-width: 0px;
@@ -459,11 +455,25 @@ input[type="search"]::-webkit-search-cancel-button {
   opacity: 0;
 }
 
+body {
+  background-color: #141a20;
+  margin: 0 0 100px;
+}
+
 .footer {
   background-color: var(--secondary);
-  /*position: absolute;*/
+  position: absolute;
   width: 100%;
   height: 60px;
   line-height: 60px;
   bottom: 0
+}
+
+.tutorial-img {
+  box-shadow: 1px 1px 3px 3px black;
+}
+
+html {
+  position: relative;
+  min-height: 100%;
 }

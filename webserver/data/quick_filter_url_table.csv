@@ -13,7 +13,6 @@ http...jaspar.genereg.net	http://jaspar.genereg.net	http://jaspar.genereg.net/	P
 http...ngs.ym.edu.tw.driverdb	http://ngs.ym.edu.tw/driverdb	http://driverdb.tms.cmu.edu.tw/	Pass	""	200	insecure	1109768	120.110.158.138	2020-09-14T11:38:45.385467	driverdb.tms.cmu.edu.tw
 http...csb.cse.yzu.edu.tw.CNN-SuccSite	http://csb.cse.yzu.edu.tw/CNN-SuccSite/	http://csb.cse.yzu.edu.tw/CNN-SuccSite/	Fail	"timeout: Timed out receiving message from renderer: -0.000
   (Session info: chrome=85.0.4183.83)"		""		""	2020-09-14T11:38:56.346328	csb.cse.yzu.edu.tw
-https...youtu.be.wA-RwrFiSPk	https://youtu.be/wA-RwrFiSPk	https://www.youtube.com/watch?v=wA-RwrFiSPk&feature=youtu.be	Pass	""	200	secure	2813377	172.217.16.206	2020-09-14T11:39:58.149903	www.youtube.com
 www.partneringforpain.com	www.partneringforpain.com	https://www.kidsinpain.ca/partnering-for-pain	Pass	""	200	secure	478358	185.230.63.96	2020-09-14T11:40:04.642735	www.kidsinpain.ca
 http...www.who.int.immunization.research.development.influenza.en.index1.html	http://www.who.int/immunization/research/development/influenza/en/index1.html	https://www.who.int/immunization/research/development/influenza/en/index1.html	Pass	""	200	secure	885908	143.204.94.120	2020-09-14T11:40:12.754334	www.who.int
 http...codes.bio.thalpred	http://codes.bio/thalpred/	http://codes.bio/thalpred/	Pass	""	200	insecure	395184	138.197.101.157	2020-09-14T11:40:17.703764	codes.bio
@@ -161,7 +160,6 @@ https...dustyturner.shinyapps.io.DecisionTreeMeanRegression	https://dustyturner.
 http...lin-group.cn.server.iDNA6mA-Rice	http://lin-group.cn/server/iDNA6mA-Rice	http://lin-group.cn/server/iDNA6mA-Rice/	Pass	""	200	insecure	89360	211.149.142.19	2020-09-14T12:07:03.173614	lin-group.cn
 http...soykb.org.SoyCSN	http://soykb.org/SoyCSN	http://soykb.org/SoyCSN/	Pass	""	200	insecure	16958	128.196.172.133	2020-09-14T12:07:54.179516	soykb.org
 https...mobyle.rpbs.univ-paris-diderot.fr.cgi-bin.portal.py#forms..MTiOpenScreen	https://mobyle.rpbs.univ-paris-diderot.fr/cgi-bin/portal.py#forms::MTiOpenScreen	https://mobyle.rpbs.univ-paris-diderot.fr/cgi-bin/portal.py#forms::MTiOpenScreen	Pass	""	200	secure	150694	81.194.29.54	2020-09-14T12:07:58.709095	mobyle.rpbs.univ-paris-diderot.fr
-http...www.SurveyMonkey.com	http://www.SurveyMonkey.com	https://www.surveymonkey.com/	Pass	""	200	secure	1470695	143.204.94.31	2020-09-14T12:08:03.883115	www.surveymonkey.com
 www.PlanWellguide.com	www.PlanWellguide.com	https://planwellguide.com/	Pass	""	200	secure	3410743	130.15.58.29	2020-09-14T12:08:09.334119	planwellguide.com
 http...thegleelab.org.SDM6A	http://thegleelab.org/SDM6A	http://thegleelab.org/SDM6A/	Pass	""	200	insecure	983757	211.239.150.230	2020-09-14T12:08:18.083590	thegleelab.org
 http...resp.core.ubc.ca.ipress.FraminghamFEV1	http://resp.core.ubc.ca/ipress/FraminghamFEV1	http://resp.core.ubc.ca/ipress/FraminghamFEV1	Pass	""	200	insecure	1373278	45.79.84.151	2020-09-14T12:08:26.788254	resp.core.ubc.ca
@@ -1180,7 +1178,6 @@ http...proteins.plus	http://proteins.plus	https://proteins.plus/	Pass	""	200	sec
 http...www.zbh.uni-hamburg.de.structureprofiler	http://www.zbh.uni-hamburg.de/structureprofiler	https://www.zbh.uni-hamburg.de/forschung/amd/software/structureprofiler.html	Pass	""	200	secure	3639273	134.100.36.5	2020-09-14T12:45:16.720269	www.zbh.uni-hamburg.de
 http...proteinsplus.zbh.uni-hamburg.de.#structureprofiler	http://proteinsplus.zbh.uni-hamburg.de/#structureprofiler	https://proteins.plus/#structureprofiler	Pass	""	200	secure	1558913	134.100.209.234	2020-09-14T12:45:23.402749	proteins.plus
 http...bioinformatics.cing.ac.cy.PathwayConnector	http://bioinformatics.cing.ac.cy/PathwayConnector	http://bioinformatics.cing.ac.cy/PathwayConnector/	Pass	""	200	insecure	1381741	82.116.205.49	2020-09-14T12:45:28.850849	bioinformatics.cing.ac.cy
-http...www.surveymonkey.com	http://www.surveymonkey.com	https://www.surveymonkey.com/	Pass	""	200	secure	1432908	143.204.94.107	2020-09-14T12:45:46.331650	www.surveymonkey.com
 http...pdumbase.gdcb.iastate.edu	http://pdumbase.gdcb.iastate.edu	http://pdumbase.gdcb.iastate.edu/platynereis/controller.php?action=home	Pass	""	200	insecure	752797	129.186.138.28	2020-09-14T12:46:01.301013	pdumbase.gdcb.iastate.edu
 http...bioinformin.cesnet.cz.flowIO	http://bioinformin.cesnet.cz/flowIO/	http://bioinformin.cesnet.cz/flowIO/	Pass	""	200	insecure	160551	78.128.211.120	2020-09-14T12:46:06.417459	bioinformin.cesnet.cz
 http...isncscialgorithm.azurewebsites.net	http://isncscialgorithm.azurewebsites.net/	http://isncscialgorithm.azurewebsites.net/	Pass	""	200	insecure	235260	168.62.20.37	2020-09-14T12:46:20.020388	isncscialgorithm.azurewebsites.net
@@ -1277,13 +1274,11 @@ http...bioinformatics.ustc.edu.cn.PTM-ssMP.index	http://bioinformatics.ustc.edu.
 http...server.malab.cn.Ricyer.index.html	http://server.malab.cn/Ricyer/index.html	http://server.malab.cn/Ricyer/index.html	Pass	""	200	insecure	512510	121.42.167.206	2020-09-14T13:06:58.254281	server.malab.cn
 http...lin-group.cn.server.HBPred	http://lin-group.cn/server/HBPred	http://lin-group.cn/server/HBPred/	Pass	""	200	insecure	52785	211.149.142.19	2020-09-14T13:07:08.902389	lin-group.cn
 http...lin-group.cn.server.iRSpot-Pse6NC	http://lin-group.cn/server/iRSpot-Pse6NC	http://lin-group.cn/server/iRSpot-Pse6NC/	Pass	""	200	insecure	268971	211.149.142.19	2020-09-14T13:07:14.766305	lin-group.cn
-http...www.kumadai-junnai.com.home.wp-content.uploads.houkatsu.pdf	http://www.kumadai-junnai.com/home/wp-content/uploads/houkatsu.pdf	https://kumadai-junnai.com/home/wp-content/uploads/houkatsu.pdf	Pass	""	404	secure	613557	157.112.187.7	2020-09-14T13:07:33.965996	kumadai-junnai.com
 http...rnavista.cs.put.poznan.pl	http://rnavista.cs.put.poznan.pl	http://rnavista.cs.put.poznan.pl/Runs/Show/502e876e-ba02-424a-8ec1-cc13235dc0dc/15985e00-9db8-45ff-8b2c-20608b50494e	Pass	""	200	insecure	828210	150.254.30.194	2020-09-14T13:07:47.706942	rnavista.cs.put.poznan.pl
 https...simtk.org.projects.kdb	https://simtk.org/projects/kdb	https://simtk.org/projects/kdb	Pass	""	200	secure	576462	171.64.65.11	2020-09-14T13:07:52.149780	simtk.org
 http...nksingh.nationalprof.in	http://nksingh.nationalprof.in	http://nksingh.nationalprof.in/	Fail	"unknown error: net::ERR_ADDRESS_UNREACHABLE
   (Session info: chrome=85.0.4183.83)"		""		""	2020-09-14T13:09:00.516826	nksingh.nationalprof.in
 www.metexplore.fr	www.metexplore.fr	http://www.metexplore.fr/	Pass	""	200	insecure	0	78.153.241.168	2020-09-14T13:09:23.779159	www.metexplore.fr
-https...metexplore.toulouse.inra.fr.com.tutorials.MetaboRank.2017-MetaboRank.pdf	https://metexplore.toulouse.inra.fr/com/tutorials/MetaboRank/2017-MetaboRank.pdf	https://metexplore.toulouse.inra.fr/com/tutorials/MetaboRank/2017-MetaboRank.pdf	Pass	""	404	secure	209	147.99.108.49	2020-09-14T13:09:29.831724	metexplore.toulouse.inra.fr
 http...coreceptor.bioinf.mpi-inf.mpg.de	http://coreceptor.bioinf.mpi-inf.mpg.de/	http://coreceptor.bioinf.mpi-inf.mpg.de/	Fail	"unknown error: net::ERR_NAME_NOT_RESOLVED
   (Session info: chrome=85.0.4183.83)"		""		""	2020-09-14T13:09:33.875505	coreceptor.bioinf.mpi-inf.mpg.de
 http...fusoportal.org	http://fusoportal.org	http://fusoportal.org/	Pass	""	200	insecure	4726028	52.217.81.171	2020-09-14T13:09:36.156309	fusoportal.org
@@ -1476,7 +1471,6 @@ http...bbisr.shinyapps.winship.emory.edu.GAC	http://bbisr.shinyapps.winship.emor
 http...closha.kobic.re.kr	http://closha.kobic.re.kr/	https://closha.kobic.re.kr/	Pass	""	200	secure	3770923	210.218.222.23	2020-09-14T11:42:39.798657	closha.kobic.re.kr
 http...journals.sagepub.com.page.pwq.suppl.index..i	http://journals.sagepub.com/page/pwq/suppl/index</i>	http://journals.sagepub.com/page/pwq/suppl/index%3C/i%3E	Pass	""	404	insecure	1259931	104.18.27.122	2020-09-14T11:42:56.054518	journals.sagepub.com
 http...journals.sagepub.com.page.pwq.suppl.index	http://journals.sagepub.com/page/pwq/suppl/index	https://journals.sagepub.com/topic/collections-pwq/pwq-3-supplemental_teaching_and_research_resources/pwq	Pass	""	200	secure	1385824	104.18.27.122	2020-09-14T11:43:05.875958	journals.sagepub.com
-http...caep.ca.sites.caep.ca.files.enhancedcompdoc.pdf	http://caep.ca/sites/caep.ca/files/enhancedcompdoc.pdf	https://caep.ca/em-community/resident-section/enhanced-competency-directory/	Pass	""	200	secure	1774530	148.72.31.246	2020-09-14T11:43:12.935930	caep.ca
 http...data.medobjectives.marian.edu	http://data.medobjectives.marian.edu/	http://data.medobjectives.marian.edu/	Pass	""	200	insecure	288268	199.8.163.72	2020-09-14T11:43:21.876238	data.medobjectives.marian.edu
 https...grytics.com	https://grytics.com	https://grytics.com/	Pass	""	200	secure	950330	35.159.35.79	2020-09-14T11:43:26.952125	grytics.com
 http...www.connectome.pitgroup.org	http://www.connectome.pitgroup.org	https://pitgroup.org/connectome/	Pass	""	200	secure	12634331	80.241.223.253	2020-09-14T11:43:32.330646	pitgroup.org
@@ -1486,7 +1480,6 @@ http...m2be.unizar.es.insilico_cell	http://m2be.unizar.es/insilico_cell	http://m
 www.donnainformata-mammografia.it	www.donnainformata-mammografia.it	https://www.donnainformata-mammografia.it/	Pass	""	200	secure	81250	93.51.235.248	2020-09-14T11:44:46.417666	www.donnainformata-mammografia.it
 www.InforMD.org.au	www.InforMD.org.au	http://www.InforMD.org.au	Fail	"timeout: Timed out receiving message from renderer: -0.000
   (Session info: chrome=85.0.4183.83)"		""		""	2020-09-14T11:44:51.004492	www.informd.org.au
-https...twitter.com.BeInforMD_	https://twitter.com/BeInforMD_	https://twitter.com/BeInforMD_	Pass	""	200	secure	845759	104.244.42.1	2020-09-14T11:45:52.764983	twitter.com
 http...www.echinonet.eu.shiny.Amphiura_filiformis	http://www.echinonet.eu/shiny/Amphiura_filiformis/	http://www.echinonet.eu/shiny/Amphiura_filiformis/	Pass	""	200	insecure	653932	139.59.187.38	2020-09-14T11:45:58.425905	www.echinonet.eu
 https...pashaei.shinyapps.io.mmsvm	https://pashaei.shinyapps.io/mmsvm	https://pashaei.shinyapps.io/mmsvm/	Pass	""	200	secure	224379	52.20.17.187	2020-09-14T11:46:19.792269	pashaei.shinyapps.io
 www.hsforum.com	www.hsforum.com	https://journal.hsforum.com/index.php/HSF	Pass	""	200	secure	760242	208.70.245.121	2020-09-14T11:46:31.522130	journal.hsforum.com
@@ -1550,7 +1543,6 @@ http...dibs.enzim.ttk.mta.hu	http://dibs.enzim.ttk.mta.hu/	http://dibs.enzim.ttk
 http...toxsign.genouest.org	http://toxsign.genouest.org	https://toxsign.genouest.org/	Pass	""	200	secure	2062960	131.254.158.40	2020-09-14T11:58:16.416509	toxsign.genouest.org
 http...toxsign.genouest.org.app.#	http://toxsign.genouest.org/app/#/	https://toxsign.genouest.org/app/#/	Pass	""	404	secure	2062960	131.254.158.40	2020-09-14T11:58:21.484980	toxsign.genouest.org
 https...g2s.genomenexus.org	https://g2s.genomenexus.org	https://g2s.genomenexus.org/	Pass	""	200	secure	113555	3.80.6.248	2020-09-14T11:58:58.682942	g2s.genomenexus.org
-http...www.umin.ac.jp.cadb.External.pdf	http://www.umin.ac.jp/cadb/External.pdf	https://www.umin.ac.jp/cadb/External.pdf	Pass	""	200	secure	4948	130.69.92.25	2020-09-14T11:59:10.714671	www.umin.ac.jp
 www.Cure4Kids.org	www.Cure4Kids.org	https://www.cure4kids.org/	Pass	""	200	secure	1092064	192.55.208.132	2020-09-14T11:59:15.865332	www.cure4kids.org
 http...cabgrid.res.in.8080.ir-hsp	http://cabgrid.res.in:8080/ir-hsp	http://cabgrid.res.in:8080/ir-hsp/	Pass	""	200	insecure	347032	103.111.37.93	2020-09-14T11:59:23.299677	cabgrid.res.in
 http...computationalbiology.ufpa.br.gofeat	http://computationalbiology.ufpa.br/gofeat/	http://computationalbiology.ufpa.br/gofeat/	Pass	""	200	insecure	1735017	200.239.92.140	2020-09-14T11:59:29.760892	computationalbiology.ufpa.br
@@ -1974,7 +1966,6 @@ http...hlt.hitsz.edu.cn.8080.PSSM-RT_SVM	http://hlt.hitsz.edu.cn:8080/PSSM-RT_SV
   (Session info: chrome=85.0.4183.83)"		""		""	2020-09-14T13:22:06.670636	hlt.hitsz.edu.cn
 http...refex.dbcls.jp	http://refex.dbcls.jp/	http://refex.dbcls.jp/	Pass	""	200	insecure	808494	133.39.78.61	2020-09-14T13:23:08.425570	refex.dbcls.jp
 http...lynx.cri.uchicago.edu	http://lynx.cri.uchicago.edu	http://lynx.cri.uchicago.edu/	Pass	""	503	insecure	411	128.135.22.191	2020-09-14T13:23:15.590071	lynx.cri.uchicago.edu
-https...www.ars.usda.gov.midwest-area.st-paul-mn.cereal-disease-lab.docs.cereal-rusts.race-surveys	https://www.ars.usda.gov/midwest-area/st-paul-mn/cereal-disease-lab/docs/cereal-rusts/race-surveys/	https://www.ars.usda.gov/midwest-area/st-paul-mn/cereal-disease-lab/docs/cereal-rusts/race-surveys/	Pass	""	404	secure	643403	52.227.153.167	2020-09-14T13:23:49.725067	www.ars.usda.gov
 http...pbil.univ-lyon1.fr.software.mosaic	http://pbil.univ-lyon1.fr/software/mosaic/	http://pbil.univ-lyon1.fr/software/mosaic/	Fail	"timeout: Timed out receiving message from renderer: -0.000
   (Session info: chrome=85.0.4183.83)"		""		""	2020-09-14T13:23:54.899732	pbil.univ-lyon1.fr
 http...bioinformatics.hitsz.edu.cn.PSFM-DBT	http://bioinformatics.hitsz.edu.cn/PSFM-DBT/	http://bioinformatics.hitsz.edu.cn/PSFM-DBT/	Fail	"timeout: Timed out receiving message from renderer: -0.000
@@ -2171,7 +2162,6 @@ http...www.iitm.ac.in.bioinfo.PROXiMATE	http://www.iitm.ac.in/bioinfo/PROXiMATE/
 http...mpdb.nibiohn.go.jp.stork	http://mpdb.nibiohn.go.jp/stork	http://mpdb.nibiohn.go.jp/stork/	Pass	""	200	insecure	5222	202.241.39.4	2020-09-14T14:11:17.320608	mpdb.nibiohn.go.jp
 http...shinyheatmap.com	http://shinyheatmap.com	http://shinyheatmap.com/	Pass	""	200	insecure	381	184.168.131.241	2020-09-14T14:11:23.007263	shinyheatmap.com
 http...www.jci-bioinfo.cn.iPhos-PseEvo	http://www.jci-bioinfo.cn/iPhos-PseEvo	http://www.jci-bioinfo.cn/iPhos-PseEvo	Pass	""	200	insecure	1990	218.87.171.204	2020-09-14T14:12:00.404631	www.jci-bioinfo.cn
-http...journalonweb.com.tempaccess.4800.584.JMSS_55_16I3253.pdf	http://journalonweb.com/tempaccess/4800.584.JMSS_55_16I3253.pdf	http://www.journalonweb.com/tempaccess/4800.584.JMSS_55_16I3253.pdf	Pass	""	404	insecure	842	40.71.81.212	2020-09-14T14:12:05.259611	www.journalonweb.com
 http...drugmod.rpbs.univ-paris-diderot.fr.ammosHome.php	http://drugmod.rpbs.univ-paris-diderot.fr/ammosHome.php	https://drugmod.rpbs.univ-paris-diderot.fr/ammosHome.php	Pass	""	404	secure	200	81.194.29.54	2020-09-14T14:12:16.952497	drugmod.rpbs.univ-paris-diderot.fr
 http...comp-sysbio.org.cstea	http://comp-sysbio.org/cstea/	http://comp-sysbio.org/cstea/	Pass	""	200	insecure	124068	162.241.135.2	2020-09-14T14:12:50.946167	comp-sysbio.org
 http...bicresources.jcbose.ac.in.ssaha4.PPIMpred	http://bicresources.jcbose.ac.in/ssaha4/PPIMpred/	http://bicresources.jcbose.ac.in/ssaha4/PPIMpred/	Pass	""	200	insecure	78301	14.139.199.35	2020-09-14T14:12:55.942090	bicresources.jcbose.ac.in
@@ -2188,7 +2178,6 @@ http...newprot.cmbi.umcn.nl	http://newprot.cmbi.umcn.nl/	https://newprot.cmbi.um
 http...newprot.fluidops.net	http://newprot.fluidops.net/	http://newprot.fluidops.net/	Fail	"timeout: Timed out receiving message from renderer: -0.000
   (Session info: chrome=85.0.4183.83)"		""		""	2020-09-14T14:13:55.488854	newprot.fluidops.net
 http...feiglab.org.memscore	http://feiglab.org/memscore	http://feig.bch.msu.edu/memscore	Pass	""	200	insecure	682897	35.9.97.241	2020-09-14T14:14:57.198171	feig.bch.msu.edu
-http...crdd.osdd.net.raghava.cancerpdf	http://crdd.osdd.net/raghava/cancerpdf/	http://crdd.osdd.net/raghava/cancerpdf/	Pass	""	200	insecure	9890219	14.139.234.84	2020-09-14T14:15:02.672716	crdd.osdd.net
 http...raven.anr.udel.edu.webgivi	http://raven.anr.udel.edu/webgivi/	http://raven.anr.udel.edu/webgivi/	Fail	"timeout: Timed out receiving message from renderer: -0.000
   (Session info: chrome=85.0.4183.83)"		""		""	2020-09-14T14:15:11.741715	raven.anr.udel.edu
 http...raven.anr.udel.edu.webgivi.tutorial.php	http://raven.anr.udel.edu/webgivi/tutorial.php	http://raven.anr.udel.edu/webgivi/tutorial.php	Fail	"timeout: Timed out receiving message from renderer: -0.000
@@ -2394,7 +2383,6 @@ http...metagenomics.anl.gov	http://metagenomics.anl.gov/	https://www.mg-rast.org
 http...kiwi.cs.dal.ca.Software.STAMP	http://kiwi.cs.dal.ca/Software/STAMP	https://beikolab.cs.dal.ca/software/STAMP	Pass	""	200	secure	240453	129.173.213.138	2020-09-14T12:02:42.004000	beikolab.cs.dal.ca
 http...www.swissadme.ch	http://www.swissadme.ch	http://www.swissadme.ch/	Pass	""	200	insecure	530695	91.121.25.70	2020-09-14T12:02:57.017245	www.swissadme.ch
 http...www.swissadme.ch.index.php	http://www.swissadme.ch/index.php	http://www.swissadme.ch/index.php	Pass	""	200	insecure	530695	91.121.25.70	2020-09-14T12:03:01.661009	www.swissadme.ch
-http...www.anesth.or.jp.guide.pdf.guideline_akuseikounetsu.pdf	http://www.anesth.or.jp/guide/pdf/guideline_akuseikounetsu.pdf	http://www.anesth.or.jp/guide/pdf/guideline_akuseikounetsu.pdf	Pass	""	200	insecure	9062	157.205.212.198	2020-09-14T12:03:50.200297	www.anesth.or.jp
 www.emnet-nedi.org	www.emnet-nedi.org	http://www.emnet-nedi.org/	Pass	""	200	insecure	422	184.168.131.241	2020-09-14T12:04:07.893196	www.emnet-nedi.org
 http...atlas.engr.tamu.edu.refinement	http://atlas.engr.tamu.edu/refinement/	http://atlas.engr.tamu.edu/refinement/	Fail	"timeout: Timed out receiving message from renderer: -0.000
   (Session info: chrome=85.0.4183.83)"		""		""	2020-09-14T12:04:15.855320	atlas.engr.tamu.edu
@@ -2491,7 +2479,6 @@ http...genome.cs.nthu.edu.tw.Multi-CAR	http://genome.cs.nthu.edu.tw/Multi-CAR/	h
 http...140.114.85.168.Multi-CAR.index.php	http://140.114.85.168/Multi-CAR/index.php	http://140.114.85.168/Multi-CAR/index.php	Pass	""	404	insecure	209	140.114.85.168	2020-09-14T12:23:05.110154	140.114.85.168
 http...bioinfo.au.tsinghua.edu.cn.jianglab.glints	http://bioinfo.au.tsinghua.edu.cn/jianglab/glints	http://bioinfo.au.tsinghua.edu.cn/jianglab/glints/	Fail	"timeout: Timed out receiving message from renderer: 28.962
   (Session info: chrome=85.0.4183.83)"		""		""	2020-09-14T12:23:10.408276	bioinfo.au.tsinghua.edu.cn
-https...www.surgeongeneral.gov.priorities.prevention.2012-npc-action-plan.pdf	https://www.surgeongeneral.gov/priorities/prevention/2012-npc-action-plan.pdf	https://www.hhs.gov/surgeongeneral/not-found/priorities/prevention/2012-npc-action-plan.pdf	Pass	""	404	secure	530113	23.60.194.31	2020-09-14T12:24:12.183945	www.hhs.gov
 http...www.semantic-systems-biology.org.tools.externaltools	http://www.semantic-systems-biology.org/tools/externaltools/	http://www.semantic-systems-biology.org/tools/externaltools/	Fail	"timeout: Timed out receiving message from renderer: -0.000
   (Session info: chrome=85.0.4183.83)"		""		""	2020-09-14T12:24:33.898880	www.semantic-systems-biology.org
 www.sciforum.net.conference.ecmc-12	www.sciforum.net/conference/ecmc-12	https://sciforum.net/conference/ecmc-12	Pass	""	404	secure	234	104.18.15.161	2020-09-14T12:25:35.677624	sciforum.net
@@ -2855,8 +2842,6 @@ http...y1000plus.org.blast	http://y1000plus.org/blast	https://blast.wei.wisc.edu
 http...services.birc.au.dk.hyddb	http://services.birc.au.dk/hyddb/	https://services.birc.au.dk/hyddb/	Pass	""	200	secure	68280	185.45.20.39	2020-09-14T13:56:11.106253	services.birc.au.dk
 http...cmapper.ewostech.net	http://cmapper.ewostech.net	http://cmapper.ewostech.net/	Fail	"unknown error: net::ERR_NAME_NOT_RESOLVED
   (Session info: chrome=85.0.4183.83)"		""		""	2020-09-14T13:56:20.119699	cmapper.ewostech.net
-http...cmapper.ewostech.net.docs.cMapperDocumentation.pdf	http://cmapper.ewostech.net/docs/cMapperDocumentation.pdf	http://cmapper.ewostech.net/docs/cMapperDocumentation.pdf	Fail	"unknown error: net::ERR_NAME_NOT_RESOLVED
-  (Session info: chrome=85.0.4183.83)"		""		""	2020-09-14T13:56:22.317593	cmapper.ewostech.net
 http...genesilico.pl.modernaserver	http://genesilico.pl/modernaserver/	http://genesilico.pl/modernaserver/	Pass	""	200	insecure	549918	212.87.21.35	2020-09-14T13:56:24.444410	genesilico.pl
 http...genesilico.pl.software.stand-alone.simrna	http://genesilico.pl/software/stand-alone/simrna	http://genesilico.pl/software/stand-alone/simrna	Pass	""	200	insecure	851117	212.87.21.35	2020-09-14T13:56:30.665327	genesilico.pl
 http...genesilico.pl.SimRNAweb	http://genesilico.pl/SimRNAweb	https://genesilico.pl/SimRNAweb/	Pass	""	200	secure	2059349	212.87.21.35	2020-09-14T13:56:36.272036	genesilico.pl
@@ -3043,7 +3028,6 @@ www.sin-italy.org	www.sin-italy.org	https://sinitaly.org/	Pass	""	200	secure	138
 http...amp.pharm.mssm.edu.Harmonizome	http://amp.pharm.mssm.edu/Harmonizome	http://amp.pharm.mssm.edu/Harmonizome/	Pass	""	200	insecure	605411	146.203.54.32	2020-09-14T14:34:53.334864	amp.pharm.mssm.edu
 https...seqapass.epa.gov.seqapass	https://seqapass.epa.gov/seqapass/	https://seqapass.epa.gov/seqapass/	Pass	""	200	secure	1321264	134.67.99.243	2020-09-14T14:35:02.961488	seqapass.epa.gov
 www.cdsd.or.kr	www.cdsd.or.kr	http://www.cdsd.or.kr/	Pass	""	200	insecure	479573	183.111.225.72	2020-09-14T14:35:09.349422	www.cdsd.or.kr
-https...youtu.be.yxlyudPaVUE	https://youtu.be/yxlyudPaVUE	https://www.youtube.com/watch?v=yxlyudPaVUE&feature=youtu.be	Pass	""	200	secure	2788635	216.58.207.78	2020-09-14T14:35:31.825561	www.youtube.com
 http...www.twinsuk.ac.uk.dietmetab-data	http://www.twinsuk.ac.uk/dietmetab-data/	https://twinsuk.ac.uk/dietmetab-data-search-result/	Pass	""	200	secure	0	217.160.122.19	2020-09-14T14:35:38.105630	twinsuk.ac.uk
 www.capstudy.org	www.capstudy.org	http://capstudy.org/	Pass	""	200	insecure	41879	59.106.19.203	2020-09-14T14:35:42.702718	capstudy.org
 http...bit.srmuniv.ac.in	http://bit.srmuniv.ac.in/	http://bit.srmist.edu.in/	Pass	""	200	insecure	209569	103.4.221.70	2020-09-14T14:35:50.834585	bit.srmist.edu.in
@@ -3066,7 +3050,6 @@ http...cagedop.cmmt.ubc.ca.CAGEd_oPOSSUM	http://cagedop.cmmt.ubc.ca/CAGEd_oPOSSU
 http...statistika.mfub.bg.ac.rs.interactive-graph	http://statistika.mfub.bg.ac.rs/interactive-graph/	http://statistika.mfub.bg.ac.rs/interactive-linegraph/	Pass	""	200	insecure	133743	147.91.120.108	2020-09-14T14:38:54.871315	statistika.mfub.bg.ac.rs
 http...www.iitm.ac.in.bioinfo.pdbparam	http://www.iitm.ac.in/bioinfo/pdbparam/	https://www.iitm.ac.in/bioinfo/pdbparam/	Pass	""	200	secure	1365920	14.139.160.172	2020-09-14T14:38:59.043839	www.iitm.ac.in
 http...rna.tbi.univie.ac.at.rnalien	http://rna.tbi.univie.ac.at/rnalien/	http://rna.tbi.univie.ac.at/rnalien/	Pass	""	200	insecure	111863	131.130.44.21	2020-09-14T14:39:08.382930	rna.tbi.univie.ac.at
-https...www.surveymonkey.com.r.7NVVQZR	https://www.surveymonkey.com/r/7NVVQZR	https://www.surveymonkey.com/r/7NVVQZR	Pass	""	404	secure	124009	143.204.94.31	2020-09-14T14:39:13.174873	www.surveymonkey.com
 https...cge.cbs.dtu.dk.services.CGEpipeline-1.1	https://cge.cbs.dtu.dk/services/CGEpipeline-1.1	https://cge.cbs.dtu.dk/services/CGEpipeline-1.1/	Pass	""	200	secure	534102	192.38.86.12	2020-09-14T14:39:17.510815	cge.cbs.dtu.dk
 www.redaat.es	www.redaat.es	http://www.redaat.es/presentacion.php	Pass	""	200	insecure	743258	217.76.130.71	2020-09-14T14:39:27.948163	www.redaat.es
 http...www.jci-bioinfo.cn.iPhos-PseEn	http://www.jci-bioinfo.cn/iPhos-PseEn	http://www.jci-bioinfo.cn/iPhos-PseEn	Pass	""	200	insecure	1990	218.87.171.204	2020-09-14T14:39:33.445369	www.jci-bioinfo.cn
@@ -3788,7 +3771,6 @@ http...mammoth.bcm.tmc.edu.uet	http://mammoth.bcm.tmc.edu/uet/	http://mammoth.bc
 www.cellcollective.org	www.cellcollective.org	https://cellcollective.org/#	Pass	""	200	secure	14720572	129.93.134.101	2020-09-14T13:51:38.112271	cellcollective.org
 http...thecellcollective.org.tccapi	http://thecellcollective.org/tccapi	https://cellcollective.org/tccapi#	Pass	""	200	secure	14720577	129.93.134.101	2020-09-14T13:51:48.546063	cellcollective.org
 http...thecellcollective.org	http://thecellcollective.org	https://cellcollective.org/#	Pass	""	200	secure	14720577	129.93.134.101	2020-09-14T13:51:57.142481	cellcollective.org
-https...goo.gl.U52GWo	https://goo.gl/U52GWo	https://docs.google.com/document/d/1aFOa2x7UH3fzeo9XcT017NXQKLGmSTZG6RfEwkD2W-Y/edit	Pass	""	200	secure	5743951	216.58.207.46	2020-09-14T13:52:04.935215	docs.google.com
 http...cdsfold.trahed.jp.cdsfold	http://cdsfold.trahed.jp/cdsfold/	http://cdsfold.trahed.jp/cdsfold/	Fail	"unknown error: net::ERR_NAME_NOT_RESOLVED
   (Session info: chrome=85.0.4183.83)"		""		""	2020-09-14T13:52:13.295894	cdsfold.trahed.jp
 http...celltracker.website	http://celltracker.website/	http://celltracker.website/index.html	Pass	""	200	insecure	608364	66.96.149.32	2020-09-14T13:52:15.464346	celltracker.website
@@ -4456,7 +4438,6 @@ http...pathivar.babelomics.org	http://pathivar.babelomics.org	http://pathivar.ba
 http...fafdrugs3.mti.univ-paris-diderot.fr	http://fafdrugs3.mti.univ-paris-diderot.fr	http://fafdrugs3.mti.univ-paris-diderot.fr/	Fail	"unknown error: net::ERR_NAME_NOT_RESOLVED
   (Session info: chrome=85.0.4183.83)"		""		""	2020-09-14T13:16:53.007920	fafdrugs3.mti.univ-paris-diderot.fr
 http...bioinformatics.tecnoparco.org.SNPchimp	http://bioinformatics.tecnoparco.org/SNPchimp	http://bioinformatics.tecnoparco.org/SNPchimp/	Pass	""	200	insecure	385901	94.198.208.10	2020-09-14T13:16:55.136597	bioinformatics.tecnoparco.org
-www.twitter.com	www.twitter.com	https://twitter.com/	Pass	""	200	secure	676003	104.244.42.65	2020-09-14T13:17:00.936486	twitter.com
 http...tunicata.techfak.uni-bielefeld.de.graphsaw	http://tunicata.techfak.uni-bielefeld.de/graphsaw/	http://tunicata.techfak.uni-bielefeld.de/graphsaw/	Pass	""	401	insecure	0	129.70.138.186	2020-09-14T13:17:05.843697	tunicata.techfak.uni-bielefeld.de
 http...www.bioinformatics.org.regulator	http://www.bioinformatics.org/regulator/	http://www.bioinformatics.org/regulator/page.php	Pass	""	200	insecure	192542	74.208.103.94	2020-09-14T13:17:39.792906	www.bioinformatics.org
 http...crdd.osdd.net.oscadd.egfrpred	http://crdd.osdd.net/oscadd/egfrpred/	http://crdd.osdd.net/oscadd/egfrpred/	Pass	""	200	insecure	443528	14.139.234.84	2020-09-14T13:17:50.810001	crdd.osdd.net
@@ -4735,7 +4716,6 @@ http...haddock4.sfsu.edu.qdrec2	http://haddock4.sfsu.edu/qdrec2/	http://haddock4
 http...tintin.sfsu.edu.projects.phenotypicAssays.html	http://tintin.sfsu.edu/projects/phenotypicAssays.html	http://tintin.sfsu.edu/projects/phenotypicAssays.html	Pass	""	200	insecure	350085	130.212.72.77	2020-09-14T14:13:41.907426	tintin.sfsu.edu
 www.quitnow.net.florida	www.quitnow.net/florida	https://www.quitnow.net/mve/quitnow?qnclient=florida	Pass	""	200	secure	3561679	149.111.164.38	2020-09-14T14:13:49.418033	www.quitnow.net
 http...abralite.concordia.ca	http://abralite.concordia.ca	https://literacy.concordia.ca/abra/en/	Pass	""	200	secure	551943	132.205.244.3	2020-09-14T14:13:59.608504	literacy.concordia.ca
-http...www.freeonlinesurveys.com.Webserver	http://www.freeonlinesurveys.com/Webserver	https://freeonlinesurveys.com/Webserver	Pass	""	404	secure	4281	104.26.6.29	2020-09-14T14:14:05.865445	freeonlinesurveys.com
 http...mace.sookmyung.ac.kr	http://mace.sookmyung.ac.kr/	http://mace.sookmyung.ac.kr/	Fail	"timeout: Timed out receiving message from renderer: -0.000
   (Session info: chrome=85.0.4183.83)"		""		""	2020-09-14T14:14:12.184284	mace.sookmyung.ac.kr
 https...www.molnac.unisa.it.BioTools.consrank	https://www.molnac.unisa.it/BioTools/consrank/	https://www.molnac.unisa.it/BioTools/consrank/	Pass	""	200	secure	891640	193.205.184.13	2020-09-14T14:15:13.904308	www.molnac.unisa.it
@@ -4783,7 +4763,6 @@ http...aralip.plantbiology.msu.edu	http://aralip.plantbiology.msu.edu	http://ara
 http...www.vaccinarsi.org	http://www.vaccinarsi.org	https://www.vaccinarsi.org/	Pass	""	200	secure	3502011	178.32.119.105	2020-09-14T14:23:26.553959	www.vaccinarsi.org
 www.MySpace.com	www.MySpace.com	https://myspace.com/	Pass	""	200	secure	23041620	63.135.90.70	2020-09-14T14:23:32.881908	myspace.com
 http...diseases.jensenlab.org	http://diseases.jensenlab.org/	https://diseases.jensenlab.org/Search	Pass	""	200	secure	71689	130.226.24.114	2020-09-14T14:24:08.970405	diseases.jensenlab.org
-http...goo.gl.M4lJKH	http://goo.gl/M4lJKH	https://drive.google.com/drive/folders/0B4a3Ysm4ZiRtb1dkSjZkZTA1dDA	Pass	""	200	secure	1125072	172.217.18.110	2020-09-14T14:24:13.433211	drive.google.com
 http...kablammo.wasmuthlab.org	http://kablammo.wasmuthlab.org	http://kablammo.wasmuthlab.org/	Pass	""	200	insecure	277930	185.199.109.153	2020-09-14T14:24:18.675675	kablammo.wasmuthlab.org
 http...sing.ei.uvigo.es.marky	http://sing.ei.uvigo.es/marky	http://www.sing-group.org/marky/	Pass	""	200	insecure	1489770	193.147.85.10	2020-09-14T14:24:23.787689	www.sing-group.org
 http...bioinfo.sls.kyushu-u.ac.jp.genomecons	http://bioinfo.sls.kyushu-u.ac.jp/genomecons/	http://bioinfo.sls.kyushu-u.ac.jp/genomecons/	Fail	"unknown error: net::ERR_CONNECTION_REFUSED
@@ -4995,7 +4974,6 @@ http...apiaceae.njau.edu.cn.carrotdb	http://apiaceae.njau.edu.cn/carrotdb/	http:
 http...apiaceae.njau.edu.cn.car	http://apiaceae.njau.edu.cn/car	http://apiaceae.njau.edu.cn/car	Pass	""	404	insecure	232	202.195.250.106	2020-09-14T12:05:45.641636	apiaceae.njau.edu.cn
 http...nashua.case.edu.PathwaysMAW.Web	http://nashua.case.edu/PathwaysMAW/Web	http://nashua.case.edu/PathwaysMAW/Web	Fail	"timeout: Timed out receiving message from renderer: -0.000
   (Session info: chrome=85.0.4183.83)"		""		""	2020-09-14T12:05:50.834697	nashua.case.edu
-http...www.ipm.ucdavis.edu.PDF.MISC.thousand_cankers_field_guide.pdf	http://www.ipm.ucdavis.edu/PDF/MISC/thousand_cankers_field_guide.pdf	http://ipm.ucanr.edu/PDF/MISC/thousand_cankers_field_guide.pdf	Pass	""	200	insecure	1406	169.237.140.1	2020-09-14T12:06:52.604096	ipm.ucanr.edu
 http...designpipeline.bioinf.uni-leipzig.de	http://designpipeline.bioinf.uni-leipzig.de	http://designpipeline.bioinf.uni-leipzig.de/index.py	Pass	""	200	insecure	166236	139.18.75.67	2020-09-14T12:06:57.519899	designpipeline.bioinf.uni-leipzig.de
 http...joey711.github.io.shiny-phyloseq	http://joey711.github.io/shiny-phyloseq/	http://joey711.github.io/shiny-phyloseq/	Pass	""	200	insecure	28648	185.199.109.153	2020-09-14T12:07:11.246405	joey711.github.io
 http...enlight.usc.edu	http://enlight.usc.edu	http://enlight.usc.edu/	Fail	"unknown error: net::ERR_NAME_NOT_RESOLVED
@@ -5129,7 +5107,6 @@ http...compbio.charite.de.ExomeWalker	http://compbio.charite.de/ExomeWalker	http
 http...tinyurl.com.CONSORT-study	http://tinyurl.com/CONSORT-study	https://www.spi.ox.ac.uk/research/centre-for-evidence-based-intervention/consort-study.html	Pass	""	200	secure	712904	79.125.14.100	2020-09-14T12:37:14.965266	www.spi.ox.ac.uk
 http...bioinfo.hrbmu.edu.cn.SNP_lincTFBS	http://bioinfo.hrbmu.edu.cn/SNP_lincTFBS	http://bioinfo.hrbmu.edu.cn/SNP_lincTFBS	Fail	"timeout: Timed out receiving message from renderer: -0.000
   (Session info: chrome=85.0.4183.83)"		""		""	2020-09-14T12:37:20.388480	bioinfo.hrbmu.edu.cn
-http...goo.gl.kDaIgZ	http://goo.gl/kDaIgZ	https://www.ebi.ac.uk/services	Pass	""	200	secure	1714584	193.62.193.80	2020-09-14T12:38:27.912035	www.ebi.ac.uk
 http...bioinformatics.czc.hokudai.ac.jp.ELM	http://bioinformatics.czc.hokudai.ac.jp/ELM/	http://bioinformatics.czc.hokudai.ac.jp/ELM/	Pass	""	404	insecure	209	133.87.226.24	2020-09-14T12:38:41.592814	bioinformatics.czc.hokudai.ac.jp
 http...www.aylasoftware.org	http://www.aylasoftware.org	http://www.aylasoftware.org/	Fail	"unknown error: net::ERR_NAME_NOT_RESOLVED
   (Session info: chrome=85.0.4183.83)"		""		""	2020-09-14T12:39:15.979148	www.aylasoftware.org
@@ -5581,7 +5558,6 @@ http...bcb.med.usherbrooke.ca.isocleftfinder	http://bcb.med.usherbrooke.ca/isocl
 www.projectbiglife.ca	www.projectbiglife.ca	https://www.projectbiglife.ca/	Pass	""	200	secure	5106383	63.33.19.148	2020-09-14T14:14:24.484431	www.projectbiglife.ca
 http...prism.case.edu.prism.index.php.Cloudwave	http://prism.case.edu/prism/index.php/Cloudwave	http://prism.case.edu/prism/index.php/Cloudwave	Fail	"unknown error: net::ERR_NAME_NOT_RESOLVED
   (Session info: chrome=85.0.4183.83)"		""		""	2020-09-14T14:14:31.174090	prism.case.edu
-http...www.ccde.fr._fold.fl-1385734776-429.pdf	http://www.ccde.fr/_fold/fl-1385734776-429.pdf	http://www.ccde.fr/_fold/fl-1385734776-429.pdf	Pass	""	200	insecure	2550	134.157.220.4	2020-09-14T14:14:33.601886	www.ccde.fr
 http...ukdataservice.ac.uk	http://ukdataservice.ac.uk	https://ukdataservice.ac.uk/	Pass	""	200	secure	1069067	155.245.130.5	2020-09-14T14:14:37.525016	ukdataservice.ac.uk
 http...www.cls.ioe.ac.uk.mcs	http://www.cls.ioe.ac.uk/mcs	https://cls.ucl.ac.uk/cls-studies/millennium-cohort-study/	Pass	""	200	secure	746117	52.138.144.255	2020-09-14T14:14:42.921533	cls.ucl.ac.uk
 www.cdfd.org.in.micas	www.cdfd.org.in/micas	http://www.mcr.org.in/micas/	Pass	""	200	insecure	2608	43.250.40.60	2020-09-14T14:14:48.632980	www.mcr.org.in
@@ -6012,7 +5988,6 @@ http...www.cirs-notfallmedizin.de	http://www.cirs-notfallmedizin.de	http://www.c
 http...www.jci-bioinfo.cn.iCDI-PseFpt	http://www.jci-bioinfo.cn/iCDI-PseFpt/	http://www.jci-bioinfo.cn/iCDI-PseFpt/	Pass	""	200	insecure	1990	218.87.171.204	2020-09-14T12:12:33.602204	www.jci-bioinfo.cn
 http...swissmodel.expasy.org.lddt	http://swissmodel.expasy.org/lddt	https://swissmodel.expasy.org/lddt	Pass	""	200	secure	817395	131.152.229.100	2020-09-14T12:12:38.248705	swissmodel.expasy.org
 http...apslap.bicpu.edu.in	http://apslap.bicpu.edu.in	http://apslap.bicpu.edu.in/	Pass	""	200	insecure	1299	14.139.183.115	2020-09-14T12:12:42.716567	apslap.bicpu.edu.in
-https...www.cfef.org.evaluation.ISMCFEFCNRS.pdf	https://www.cfef.org/evaluation/ISMCFEFCNRS.pdf	https://www.cfef.org/evaluation/ISMCFEFCNRS.pdf	Pass	""	200	secure	1276	83.217.244.12	2020-09-14T12:12:48.234786	www.cfef.org
 www.efsumb-atlas.org	www.efsumb-atlas.org	http://www.efsumb-atlas.org/v2/index.asp	Pass	""	200	insecure	69151	78.129.255.36	2020-09-14T12:12:52.364834	www.efsumb-atlas.org
 http...biomi.cdc.go.kr.EvoSNP	http://biomi.cdc.go.kr/EvoSNP/	http://biomi.cdc.go.kr/EvoSNP/	Fail	"unknown error: net::ERR_CONNECTION_REFUSED
   (Session info: chrome=85.0.4183.83)"		""		""	2020-09-14T12:12:59.633811	biomi.cdc.go.kr
@@ -6733,15 +6708,11 @@ http...www.rna.ccbb.utexas.edu.SAE.2F.CRWAlign	http://www.rna.ccbb.utexas.edu/SA
 http...www.mathworks.com.matlabcentral.fileexchange.36866	http://www.mathworks.com/matlabcentral/fileexchange/36866	https://www.mathworks.com/matlabcentral/fileexchange/36866-ecals-supervisory-control-of-fermentors	Pass	""	200	secure	1403585	92.123.47.85	2020-09-14T14:39:16.104795	www.mathworks.com
 http...psico.fcep.urv.cat.utilitats.nim	http://psico.fcep.urv.cat/utilitats/nim/	http://psico.fcep.urv.cat/utilitats/nim/	Pass	""	200	insecure	71186	130.206.36.50	2020-09-14T14:39:21.674443	psico.fcep.urv.cat
 http...www.gradeworkinggroup.org	http://www.gradeworkinggroup.org	https://www.gradeworkinggroup.org/	Pass	""	200	secure	1437066	52.177.169.150	2020-09-14T14:39:26.036368	www.gradeworkinggroup.org
-http...www.esurvey.com	http://www.esurvey.com	http://www.esurvey.com/	Fail	"unknown error: net::ERR_NAME_NOT_RESOLVED
-  (Session info: chrome=85.0.4183.83)"		""		""	2020-09-14T14:39:31.551054	www.esurvey.com
 http...www.binfo.ncku.edu.tw.TAG	http://www.binfo.ncku.edu.tw/TAG/	http://www.binfo.ncku.edu.tw/TAG/GeneDoc.php	Pass	""	200	insecure	200371	140.116.56.161	2020-09-14T14:39:33.597084	www.binfo.ncku.edu.tw
 http...cosbi.ee.ncku.edu.tw.yga	http://cosbi.ee.ncku.edu.tw/yga/	http://cosbi.ee.ncku.edu.tw/yga/	Pass	""	404	insecure	282	140.116.215.226	2020-09-14T14:39:47.926978	cosbi.ee.ncku.edu.tw
 http...yga.ee.ncku.edu.tw	http://yga.ee.ncku.edu.tw/	https://yga.ee.ncku.edu.tw/	Pass	""	404	insecure	345	140.116.72.97	2020-09-14T14:40:22.705874	yga.ee.ncku.edu.tw
 www.helmdb.org	www.helmdb.org	http://gasser-research.vet.unimelb.edu.au/helmdb/	Pass	""	200	insecure	943723	128.250.130.41	2020-09-14T14:40:31.498236	gasser-research.vet.unimelb.edu.au
 www.gradeworkinggroup.org	www.gradeworkinggroup.org	https://www.gradeworkinggroup.org/	Pass	""	200	secure	1602075	52.177.169.150	2020-09-14T14:40:40.802708	www.gradeworkinggroup.org
-www.esurvey.com	www.esurvey.com	http://www.esurvey.com/	Fail	"unknown error: net::ERR_NAME_NOT_RESOLVED
-  (Session info: chrome=85.0.4183.83)"		""		""	2020-09-14T14:40:46.260080	www.esurvey.com
 www.qalibra.eu	www.qalibra.eu	http://www.qalibra.eu/	Fail	"unknown error: net::ERR_NAME_NOT_RESOLVED
   (Session info: chrome=85.0.4183.83)"		""		""	2020-09-14T14:40:48.281549	www.qalibra.eu
 http...www.herbalgenomics.org.cpgavas	http://www.herbalgenomics.org/cpgavas	http://www.herbalgenomics.org/cpgavas/	Pass	""	200	insecure	209	47.90.241.85	2020-09-14T14:40:50.303030	www.herbalgenomics.org
@@ -6920,7 +6891,6 @@ http...www.bio.ifi.lmu.de.REA	http://www.bio.ifi.lmu.de/REA	https://drupal.bio.i
   (Session info: chrome=85.0.4183.83)"		""		""	2020-09-14T11:50:25.509552	drupal.bio.ifi.lmu.de
 http...www.mycpermcheck.aksotriffer.pharmazie.uni-wuerzburg.de	http://www.mycpermcheck.aksotriffer.pharmazie.uni-wuerzburg.de	http://www.mycpermcheck.aksotriffer.pharmazie.uni-wuerzburg.de/	Pass	""	200	insecure	608029	132.187.1.112	2020-09-14T11:51:27.450325	www.mycpermcheck.aksotriffer.pharmazie.uni-wuerzburg.de
 http...www.bioacademy.gr.bioinformatics.drugster	http://www.bioacademy.gr/bioinformatics/drugster/	https://www.bioacademy.gr/bioinformatics/drugster/	Pass	""	403	secure	1406	195.251.115.254	2020-09-14T11:51:32.024906	www.bioacademy.gr
-http...www.auanet.org.content.media.asymptomatic_microhematuria_guideline.pdf	http://www.auanet.org/content/media/asymptomatic_microhematuria_guideline.pdf	http://www.auanet.org/content/media/asymptomatic_microhematuria_guideline.pdf	Pass	""	404	insecure	3418682	208.118.165.56	2020-09-14T11:51:48.335060	www.auanet.org
 http...bioware.ucd.ie.∼enzpred.Enzpred.php	http://bioware.ucd.ie/∼enzpred/Enzpred.php	http://bioware.ucd.ie/%E2%88%BCenzpred/Enzpred.php	Pass	""	404	insecure	209	137.43.92.145	2020-09-14T11:51:59.423591	bioware.ucd.ie
 http...www.cbs.dtu.dk.services.GibbsCluster	http://www.cbs.dtu.dk/services/GibbsCluster	http://www.cbs.dtu.dk/services/GibbsCluster/	Pass	""	200	insecure	22233	192.38.86.22	2020-09-14T11:52:33.423346	www.cbs.dtu.dk
 www.heartfailurerisk.org	www.heartfailurerisk.org	http://www.heartfailurerisk.org/	Pass	""	200	insecure	302159	130.216.159.184	2020-09-14T11:52:37.765411	www.heartfailurerisk.org
@@ -7625,8 +7595,6 @@ http...icpr.jci.edu.cn.bioinfo.iNR-PhysChem	http://icpr.jci.edu.cn/bioinfo/iNR-P
   (Session info: chrome=85.0.4183.83)"		""		""	2020-09-14T13:51:23.517237	icpr.jci.edu.cn
 http...3dvetanatomy.ncsu.edu	http://3dvetanatomy.ncsu.edu/	http://3dvetanatomy.ncsu.edu/	Fail	"unknown error: net::ERR_NAME_NOT_RESOLVED
   (Session info: chrome=85.0.4183.83)"		""		""	2020-09-14T13:51:28.510386	3dvetanatomy.ncsu.edu
-http...tinyurl.com.89vpmqj	http://tinyurl.com/89vpmqj	http://system.improvement.nhs.uk/ImprovementSystem/ViewDocument.aspx?path=Lung%2fNational%2fwebsite%2fSIGuide.pdf	Fail	"unknown error: net::ERR_ADDRESS_UNREACHABLE
-  (Session info: chrome=85.0.4183.83)"		""		""	2020-09-14T13:51:30.811113	system.improvement.nhs.uk
 http...rcdd.sysu.edu.cn.8080.home.aspx	http://rcdd.sysu.edu.cn:8080/home.aspx	http://rcdd.sysu.edu.cn:8080/home.aspx	Fail	"timeout: Timed out receiving message from renderer: -0.000
   (Session info: chrome=85.0.4183.83)"		""		""	2020-09-14T13:51:51.420604	rcdd.sysu.edu.cn
 http...www.bioingenios.ira.cinvestav.mx.81.Joomla	http://www.bioingenios.ira.cinvestav.mx:81/Joomla/	http://www.bioingenios.ira.cinvestav.mx:81/Joomla/	Fail	"unknown error: net::ERR_CONNECTION_REFUSED
@@ -7808,7 +7776,6 @@ http...jjwanglab.org.EpiRegNet	http://jjwanglab.org/EpiRegNet	http://jjwanglab.o
 http...www.noncode.org	http://www.noncode.org	http://www.noncode.org/	Pass	""	200	insecure	896191	47.114.125.24	2020-09-14T14:31:41.926839	www.noncode.org
 http...www.noncode.org.index.php	http://www.noncode.org/index.php	http://www.noncode.org/index.php	Pass	""	200	insecure	896191	47.114.125.24	2020-09-14T14:31:51.714003	www.noncode.org
 http...mirnest.amu.edu.pl	http://mirnest.amu.edu.pl	http://rhesus.amu.edu.pl/mirnest/copy/	Pass	""	200	insecure	1349553	150.254.121.200	2020-09-14T14:32:09.787853	rhesus.amu.edu.pl
-http...blogs.forbes.com.oliverchiang.2011.01.19.twitter-hits-nearly-200m-users-110m-tweets-per-day-focuses-on-global-expansion	http://blogs.forbes.com/oliverchiang/2011/01/19/twitter-hits-nearly-200m-users-110m-tweets-per-day-focuses-on-global-expansion/	https://www.forbes.com/sites/oliverchiang/2011/01/19/twitter-hits-nearly-200m-users-110m-tweets-per-day-focuses-on-global-expansion/	Pass	""	200	secure	272329	151.101.114.49	2020-09-14T14:32:19.149520	www.forbes.com
 www.nrpssp.com	www.nrpssp.com	http://www.nrpssp.com/	Pass	""	200	insecure	120946	212.128.142.10	2020-09-14T14:32:23.771873	www.nrpssp.com
 http...amrls.cvm.msu.edu	http://amrls.cvm.msu.edu/	http://amrls.cvm.msu.edu/	Pass	""	200	insecure	790915	35.8.208.159	2020-09-14T14:32:32.359352	amrls.cvm.msu.edu
 http...pfam.sbc.su.se	http://pfam.sbc.su.se/	http://pfam.xfam.org/	Pass	""	200	insecure	674546	193.62.193.83	2020-09-14T14:32:42.947328	pfam.xfam.org
@@ -8289,7 +8256,6 @@ https...toolkit.severeasthma.org.au	https://toolkit.severeasthma.org.au	https://
 http...distilldeep.ucd.ie.brewery	http://distilldeep.ucd.ie/brewery/	http://distilldeep.ucd.ie/brewery/	Pass	""	200	insecure	292	193.1.132.218	2020-09-14T13:03:40.246255	distilldeep.ucd.ie
 http...admet.scbdd.com.chemfluc.index	http://admet.scbdd.com/chemfluc/index/	http://admet.scbdd.com/chemfluc/index/	Fail	"timeout: Timed out receiving message from renderer: 27.430
   (Session info: chrome=85.0.4183.83)"		""		""	2020-09-14T13:03:51.748203	admet.scbdd.com
-https...tinyurl.com.sdckjek	https://tinyurl.com/sdckjek	https://www.trialregister.nl/trial/4162	Pass	""	200	secure	485634	134.209.226.211	2020-09-14T13:04:25.136574	www.trialregister.nl
 http...bliulab.net.sgRNA-PSM	http://bliulab.net/sgRNA-PSM/	http://bliulab.net/sgRNA-PSM/	Pass	""	200	insecure	48769	39.106.95.61	2020-09-14T13:04:30.226622	bliulab.net
 https...vm1138.kaj.pouta.csc.fi.webgqt	https://vm1138.kaj.pouta.csc.fi/webgqt/	https://vm1138.kaj.pouta.csc.fi/webgqt/	Pass	""	200	secure	850418	193.166.25.130	2020-09-14T13:04:45.094661	vm1138.kaj.pouta.csc.fi
 www.PLSD.eu	www.PLSD.eu	https://sigven78.shinyapps.io/plsd_v4/	Pass	""	200	secure	355804	34.198.229.9	2020-09-14T13:04:57.029350	sigven78.shinyapps.io
@@ -8575,7 +8541,6 @@ https...www.genome.jp.tools.kofamkoala	https://www.genome.jp/tools/kofamkoala/	h
 http...i.uestc.edu.cn.agonotes	http://i.uestc.edu.cn/agonotes/	http://i.uestc.edu.cn/agonotes/	Pass	""	403	insecure	1239	222.197.166.2	2020-09-14T13:53:35.666105	i.uestc.edu.cn
 http...seva.cnb.csic.es	http://seva.cnb.csic.es	http://seva-plasmids.com/	Pass	""	200	insecure	2142800	185.47.245.224	2020-09-14T13:53:44.958807	seva-plasmids.com
 http...pmbd.genome-mining.cn.home	http://pmbd.genome-mining.cn/home	http://pmbd.genome-mining.cn/home/	Pass	""	200	insecure	578241	47.106.200.59	2020-09-14T13:53:51.304170	pmbd.genome-mining.cn
-http...www.kumadai-junnai.com.home.wp-content.uploads.shinsai.pdf	http://www.kumadai-junnai.com/home/wp-content/uploads/shinsai.pdf	https://kumadai-junnai.com/home/wp-content/uploads/shinsai.pdf	Pass	""	404	secure	613549	157.112.187.7	2020-09-14T13:54:09.356951	kumadai-junnai.com
 http...pdtiessb-uestc.com	http://pdtiessb-uestc.com/	http://pdtiessb-uestc.com/	Pass	""	200	insecure	562934	182.50.135.108	2020-09-14T13:54:22.560920	pdtiessb-uestc.com
 https...paramecium.i2bc.paris-saclay.fr	https://paramecium.i2bc.paris-saclay.fr	https://paramecium.i2bc.paris-saclay.fr/	Pass	""	503	secure	396	157.136.94.36	2020-09-14T13:54:31.702295	paramecium.i2bc.paris-saclay.fr
 www.gmod.org	www.gmod.org	http://gmod.org/wiki/Main_Page	Pass	""	200	insecure	589315	18.207.248.244	2020-09-14T13:54:38.775844	gmod.org
@@ -8599,7 +8564,6 @@ http...www.genome.ist.i.kyoto-u.ac.jp.~ichinose.hegma	http://www.genome.ist.i.ky
 http...aura.science.unitn.it	http://aura.science.unitn.it	http://aura.science.unitn.it/	Pass	""	200	insecure	996331	193.205.215.42	2020-09-14T11:36:40.718286	aura.science.unitn.it
 http...biodev.cea.fr.interevol	http://biodev.cea.fr/interevol/	http://biodev.cea.fr/interevol/	Pass	""	200	insecure	400531	132.167.195.97	2020-09-14T11:36:45.729983	biodev.cea.fr
 http...tcoffee.crg.cat.apps.ampa	http://tcoffee.crg.cat/apps/ampa	http://tcoffee.crg.cat/apps/ampa/do	Pass	""	200	insecure	236959	84.88.66.205	2020-09-14T11:36:50.092187	tcoffee.crg.cat
-http...www.sedar.es.revistasedar.uems.pdf	http://www.sedar.es/revistasedar/uems.pdf	https://www.sedar.es/revistasedar/uems.pdf	Pass	""	404	secure	50399	35.214.223.230	2020-09-14T11:36:57.008853	www.sedar.es
 http...protein.cau.edu.cn.tmhhcp	http://protein.cau.edu.cn/tmhhcp	http://protein.cau.edu.cn/tmhhcp	Fail	"timeout: Timed out receiving message from renderer: -0.000
   (Session info: chrome=85.0.4183.83)"		""		""	2020-09-14T11:37:08.780855	protein.cau.edu.cn
 http...mykaryoview.com	http://mykaryoview.com	http://mykaryoview.com	Fail	"timeout: Timed out receiving message from renderer: -0.000
@@ -9112,7 +9076,6 @@ http...sniplay.cirad.fr	http://sniplay.cirad.fr/	https://sniplay.southgreen.fr/c
 http...mu2py.biocomp.unibo.it.mempype	http://mu2py.biocomp.unibo.it/mempype	https://mu2py.biocomp.unibo.it/mempype	Pass	""	200	secure	47920	137.204.193.40	2020-09-14T13:38:05.815360	mu2py.biocomp.unibo.it
 https...mu2py.biocomp.unibo.it.mempype	https://mu2py.biocomp.unibo.it/mempype	https://mu2py.biocomp.unibo.it/mempype	Pass	""	200	secure	47874	137.204.193.40	2020-09-14T13:38:13.239955	mu2py.biocomp.unibo.it
 http...www.aporc.org.noa	http://www.aporc.org/noa/	http://app.aporc.org/NOA/	Pass	""	200	insecure	978650	159.226.47.113	2020-09-14T13:38:18.267507	app.aporc.org
-http...www.who.int.healthinfo.survey.ageingdefnolder.en	http://www.who.int/healthinfo/survey/ageingdefnolder/en/	https://www.who.int/healthinfo/survey/ageingdefnolder/en/	Pass	""	200	secure	1127510	143.204.94.120	2020-09-14T13:38:29.360143	www.who.int
 http...www.equip-project.com	http://www.equip-project.com	http://www.equip-project.com/	Pass	""	200	insecure	239613	216.172.184.117	2020-09-14T13:38:34.740285	www.equip-project.com
 http...amp.biosino.org	http://amp.biosino.org/	http://amp.biosino.org/	Fail	"unknown error: net::ERR_NAME_NOT_RESOLVED
   (Session info: chrome=85.0.4183.83)"		""		""	2020-09-14T13:38:46.367561	amp.biosino.org
@@ -9714,7 +9677,6 @@ http...www.nordicdb.org	http://www.nordicdb.org	http://www.nordicdb.org/	Pass	""
 www.eurocat-network.eu	www.eurocat-network.eu	https://eu-rd-platform.jrc.ec.europa.eu/eurocat_en	Pass	""	200	secure	822254	139.191.229.25	2020-09-14T11:51:47.206823	eu-rd-platform.jrc.ec.europa.eu
 https...www.tools.symprevius.org.Bcereus.english.php	https://www.tools.symprevius.org/Bcereus/english.php	https://www.tools.symprevius.org/Bcereus/english.php	Pass	""	200	insecure	209	176.176.74.209	2020-09-14T11:51:52.376659	www.tools.symprevius.org
 http...systems.crump.ucla.edu.rankrank	http://systems.crump.ucla.edu/rankrank/	https://systems.crump.ucla.edu/rankrank/	Pass	""	200	secure	392425	128.97.26.68	2020-09-14T11:51:56.714465	systems.crump.ucla.edu
-http...www.hpb.gov.sg.uploadedFiles.HPB_Online.Publications.CPGFunctionalscreening.pdf	http://www.hpb.gov.sg/uploadedFiles/HPB_Online/Publications/CPGFunctionalscreening.pdf	https://www.hpb.gov.sg/uploadedFiles/HPB_Online/Publications/CPGFunctionalscreening.pdf	Pass	""	404	secure	741	160.96.226.241	2020-09-14T11:52:08.371133	www.hpb.gov.sg
 http...cytoscapeweb.cytoscape.org	http://cytoscapeweb.cytoscape.org/	http://cytoscapeweb.cytoscape.org/	Pass	""	200	insecure	73223	142.150.84.126	2020-09-14T11:52:16.947013	cytoscapeweb.cytoscape.org
 http...proteins.gmu.edu.automute	http://proteins.gmu.edu/automute	http://binf.gmu.edu/automute/	Pass	""	200	insecure	97219	129.174.131.73	2020-09-14T11:52:21.895622	binf.gmu.edu
 http...chemdata.shu.edu.cn.gal	http://chemdata.shu.edu.cn/gal/	http://chemdata.shu.edu.cn/gal/	Fail	"unknown error: net::ERR_CONNECTION_REFUSED
@@ -10182,7 +10144,6 @@ http...fohs.bgu.ac.il.s2g.index.html	http://fohs.bgu.ac.il/s2g/index.html	https:
 http...www.people.vcu.edu.~jbukszar	http://www.people.vcu.edu/~jbukszar/	http://www.people.vcu.edu/~jbukszar/	Pass	""	200	insecure	69820	128.172.22.86	2020-09-14T13:14:26.178408	www.people.vcu.edu
 http...cic.scu.edu.cn.bioinformatics.secretp.index.htm	http://cic.scu.edu.cn/bioinformatics/secretp/index.htm	http://cic.scu.edu.cn/bioinformatics/secretp/index.htm	Fail	"timeout: Timed out receiving message from renderer: -0.000
   (Session info: chrome=85.0.4183.83)"		""		""	2020-09-14T13:14:31.342354	cic.scu.edu.cn
-http...www.fda.gov.downloads.Drugs.GuidanceComplianceRegulatoryInformation.Guidances.ucm072101.pdf	http://www.fda.gov/downloads/Drugs/GuidanceComplianceRegulatoryInformation/Guidances/ucm072101.pdf	https://www.fda.gov/media/71247/download	Pass	""	200	secure	784	23.39.72.95	2020-09-14T13:15:33.059164	www.fda.gov
 http...www.fda.gov.Drugs.DevelopmentApprovalProcess.DevelopmentResources.DrugInteractionsLabeling.ucm080499.htm	http://www.fda.gov/Drugs/DevelopmentApprovalProcess/DevelopmentResources/DrugInteractionsLabeling/ucm080499.htm	https://www.fda.gov/drugs/drug-interactions-labeling/drug-development-and-drug-interactions	Pass	""	200	secure	303538	23.39.72.95	2020-09-14T13:15:38.168288	www.fda.gov
 http...bioinformatics.bc.edu.clotelab.RNApathfinder	http://bioinformatics.bc.edu/clotelab/RNApathfinder	http://bioinformatics.bc.edu/clotelab/RNApathfinder/	Pass	""	200	insecure	160115	136.167.49.213	2020-09-14T13:15:43.090658	bioinformatics.bc.edu
 https...ruby.chem.indiana.edu.scorenfl.srn_results.lookup0.php	https://ruby.chem.indiana.edu/scorenfl/srn_results/lookup0.php	https://ruby.chem.indiana.edu/scorenfl/srn_results/lookup0.php	Fail	"unknown error: net::ERR_NAME_NOT_RESOLVED
@@ -10373,7 +10334,6 @@ http...www.ciml.univ-mrs.fr.EWBANK_jonathan.software.html	http://www.ciml.univ-m
 http...bioinformatics.lif.univ-mrs.fr.RNAiMap	http://bioinformatics.lif.univ-mrs.fr/RNAiMap/	http://bioinformatics.lif.univ-mrs.fr/RNAiMap/	Fail	"unknown error: net::ERR_NAME_NOT_RESOLVED
   (Session info: chrome=85.0.4183.83)"		""		""	2020-09-14T13:49:50.409388	bioinformatics.lif.univ-mrs.fr
 https...genomevolution.org.CoGe.SynMap.pl	https://genomevolution.org/CoGe/SynMap.pl	https://genomevolution.org/CoGe/SynMap.pl	Pass	""	200	secure	262080	128.196.172.147	2020-09-14T13:49:57.576863	genomevolution.org
-https...goo.gl.PaAtqy	https://goo.gl/PaAtqy	https://github.com/bjoyce3/SynMapFractBiasAnalysis	Pass	""	200	secure	391914	140.82.121.3	2020-09-14T13:50:04.389743	github.com
 http...sana.ics.uci.edu	http://sana.ics.uci.edu	http://sana.ics.uci.edu/	Pass	""	200	insecure	4435927	128.195.56.76	2020-09-14T13:50:09.547718	sana.ics.uci.edu
 http...bioinfo.ibp.ac.cn.LncVar	http://bioinfo.ibp.ac.cn/LncVar	http://bioinfo.ibp.ac.cn/LncVar/	Pass	""	200	insecure	313712	159.226.118.31	2020-09-14T13:50:28.139843	bioinfo.ibp.ac.cn
 http...www.bork.embl.de.software.specI	http://www.bork.embl.de/software/specI/	http://vm-lux.embl.de/~mende/specI//	Pass	""	200	insecure	55718	194.94.44.167	2020-09-14T13:50:38.925942	vm-lux.embl.de
@@ -10938,7 +10898,6 @@ http...www.kimlab.org.software.pat	http://www.kimlab.org/software/pat	http://www
 http...geneatlas.arl.arizona.edu	http://geneatlas.arl.arizona.edu	http://geneatlas.arl.arizona.edu/	Pass	""	200	insecure	298052	150.135.93.114	2020-09-14T13:13:56.921825	geneatlas.arl.arizona.edu
 https...impact2.dbmi.columbia.edu.doc2hpo	https://impact2.dbmi.columbia.edu/doc2hpo/	https://impact2.dbmi.columbia.edu/doc2hpo/	Pass	""	200	secure	1133403	143.104.100.2	2020-09-14T13:14:08.288625	impact2.dbmi.columbia.edu
 www.liebertonline.com.cmb	www.liebertonline.com/cmb	https://home.liebertpub.com/publications/journal-of-computational-biology/31	Pass	""	200	secure	3925120	47.19.26.221	2020-09-14T13:14:13.948335	home.liebertpub.com
-http...tools.genouest.org.data.apurva.manual.pdf	http://tools.genouest.org/data/apurva/manual.pdf	http://tools.genouest.org/data/apurva/manual.pdf	Pass	""	200	insecure	2238	131.254.158.40	2020-09-14T13:14:23.266956	tools.genouest.org
 http...ispred4.biocomp.unibo.it	http://ispred4.biocomp.unibo.it	https://ispred4.biocomp.unibo.it/ispred	Pass	""	200	secure	475223	137.204.193.40	2020-09-14T13:14:27.306720	ispred4.biocomp.unibo.it
 http...www.uhnres.utoronto.ca.labs.tillier	http://www.uhnres.utoronto.ca/labs/tillier/	http://wwwlabs.uhnresearch.ca/tillier/	Pass	""	200	insecure	1538806	192.75.165.14	2020-09-14T13:14:43.721450	wwwlabs.uhnresearch.ca
 http...huttenhower.sph.harvard.edu.metaphlan	http://huttenhower.sph.harvard.edu/metaphlan/	http://huttenhower.sph.harvard.edu/metaphlan/	Pass	""	200	insecure	559794	140.247.151.38	2020-09-14T13:15:02.183507	huttenhower.sph.harvard.edu

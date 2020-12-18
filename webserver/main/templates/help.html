@@ -19,7 +19,7 @@
 {% include "navbar.html" %}
 
 <div class="container-fluid">
-  <div class="center-box">
+  <div class="center-box mb-xl-3">
     <div class="card aviator-card">
       <div class="card-header">
         Help
@@ -33,7 +33,7 @@
     </div>
   </div>
   <section id="publications">
-    <div class="center-box">
+    <div class="center-box mt-xl-0">
       <div class="card aviator-card">
         <div class="card-header">
           Publications
@@ -44,12 +44,19 @@
             web-servers from literature.
             The availability is checked for each automatically derived URL, twice per day.
           </p>
+          <div class="row mb-xl-3">
+            <div class="col-md-12">
+              <img class="tutorial-img img-fluid w-100"
+                   src="{% static 'images/curated_table.png' %}" alt="Publications table"/>
+            </div>
+          </div>
           <p>
             The table can be filtered according to every column by typing the in highlighted fields.
 
             Filtering of authors and automatically derived author keywords is in addition possible
-            by
-            clicking on the author name / keyword.
+            by clicking on the author name / keyword.
+          </p>
+          <p>
             Per default only 11 columns are shown. The displayed columns can be controlled over the
             "Column visibility" dropdown, and your selection will be remembered if you open the page
             again later.
@@ -87,17 +94,27 @@
                   href="{% url 'main:author' %}">registered</a> web-servers (typically by their
             authors).
             The availability is checked via the <a href="{% url 'main:api' %}">AVIATOR API</a>.
-            In addition to the API check the tool URL is checked as well and additional information are provided via the "Website Data" column.
+            In addition to the API check the tool URL is checked as well and additional information
+            are provided via the "Website Data" column.
           </p>
+          <div class="row mb-xl-3">
+            <div class="col-md-12">
+              <img class="tutorial-img img-fluid w-100"
+                   src="{% static 'images/curated_table.png' %}" alt="Publications table"/>
+            </div>
+          </div>
           <p>
-            The table can be filtered according to every column by typing the in highlighted fields.
+            The table can be filtered according to every column by typing the in highlighted
+            fields.
 
             Filtering of authors and automatically derived author keywords is in addition possible
             by clicking on the author name / keyword.
           </p>
           <p>
-            Per default only 11 columns are shown. The displayed columns can be controlled over the
-            "Column visibility" dropdown, and your selection will be remembered if you open the page
+            Per default only 11 columns are shown. The displayed columns can be controlled over
+            the
+            "Column visibility" dropdown, and your selection will be remembered if you open the
+            page
             again later.
             Sorting according to multiple columns is possible by clicking on the columns while
             holding
@@ -113,7 +130,8 @@
             Values that were not collected are shown as grey.
 
             The bar plots below the heatmap show the statistics for the filtered table.
-            Websites are considered temporarily offline, when they were not reachable, but have been
+            Websites are considered temporarily offline, when they were not reachable, but have
+            been
             online at least once in the last 14 days.
           </p>
         </div>
@@ -121,6 +139,61 @@
     </div>
   </section>
 
+  <section id="browser-compat">
+    <div class="center-box">
+      <div class="card mb-3 aviator-card">
+        <div class="card-header">Browser compatibility</div>
+        <div class="card-body">
+          <h5 class="card-title mb-3">Our web server supports a variety of common operating systems
+            and browsers:</h5>
+          <table class="table table-striped" style="color: var(--font-color);">
+            <thead>
+            <tr>
+              <th scope="col">OS</th>
+              <th scope="col">Version</th>
+              <th scope="col">Chrome</th>
+              <th scope="col">Firefox</th>
+              <th scope="col">Microsoft Edge</th>
+              <th scope="col">Safari</th>
+              <th scope="col">Opera</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+              <th scope="row"><i class="fab fa-linux"></i> Linux</th>
+              <td>Manjaro (64 bit) 20.0.1</td>
+              <td>85.0.4183.83</td>
+              <td>83.0</td>
+              <td>N/A</td>
+              <td>N/A</td>
+              <td>Not tested</td>
+            </tr>
+            <tr>
+              <th scope="row"><i class="fab fa-apple"></i> macOS</th>
+              <td>Mojave 10.14.6</td>
+              <td>85.0.4183.83</td>
+              <td>83.0</td>
+              <td>N/A</td>
+              <td>13.0.4</td>
+              <td>65.0.3467.72</td>
+            </tr>
+            <tr>
+              <th scope="row"><i class="fab fa-windows"></i> Windows</th>
+              <td>10</td>
+              <td>85.0.4183.83</td>
+              <td>83.0</td>
+              <td>38.14393.0.0</td>
+              <td>N/A</td>
+              <td>65.03467.78</td>
+            </tr>
+            </tbody>
+          </table>
+          <p class="card-text">For the best experience we recommend to use either <em>Chrome</em> or
+            <em>Firefox</em>.</p>
+        </div>
+      </div>
+    </div>
+  </section>
 </div>
 
 {% include "footer.html" %}
