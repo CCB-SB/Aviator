@@ -67,17 +67,17 @@ def prepare_csv_export(qs, columns, header, request, email_fields, ignore_fields
     if "columns" in request.POST:
         shown = request.POST["columns"].split(';')
     for k in range(0, len(columns)):
-        if str(k) in shown and (header[k] not in ignore_fields):
+        if str(k) in shown and (columns[k] not in ignore_fields):
             header_line.append(header[k])
     writer.writerow(header_line)
 
     filter_col2v = {k: request.POST[str(k)] for k in range(0, len(columns)) if
-                    str(k) in shown and (header[k] not in ignore_fields)}
+                    str(k) in shown and (columns[k] not in ignore_fields) and request.POST[str(k)] not in {"", ";"}}
     qs = filter_queryset(qs, filter_col2v, columns, email_fields)
 
     csv_content = []
     for k in range(0, len(columns)):
-        if str(k) in shown and (header[k] not in ignore_fields):
+        if str(k) in shown and (columns[k] not in ignore_fields):
             field_name = columns[k]
             values = qs.values_list(field_name)
             if field_name in email_fields:
@@ -160,8 +160,8 @@ def curated(request):
         if form.is_valid():
             columns = ['title', 'status', 'percentage', 'authors', 'year', 'journal', 'pubmed_id',
                        'description', 'url', 'tag_tags', 'website']
-            header = ['Title', 'Status', 'Last 30 days', 'Authors', 'Year', 'Journal', 'PubMed',
-                      'Abstract', 'URL', 'Keywords', 'Website']
+            header = ['Tool', 'Status', 'Last 30 days', 'Authors', 'Year', 'Journal', 'PubMed',
+                      'Description', 'URL', 'Keywords', 'Website']
             qs = CuratedWebsite.objects.all().prefetch_related('tags').annotate(
                 tag_tags=ArrayAgg('tags__name'))
             email_fields = {}
@@ -248,7 +248,7 @@ def autocomplete(request):
         email_fields = {"contact_mail"}
 
         filter_col2v = {k: request.GET[str(k)] for k in range(0, len(columns)) if
-                        str(k) in request.GET}
+                        str(k) in request.GET and request.GET[str(k)] not in {"", ";"}}
         qs = filter_queryset(qs, filter_col2v, columns, email_fields)
 
         listed_cols = {1, 2, 3, 8, 9, 10, 11, 12, 13, 14, 15}

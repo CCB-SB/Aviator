@@ -1,140 +1,152 @@
 <!DOCTYPE html>
 {% load staticfiles %}
-<html  lang="en">
-	<head>
-    <meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
-		<title>Aviator</title>
-		<link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet" type="text/css">
-		<link href="{% static 'css/chart.min.css' %}" rel="stylesheet" type="text/css">
-		<link href="{% static 'css/aviator.css' %}" rel="stylesheet" type="text/css">
-    <script src="{% static 'js/jquery.min.js' %}"></script>
-    <script src="{% static 'js/popper.min.js' %}"></script>
-    <script src="{% static 'js/bootstrap.min.js' %}"></script>
-    <script src="{% static 'js/chart.min.js' %}"></script>
-	</head>
-	<body>
-    {% include "navbar.html" %}
-    <div class="content-container">
-      <table class="table table-striped  table-dark">
-        <thead>
-          <tr>
-            <th colspan="6" style="text-align:center;">Website</th>
-          </tr>
-          <tr>
-              <th>Original URL</th>
-              <th>Derived URL</th>
-              <th>Status</th>
-              <th>Last 30 days</th>
-              <th>First Call</th>
-              <th>Latest Call</th>
-              <th>IP</th>
-              <th>Analytics</th>
-              <th>Programming Languages</th>
-              <th>Secure Certificate</th>
-          </tr>
-        </thead>
-          <tr>
-            <td>{{ website.original_url }}</td>
-            <td>{{ website.derived_url }}</td>
-            <td><span class="{% if website.status == "O" %}green{% elif website.status == "T" %}orange{% elif website.status == "F" %}red{% elif website.status == "U" %}grey{% endif %}-circle"></span></td>
-            <td>{{ website.percentage|floatformat }} % online</td>
-            <td>{{ website.created_at }}</td>
-            <td>{{ calls.0.datetime }}</td>
-            <td>{{ website.ip }}</td>
-            <td>{{ website.analytics }}</td>
-            <td>{{ website.script }}</td>
-            <td>{% if website.certificate_secure %}Yes{% else %}No{% endif %}</td>
-          </tr>
-      </table>
-      <br>
-      <div class="chart-box"><canvas id="chart" width="400" height="200"></canvas></div>
-      <br>
-      <table class="table table-striped  table-dark">
-        <thead>
-          <tr>
-            <th colspan="5" style="text-align:center;">Last Website Calls</th>
-          </tr>
-          <tr>
-            <th>Datetime</th>
-            <th>Status</th>
-            <th>Error</th>
-            <th>Message</th>
-            <th>Code</th>
-            <th>Frontend Loading</th>
-            <th>Backend Loading</th>
-            <th>RAM Usage</th>
-          </tr>
-        </thead>
-          {% for call in calls %}
-              <tr>
-                  <td>{{ call.datetime }}</td>
-                  <td><span class="{% if call.ok and call.error == "" and call.code == 200 %}green{% else %}red{% endif %}-circle"></span></td>
-                  <td>{{ call.error }}</td>
-                  <td>{{ call.msg }}</td>
-                  <td>{{ call.code }}</td>
-                  <td>{% if call.json_data.frontend < 0 %}NA{% else %}{{ call.json_data.frontend }} ms{% endif %}</td>
-                  <td>{% if call.json_data.backend < 0 %}NA{% else %}{{ call.json_data.backend }} ms{% endif %}</td>
-                  <td>{% if call.json_data.total_heap_size <= 0 %}NA{% elif call.json_data.total_heap_size <= 1000000 %}< 1 mb{% else %}{% widthratio call.json_data.total_heap_size 1000000 1 %} mb{% endif %}</td>
-              </tr>
-          {% endfor %}
-      </table>>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+  <title>AVIATOR</title>
+  {% include "favicon.html" %}
+  <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet" type="text/css">
+  <link href="{% static 'css/chart.min.css' %}" rel="stylesheet" type="text/css">
+  <link href="{% static 'css/aviator.css' %}" rel="stylesheet" type="text/css">
+  <script src="{% static 'js/jquery.min.js' %}"></script>
+  <script src="{% static 'js/popper.min.js' %}"></script>
+  <script src="{% static 'js/bootstrap.min.js' %}"></script>
+  <script src="{% static 'js/chart.min.js' %}"></script>
+</head>
+<body>
+{% include "navbar.html" %}
+<div class="content-container">
+  <table class="table table-striped  table-dark">
+    <thead>
+    <tr>
+      <th colspan="6" style="text-align:center;">Website</th>
+    </tr>
+    <tr>
+      <th>Original URL</th>
+      <th>Derived URL</th>
+      <th>Status</th>
+      <th>Last 30 days</th>
+      <th>First Call</th>
+      <th>Latest Call</th>
+      <th>IP</th>
+      <th>Analytics</th>
+      <th>Programming Languages</th>
+      <th>Secure Certificate</th>
+    </tr>
+    </thead>
+    <tr>
+      <td>{{ website.original_url }}</td>
+      <td>{{ website.derived_url }}</td>
+      <td><span
+              class="{% if website.status == "O" %}green{% elif website.status == "T" %}orange{% elif website.status == "F" %}red{% elif website.status == "U" %}grey{% endif %}-circle"></span>
+      </td>
+      <td>{{ website.percentage|floatformat }} % online</td>
+      <td>{{ website.created_at }}</td>
+      <td>{{ calls.0.datetime }}</td>
+      <td>{{ website.ip }}</td>
+      <td>{{ website.analytics }}</td>
+      <td>{{ website.script }}</td>
+      <td>{% if website.certificate_secure %}Yes{% else %}No{% endif %}</td>
+    </tr>
+  </table>
+  <br>
+  <div class="chart-box">
+    <canvas id="chart" width="400" height="200"></canvas>
+  </div>
+  <br>
+  <table class="table table-striped  table-dark">
+    <thead>
+    <tr>
+      <th colspan="5" style="text-align:center;">Last Website Calls</th>
+    </tr>
+    <tr>
+      <th>Datetime</th>
+      <th>Status</th>
+      <th>Error</th>
+      <th>Message</th>
+      <th>Code</th>
+      <th>Frontend Loading</th>
+      <th>Backend Loading</th>
+      <th>RAM Usage</th>
+    </tr>
+    </thead>
+    {% for call in calls %}
+      <tr>
+        <td>{{ call.datetime }}</td>
+        <td><span
+                class="{% if call.ok and call.error == "" and call.code == 200 %}green{% else %}red{% endif %}-circle"></span>
+        </td>
+        <td>{{ call.error }}</td>
+        <td>{{ call.msg }}</td>
+        <td>{{ call.code }}</td>
+        <td>{% if call.json_data.frontend < 0 %}NA{% else %}{{ call.json_data.frontend }}
+          ms{% endif %}</td>
+        <td>{% if call.json_data.backend < 0 %}NA{% else %}{{ call.json_data.backend }}
+          ms{% endif %}</td>
+        <td>{% if call.json_data.total_heap_size <= 0 %}
+          NA{% elif call.json_data.total_heap_size <= 1000000 %}< 1 mb
+          {% else %}{% widthratio call.json_data.total_heap_size 1000000 1 %} mb{% endif %}</td>
+      </tr>
+    {% endfor %}
+  </table>
+  >
 
-    </div>
-	</body>
+</div>
+</body>
 </html>
 
 <script>
-Chart.defaults.global.defaultFontColor = "#dee2e6";
-var ctx2 = document.getElementById('chart').getContext('2d');
-var myChart = new Chart(ctx2, {
+  Chart.defaults.global.defaultFontColor = "#dee2e6";
+  var ctx2 = document.getElementById('chart').getContext('2d');
+  var myChart = new Chart(ctx2, {
     type: 'line',
     data: {
-        labels: [
-            {% for call in calls %}
-              "{{ call.datetime }}",
-            {% endfor %}
-        ],
-        datasets: [{
-            label: 'Online',
-            data: [
-            {% for call in calls %}
-              {% if call.ok and call.error == "" and call.code == 200 %}1{% else %}0{% endif %},
-            {% endfor %}
+      labels: [
+        {% for call in calls %}
+          "{{ call.datetime }}",
+        {% endfor %}
+      ],
+      datasets: [{
+        label: 'Online',
+        data: [
+          {% for call in calls %}
+            {% if call.ok and call.error == "" and call.code == 200 %}1{% else %}0{% endif %},
+          {% endfor %}
         ],
         backgroundColor: [
-            'rgba(75, 192, 192, 0.2)'
+          'rgba(75, 192, 192, 0.2)'
         ],
         borderColor: [
-            'rgba(75, 192, 192, 1)'
+          'rgba(75, 192, 192, 1)'
         ],
         borderWidth: 2
       }]
     },
     options: {
-    legend: {
+      legend: {
         display: false
-    },
-        scales: {
-            yAxes: [{
-                ticks: {
-                //display: false,
-                  beginAtZero: true,
-                  max: 1,
-                  min: 0,
-                  stepSize: 1,
-                  callback: function(label, index, labels) {
-                      switch (label) {
-                          case 0:
-                              return 'Offline';
-                          case 1:
-                              return 'Online';
-                      }
-                  }
-                }
-            }]
-        }
+      },
+      scales: {
+        yAxes: [{
+          ticks: {
+            //display: false,
+            beginAtZero: true,
+            max: 1,
+            min: 0,
+            stepSize: 1,
+            callback: function (label, index, labels) {
+              switch (label) {
+                case 0:
+                  return 'Offline';
+                case 1:
+                  return 'Online';
+              }
+            }
+          }
+        }]
+      }
     }
-});
+  });
 </script>

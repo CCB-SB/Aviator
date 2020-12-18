@@ -7,7 +7,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
-  <title>Aviator</title>
+  <title>AVIATOR</title>
+  {% include "favicon.html" %}
   <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet" type="text/css">
   <link rel="stylesheet"
         href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap4.min.css">
@@ -105,9 +106,11 @@
     </tbody>
   </table>
   <br>
-  <div class="plots-header"><p>The following plots are representing the filtered and sorted data of the table above.</p></div>
+  <div class="plots-header"><p>The following plots are representing the filtered and sorted data of
+    the table above.</p></div>
   <div class="plots-header">
-    <p>Each row of the heatmap represents one website. Each cell shows the availability of the website on one day.</p>
+    <p>Each row of the heatmap represents one website. Each cell shows the availability of the
+      website on one day.</p>
     <div id="heatmap"></div>
   </div>
   <div class="plots-header">
@@ -131,12 +134,13 @@
 </div>
 
 
-
 <div class="modal fade" role="dialog" tabindex="-1" id="exportCSVModal">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
-      <form target="_blank" action="{% url 'main:publications' %}" onsubmit="setTimeout(function(){grecaptcha.reset(); $('#exportCSVModal').modal('toggle')}, 500)"  method="post">
-      {% csrf_token %}
+      <form target="_blank" action="{% url 'main:publications' %}"
+            onsubmit="setTimeout(function(){grecaptcha.reset(); $('#exportCSVModal').modal('toggle')}, 500)"
+            method="post">
+        {% csrf_token %}
         <div class="modal-header">
           <h3 class="modal-title">Download CSV</h3>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -147,23 +151,23 @@
           <div class="form-group">
             {{ form.captcha }}
             <input id="exportCSVColumns" type="hidden" name="columns" value="">
-            <input id="exportCSVFilter"  type="hidden" name="filter" value="">
-            <input id="exportCSVFilter0"  type="hidden" name="0" value="">
-            <input id="exportCSVFilter1"  type="hidden" name="1" value="">
-            <input id="exportCSVFilter2"  type="hidden" name="2" value="">
-            <input id="exportCSVFilter3"  type="hidden" name="3" value="">
-            <input id="exportCSVFilter4"  type="hidden" name="4" value="">
-            <input id="exportCSVFilter5"  type="hidden" name="5" value="">
-            <input id="exportCSVFilter6"  type="hidden" name="6" value="">
-            <input id="exportCSVFilter7"  type="hidden" name="7" value="">
-            <input id="exportCSVFilter8"  type="hidden" name="8" value="">
-            <input id="exportCSVFilter9"  type="hidden" name="9" value="">
-            <input id="exportCSVFilter10"  type="hidden" name="10" value="">
-            <input id="exportCSVFilter11"  type="hidden" name="11" value="">
-            <input id="exportCSVFilter12"  type="hidden" name="12" value="">
-            <input id="exportCSVFilter13"  type="hidden" name="13" value="">
-            <input id="exportCSVFilter14"  type="hidden" name="14" value="">
-            <input id="exportCSVFilter15"  type="hidden" name="15" value="">
+            <input id="exportCSVFilter" type="hidden" name="filter" value="">
+            <input id="exportCSVFilter0" type="hidden" name="0" value="">
+            <input id="exportCSVFilter1" type="hidden" name="1" value="">
+            <input id="exportCSVFilter2" type="hidden" name="2" value="">
+            <input id="exportCSVFilter3" type="hidden" name="3" value="">
+            <input id="exportCSVFilter4" type="hidden" name="4" value="">
+            <input id="exportCSVFilter5" type="hidden" name="5" value="">
+            <input id="exportCSVFilter6" type="hidden" name="6" value="">
+            <input id="exportCSVFilter7" type="hidden" name="7" value="">
+            <input id="exportCSVFilter8" type="hidden" name="8" value="">
+            <input id="exportCSVFilter9" type="hidden" name="9" value="">
+            <input id="exportCSVFilter10" type="hidden" name="10" value="">
+            <input id="exportCSVFilter11" type="hidden" name="11" value="">
+            <input id="exportCSVFilter12" type="hidden" name="12" value="">
+            <input id="exportCSVFilter13" type="hidden" name="13" value="">
+            <input id="exportCSVFilter14" type="hidden" name="14" value="">
+            <input id="exportCSVFilter15" type="hidden" name="15" value="">
           </div>
         </div>
         <div class="modal-footer">
@@ -204,16 +208,17 @@
   function abstract(text) {
     document.getElementById("abstract-text").innerHTML = text;
   }
+
   function showExportCSVModal(text) {
     //var filter_str = ""
     var columns_str = ""
     filters = createTableSearchData(0);
     for (var i = 0, keys = Object.keys(filters), ii = keys.length; i < ii; i++) {
-        if(keys[i] != "q") {
-            //filter_str += ("&")+keys[i]+"="+encodeURIComponent(filters[keys[i]]);
-            columns_str += (columns_str == "" ? "" : ";")+keys[i];
-            document.getElementById("exportCSVFilter"+keys[i]).value = filters[keys[i]];
-        }
+      if (keys[i] != "q") {
+        //filter_str += ("&")+keys[i]+"="+encodeURIComponent(filters[keys[i]]);
+        columns_str += (columns_str == "" ? "" : ";") + keys[i];
+        document.getElementById("exportCSVFilter" + keys[i]).value = filters[keys[i]];
+      }
     }
     document.getElementById("exportCSVColumns").value = columns_str;
     //document.getElementById("exportCSVFilter").value = filter_str;
