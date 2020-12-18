@@ -94,23 +94,26 @@
     </tbody>
   </table>
   <br>
-  <div class="plots-header"><p>The following plots are representing the filtered and sorted data of the table above</p></div>
-  <div id="heatmap"></div>
-  <div class="statistics-box">
+    <div class="plots-header"><p>The following plots are representing the filtered and sorted data of the table above.</p></div>
+  <div class="plots-header">
+    <p>Each row of the heatmap represents one website. Each cell shows the availability of the website on one day.</p>
+    <div id="heatmap"></div>
+  </div>
+  <div class="plots-header">
     <div class="row">
       <div class="col-md-6">
-        <canvas id="overview" width="400" height="300"></canvas>
+        <canvas id="overview" width="600" height="300"></canvas>
       </div>
       <div class="col-md-6">
-        <canvas id="c1" width="400" height="300"></canvas>
+        <canvas id="c1" width="600" height="300"></canvas>
       </div>
     </div>
     <div class="row">
       <div class="col-md-6">
-        <canvas id="pubs_per_year_availability" width="400" height="300"></canvas>
+        <canvas id="pubs_per_year_availability" width="600" height="300"></canvas>
       </div>
       <div class="col-md-6">
-        <canvas id="top10_journals_availability" width="400" height="300"></canvas>
+        <canvas id="top10_journals_availability" width="600" height="300"></canvas>
       </div>
     </div>
   </div>
@@ -157,7 +160,7 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h3 class="modal-title">Abstract</h3>
+        <h3 class="modal-title">Description</h3>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>

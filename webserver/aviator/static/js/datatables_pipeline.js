@@ -357,6 +357,10 @@ var temporal_chart = new Chart(ctx2, {
             yAxes: [{
                 ticks: {
                     beginAtZero: true
+                },
+                scaleLabel: {
+                    display: true,
+                    labelString: "Websites"
                 }
             }]
         }
@@ -398,6 +402,10 @@ var pubs_per_year = new Chart(document.getElementById('pubs_per_year_availabilit
                     beginAtZero: true
                 },
                 stacked: true,
+                scaleLabel: {
+                    display: true,
+                    labelString: "Websites"
+                }
             }],
             xAxes: [{
                 stacked: true
@@ -441,6 +449,10 @@ var top10_journals_chart = new Chart(document.getElementById('top10_journals_ava
                     beginAtZero: true
                 },
                 stacked: true,
+                scaleLabel: {
+                    display: true,
+                    labelString: "Websites"
+                }
             }],
             xAxes: [{
                 stacked: true
