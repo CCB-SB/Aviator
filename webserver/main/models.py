@@ -4,7 +4,7 @@ from djchoices import DjangoChoices, ChoiceItem
 
 
 class Publication(models.Model):
-    title = models.TextField()
+    title = models.TextField(db_index=True)
     abstract = models.TextField()
     authors = ArrayField(models.TextField(), blank=True, default=list)
     year = models.SmallIntegerField(db_index=True)

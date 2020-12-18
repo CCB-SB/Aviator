@@ -225,7 +225,8 @@ function updatePlot(website_states) {
         yaxis: {
             title: {
                 text: "Website"
-            }
+            },
+            autorange: "reversed"
         },
         xaxis: {
             title: "Date"

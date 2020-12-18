@@ -309,14 +309,17 @@ class Table(BaseDatatableView):
 
     escape_values = False
 
-    def get_initial_queryset(self):
-        return Publication.objects.all().prefetch_related('websites').annotate(
-            status=ArrayAgg('websites__status'), percentage=ArrayAgg('websites__percentage'),
-            original_url=ArrayAgg('websites__original_url'),
-            derived_url=ArrayAgg('websites__derived_url'), scripts=ArrayAgg('websites__script'),
-            ssl=ArrayAgg('websites__certificate_secure'),
-            heap_size=ArrayAgg('websites__last_heap_size'),
-            website_pks=ArrayAgg('websites__pk'))
+    def get_initial_queryset(self, without_annots=False):
+        if without_annots:
+            return Publication.objects.all()
+        else:
+            return Publication.objects.all().prefetch_related('websites').annotate(
+                status=ArrayAgg('websites__status'), percentage=ArrayAgg('websites__percentage'),
+                original_url=ArrayAgg('websites__original_url'),
+                derived_url=ArrayAgg('websites__derived_url'), scripts=ArrayAgg('websites__script'),
+                ssl=ArrayAgg('websites__certificate_secure'),
+                heap_size=ArrayAgg('websites__last_heap_size'),
+                website_pks=ArrayAgg('websites__pk'))
 
     def render_column(self, row, column):
         # We want to render user as a custom column
@@ -446,24 +449,18 @@ class Table(BaseDatatableView):
             qs = self.get_initial_queryset()
 
             # store the total number of records (before filtering)
-            total_records = qs.count()
+            total_records = self.get_initial_queryset(without_annots=True).count()
 
             # apply filters
             qs = self.filter_queryset(qs)
 
-            stats = get_all_statistics(qs)
-
-            # number of records after filtering
-            total_display_records = stats["paper_count"]
-
             # apply ordering
             qs = self.ordering(qs)
 
-            website_states = [{"pubmed_id": e["pubmed_id"], "websites__states": s} for e in qs.annotate(states=ArrayAgg("websites__states")).values('pubmed_id', 'states') for s in e["states"]]
-            latest_date = WebsiteCall.objects.latest("datetime").datetime
+            stats = get_all_statistics(qs, curated=False)
 
-            state_dates = [(latest_date - timedelta(days=day_delta)).date().strftime("%Y-%m-%d") for
-                           day_delta in range(settings.TEMPORAL_INFO_DAYS, -1, -1)]
+            # number of records after filtering
+            total_display_records = stats["paper_count"]
 
             # apply pagination
             qs = self.paging(qs)
@@ -486,9 +483,11 @@ class Table(BaseDatatableView):
                        'data': data
                        }
             ret['website_states'] = {
-                "states": website_states,
-                "dates": state_dates
+                "states": stats["website_states"],
+                "dates": stats["state_dates"]
             }
+            del stats["website_states"]
+            del stats["state_dates"]
             ret['statistics'] = stats
             return ret
         except Exception as e:
@@ -539,24 +538,15 @@ class CuratedTable(Table):
             # apply filters
             qs = self.filter_queryset(qs)
 
-            # number of records after filtering
-            total_display_records = qs.count()
-
-            stats = get_all_statistics(qs, True)
-
             # apply ordering
             qs = self.ordering(qs)
 
-            website_states = list(qs.values('pubmed_id', 'states'))
-            latest_date = WebsiteCall.objects.latest("datetime").datetime
-            if CuratedWebsite.objects.exists():
-                dates = CuratedWebsite.objects.first().dates
-                latest_date = dates[len(dates) - 1]
+            stats = get_all_statistics(qs, curated=True)
 
-            state_dates = [(latest_date - timedelta(days=day_delta)).date().strftime("%Y-%m-%d") for
-                           day_delta in range(settings.TEMPORAL_INFO_DAYS, -1, -1)]
+            # number of records after filtering
+            total_display_records = stats["paper_count"]
 
-            # apply pagintion
+            # apply pagination
             qs = self.paging(qs)
 
             # prepare output data
@@ -577,9 +567,11 @@ class CuratedTable(Table):
                        'data': data
                        }
             ret['website_states'] = {
-                "states": website_states,
-                "dates": state_dates
+                "states": stats["website_states"],
+                "dates": stats["state_dates"]
             }
+            del stats["website_states"]
+            del stats["state_dates"]
             ret['statistics'] = stats
             return ret
         except Exception as e:

@@ -1,7 +1,7 @@
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, render
-from .models import Website, WebsiteCall, Publication, WebsiteStatus
-from collections import Counter, namedtuple
+from .models import Website, WebsiteCall, Publication, WebsiteStatus, CuratedWebsite
+from collections import Counter, namedtuple, defaultdict
 from django.core import serializers
 from django.core.paginator import Paginator
 from datetime import timedelta, date, datetime
@@ -36,23 +36,29 @@ def get_all_statistics(pub_queryset, curated=False):
     # temporal online, offline, tmp offline
     # top 10 journals, online, offline, tmp offline
     # per year online, offline, tmp offline
-    publication_ids = set(pub_queryset.values_list("id", flat=True))
     if curated:
-        CWebsite = namedtuple("CWebsite", ["id", "status", "states", "journal", "year"])
-        websites = [CWebsite(*e) for e in
-                    pub_queryset.values_list("website__id", "status", "states", "journal", "year")]
-        website_papers = {w.id: [(w.journal, w.year)] for w in websites}
+        p_websites = pub_queryset.values_list("journal", "year", "website__id", "states", "status",
+                                              "pubmed_id")
+        num_pubs = len(p_websites)
+        website_papers = {w[2]: [(w[0], w[1])] for w in p_websites}
+        website2states = dict()
+        for e in p_websites:
+            website_papers[e[2]].append((e[0], e[1]))
+            website2states[e[2]] = (e[3], e[4], e[5])
     else:
-        websites = [w for w in
-                    Website.objects.filter(papers__in=pub_queryset).distinct().prefetch_related(
-                        "papers")]
-        website_papers = {
-            w.id: [(p.journal, p.year) for p in w.papers.all() if p.id in publication_ids] for w in
-            websites}
+        p_websites = pub_queryset.annotate(website_states=ArrayAgg("websites__states")).values_list(
+            "journal", "year", "website_pks", "website_states", "status", "pubmed_id")
+        num_pubs = len(p_websites)
+        website_papers = defaultdict(list)
+        website2states = dict()
+        for e in p_websites:
+            for w_id, w_states, w_status in zip(e[2], e[3], e[4]):
+                website_papers[w_id].append((e[0], e[1]))
+                website2states[w_id] = (w_states, w_status, e[5])
 
     context = dict()
-    context['website_count'] = len(websites)
-    context['paper_count'] = len(publication_ids)
+    context['website_count'] = len(website2states)
+    context['paper_count'] = num_pubs
     latest_time = WebsiteCall.objects.latest("datetime")
     temp_info_num_days = 15
     stat1_names = []
@@ -66,32 +72,43 @@ def get_all_statistics(pub_queryset, curated=False):
     tmp_offline_websites = set()
     online_websites = set()
     offline_websites = set()
-    for w in websites:
+    for w_id, (w_states, w_status, _) in website2states.items():
         for i in range(temp_info_num_days):
-            if temp_info_num_days - i <= len(w.states):
-                pos = len(w.states) - temp_info_num_days + i
-                if w.states[pos]:
+            if temp_info_num_days - i <= len(w_states):
+                pos = len(w_states) - temp_info_num_days + i
+                if w_states[pos]:
                     stat1_online[i] += 1
                 else:
-                    srange = w.states[(pos - settings.TEMP_OFFLINE_DAYS):pos + 1]
+                    srange = w_states[(pos - settings.TEMP_OFFLINE_DAYS):pos + 1]
                     online_in_range = any(e is True for e in srange)
                     if online_in_range and (
-                        w.status == WebsiteStatus.OFFLINE or w.status == WebsiteStatus.TEMP_OFFLINE):
+                        w_status == WebsiteStatus.OFFLINE or w_status == WebsiteStatus.TEMP_OFFLINE):
                         stat1_tmp_offline[i] += 1
                     elif any(e is False for e in srange):
                         stat1_offline[i] += 1
-        if w.status == WebsiteStatus.ONLINE:
-            online_websites.add(w.id)
-        elif w.status == WebsiteStatus.TEMP_OFFLINE:
-            tmp_offline_websites.add(w.id)
-        elif w.status == WebsiteStatus.OFFLINE:
-            offline_websites.add(w.id)
+        if w_status == WebsiteStatus.ONLINE:
+            online_websites.add(w_id)
+        elif w_status == WebsiteStatus.TEMP_OFFLINE:
+            tmp_offline_websites.add(w_id)
+        elif w_status == WebsiteStatus.OFFLINE:
+            offline_websites.add(w_id)
 
-    # website_states = list(qs.values('pubmed_id', 'websites__states'))
-    # latest_date = WebsiteCall.objects.latest("datetime").datetime
-    #
-    # state_dates = [(latest_date - timedelta(days=day_delta)).date().strftime("%Y-%m-%d") for
-    #                day_delta in range(settings.TEMPORAL_INFO_DAYS, -1, -1)]
+    latest_date = latest_time.datetime
+    if curated:
+        website_states = [{"pubmed_id": e[5], "websites__states": e[3]} for e in p_websites]
+        if CuratedWebsite.objects.exists():
+            dates = CuratedWebsite.objects.first().dates
+            latest_date = dates[len(dates) - 1]
+    else:
+        website_states = [{"pubmed_id": e[5], "websites__states": w_states} for e in p_websites for
+                          w_states in e[3]]
+
+    state_dates = [(latest_date - timedelta(days=day_delta)).date().strftime("%Y-%m-%d")
+                   for
+                   day_delta in range(settings.TEMPORAL_INFO_DAYS, -1, -1)]
+
+    context["website_states"] = website_states
+    context["state_dates"] = state_dates
 
     context['online_count'] = len(online_websites)
     context['offline_count'] = len(offline_websites)
