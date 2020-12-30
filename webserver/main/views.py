@@ -151,6 +151,9 @@ def publications(request):
     if request.method == 'POST' and 'search_column' in request.POST:
         context['search_column'] = request.POST['search_column']
         context['search_string'] = request.POST['search_string']
+    if request.method == 'GET' and 'search_column' in request.GET:
+        context['search_column'] = request.POST['search_column']
+        context['search_string'] = request.POST['search_string']
     return render(request, 'publications.html', context)
 
 
@@ -174,6 +177,9 @@ def curated(request):
         form = CaptchaForm()
     context = {'search_column': -1, 'search_string': '', 'form': form}
     if request.method == 'POST' and 'search_column' in request.POST:
+        context['search_column'] = request.POST['search_column']
+        context['search_string'] = request.POST['search_string']
+    if request.method == 'GET' and 'search_column' in request.GET:
         context['search_column'] = request.POST['search_column']
         context['search_string'] = request.POST['search_string']
     return render(request, 'curated.html', context)
