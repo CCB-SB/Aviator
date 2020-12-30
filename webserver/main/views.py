@@ -152,8 +152,8 @@ def publications(request):
         context['search_column'] = request.POST['search_column']
         context['search_string'] = request.POST['search_string']
     if request.method == 'GET' and 'search_column' in request.GET:
-        context['search_column'] = request.POST['search_column']
-        context['search_string'] = request.POST['search_string']
+        context['search_column'] = request.GET['search_column']
+        context['search_string'] = request.GET['search_string']
     return render(request, 'publications.html', context)
 
 
@@ -180,8 +180,8 @@ def curated(request):
         context['search_column'] = request.POST['search_column']
         context['search_string'] = request.POST['search_string']
     if request.method == 'GET' and 'search_column' in request.GET:
-        context['search_column'] = request.POST['search_column']
-        context['search_string'] = request.POST['search_string']
+        context['search_column'] = request.GET['search_column']
+        context['search_string'] = request.GET['search_string']
     return render(request, 'curated.html', context)
 
 
