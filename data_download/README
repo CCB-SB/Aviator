@@ -1,0 +1,12 @@
+## Create/update the list of web servers
+
+1. ```bash
+   snakemake --use-conda
+   ```
+2. Zip results 
+   
+   ```bash
+   zip -r results.$(date -I).zip results
+   ```
+3. On blackbox: pull repository. Update files in crawler directory if necessary.
+
