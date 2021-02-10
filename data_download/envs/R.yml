@@ -1,0 +1,12 @@
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - r-base=4.0.3
+  - r-data.table=1.13
+  - r-fs=1.5.0
+  - r-urltools=1.7.3
+  - r-stringi=1.4
+  - r-pbapply=1.4
+  - r-stringr=1.4

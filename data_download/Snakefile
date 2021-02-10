@@ -1,0 +1,112 @@
+BATCHES = 13
+rule all:
+    input: 
+        "results/query_table.filtered.csv",
+        "results/biotools.filtered.pubmed_info.csv",
+        "results/nar_ws.pubmed_info.csv",
+        "results/wos_results_filtered_pmids",
+        "results/publication_table_for_webservice.csv",
+        expand("download/urls2query.{n}.csv", n=range(1, BATCHES + 1))
+
+rule get_query_table:
+    output:
+        csv="results/query_table.csv"
+    conda: "envs/biopython.yml"
+    script: "scripts/get_query_table.py"
+
+rule parse_urls_java:
+    input: "results/{tbl}.csv"
+    output: "results/{tbl}.java.csv"
+    shell: "java -jar bin/abstract_url_parser.jar {input} {output}"
+
+rule parse_urls_python:
+    input: 
+        query="results/{tbl}.csv",
+        java_urls="results/{tbl}.java.csv"
+    output: 
+        csv="results/{tbl}.java_python_urls.csv"
+    conda: "envs/biopython.yml"
+    script: "scripts/add_python_urls.py"
+
+rule filter_biotools:
+    input:
+        biotools="results/biotools.json"
+    output: "results/biotools.filtered.csv"
+    script: "scripts/filter_biotools.R"
+
+rule dl_biotools:
+    output: 
+        pkl="results/biotools.pkl",
+        json="results/biotools.json"
+    script: "scripts/download_biotools_web.py"
+
+rule get_biotools_pubmed_tbl:
+    input: 
+        biotools="results/biotools.filtered.csv"
+    output: 
+        csv="results/biotools.filtered.pubmed_info.csv"
+    conda: "envs/biopython.yml"
+    script: "scripts/get_biotools_pubmed_info.py"
+
+rule collect_nar_ws_pubmed_tbl:
+    input:
+        nar="data/nar_webserver_issue_articles_since_2010.csv"
+    output:
+        csv="results/nar_ws.pubmed_info.csv"
+    conda: "envs/biopython.yml"
+    script: "scripts/get_nar_ws_pubmed_info.py"
+
+rule filter_queries:
+    input: 
+        pubmed="results/query_table.java_python_urls.csv",
+        biotools="results/biotools.filtered.pubmed_info.java_python_urls.csv",
+        nar="results/nar_ws.pubmed_info.java_python_urls.csv",
+        nar_manual_cur="data/nar_manual_curated_urls.csv",
+        no_ws_list="data/pmids_not_webservers.txt"
+    output: 
+        filtered_tbl="results/query_table.filtered.csv",
+        orig_url2new_id="results/orig2new_urls_and_id.csv",
+        urls2query="results/urls2query.csv",
+        urls2query_batches=expand("results/urls2query.{n}.csv", n=range(1, BATCHES + 1))
+    params:
+        batches=BATCHES
+    conda: "envs/R.yml"
+    script: "scripts/filter_queries.R"
+
+rule download_wos_info:
+    input: "results/query_table.filtered.csv"
+    output: directory("results/wos_results_filtered_pmids")
+    conda: "envs/selenium.yml"
+    shell: "python src/wos_downloader.py {input} {output}"
+
+rule concat_wos_records:
+    input: "results/wos_results_filtered_pmids"
+    output: "results/wos_results_filtered_pmids_savedrecs.all.txt"
+    shell: "cat {input}/savedrecs_* > {output}"
+
+rule wos_pmid_mails:
+    input: "results/wos_results_filtered_pmids_savedrecs.all.txt"
+    output: "results/pmids_w_email_from_wos.csv"
+    shell: "python src/extract_email.py {input} {output}"
+
+rule mesh_terms:
+    input: "results/query_table.filtered.csv"
+    output: "results/pmids_w_pubmed_mesh_terms.csv"
+    conda: "envs/biopython.yml"
+    shell: "python src/get_pubmed_mesh_terms.py {input} {output}"
+
+rule create_publication_table_for_ws:
+    input:
+        tbl="results/query_table.filtered.csv",
+        emails="results/pmids_w_email_from_wos.csv",
+        mesh_terms="results/pmids_w_pubmed_mesh_terms.csv"
+    output: "results/publication_table_for_webservice.csv"
+    conda: "envs/R.yml"    
+    script: "scripts/create_pub_table_for_webserver.R"
+
+
+rule download_folder:
+    input: expand("results/urls2query.{n}.csv", n=range(1, BATCHES + 1))
+    output: expand("download/urls2query.{n}.csv", n=range(1, BATCHES + 1))
+    params: prefix="download"
+    shell: "cp {input} {params.prefix}"
