@@ -5,6 +5,7 @@ pub_tbl = pub_tbl[, c("PMID", "abstract", "title", "year", "journal", "authors",
 
 mails = fread(snakemake@input$emails)
 mails = mails[!duplicated(mails)]
+mails = mails[!duplicated(PMID)]
 pubkw = fread(snakemake@input$mesh_terms)
 pubkw = pubkw[, c("PMID", "keywords_all", "mesh_terms_all")]
 pubkw = pubkw[!duplicated(pubkw)]
@@ -13,5 +14,8 @@ pub_tbl = merge(pub_tbl, mails, all.x = TRUE)
 
 pub_tbl = merge(pub_tbl, pubkw)
 pub_tbl[, Email:=mails$Email[match(PMID, mails$PMID)]]
+
+# if year contains -, e.g. 2011-2012, take first year
+pub_tbl[grep("-", year), year:=gsub("-.*", "", year)]
 
 fwrite(pub_tbl, snakemake@output[[1]], sep='\t')

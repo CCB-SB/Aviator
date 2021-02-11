@@ -6,6 +6,4 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         Publication.objects.all().delete()
-        #WebsiteCall.objects.all().delete()
-        #Website.objects.all().delete()
-        self.stdout.write(self.style.SUCCESS('Successfully removed all data'))
+        self.stdout.write(self.style.SUCCESS('Successfully removed all publications'))

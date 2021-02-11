@@ -10,7 +10,7 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument('csv_file')
-        parser.add_argument('url_filter')
+        parser.add_argument('url_filter', default=None)
 
     def handle(self, *args, **options):
         try:
@@ -19,7 +19,8 @@ class Command(BaseCommand):
             raise CommandError('Please provide an input folder')
 
         filter_orig_urls = set()
-        if options["url_filter"] is not None:
+        if options["url_filter"] is not None and \
+            options["url_filter"] not in {"None", "null", ""}:
             filter_tbl = pd.read_csv(options['url_filter'], sep='\t')
             filter_orig_urls = set(filter_tbl["Original URL"])
             self.stdout.write("Filter applied")
