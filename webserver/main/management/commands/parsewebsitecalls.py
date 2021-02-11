@@ -174,7 +174,8 @@ class Command(BaseCommand):
                     iterateLogJSON(value, target)
 
         filter_orig_urls = set()
-        if options["url_filter"] is not None:
+        if options["url_filter"] is not None  and \
+            options["url_filter"] not in {"None", "null", ""}:
             filter_tbl = pd.read_csv(options['url_filter'], sep='\t')
             filter_orig_urls = set(filter_tbl["Original URL"])
             self.stdout.write("Filter applied")

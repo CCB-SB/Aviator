@@ -3,10 +3,29 @@
 1. ```bash
    snakemake --use-conda
    ```
+   
 2. Zip results 
    
    ```bash
    zip -r results.$(date -I).zip results
    ```
+   
 3. On blackbox: pull repository. Update files in crawler directory if necessary.
 
+4. To pull the docker crawler image via singularity:
+
+   ```bash
+   SINGULARITY_DOCKER_USERNAME=YOUR_USERNAME SINGULARITY_DOCKER_PASSWORD=YOUR_PASSWORD singularity pull docker://registry.ccb-gitlab.cs.uni-saarland.de/ccb-staff/aviator/crawler
+   ```
+
+5. To update the database run before cron job website call trigger the following:
+
+   ```bash
+   docker-compose -f webserver/production.yml run --rm django python manage.py updatewebsiteurls data/orig2new_urls_and_id.csv
+   docker-compose -f webserver/production.yml run --rm django python manage.py removepublications
+   docker-compose -f webserver/production.yml run --rm django python manage.py parsepaperdata data/publication_table_for_webservice.csv None
+   ```
+
+   
+
+   
