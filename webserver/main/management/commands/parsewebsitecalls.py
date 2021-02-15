@@ -132,6 +132,18 @@ class Command(BaseCommand):
                 title = substr[substr.rfind(">") + 1:]
                 target[html_title_header] = title
 
+            shiny_kws = ["shiny-singletons", "shiny-server-client", "shiny.min.js"]
+            for k in shiny_kws:
+                if text.find(k) > 0:
+                    target["programming"] = "Shiny"
+                    break
+
+            dash_kws = ["dash-component-suites", "_dash-renderer"]
+            for k in dash_kws:
+                if text.find(k) > 0:
+                    target["programming"] = "Dash"
+                    break
+
             error_phrase_hits = set()
             for end_index, error_phrase in error_phrases_automaton.iter(text):
                 error_phrase_hits.add(error_phrase)
@@ -287,7 +299,7 @@ class Command(BaseCommand):
                         website.timezone = value.get("response_headers_Pragma", "")
                         website.certificate_secure = value.get("certificateSecurityState",
                                                                "unknown") == "secure"
-                        website.script = ""
+                        website.script = value.get("programming", "")
                         if "response" in value and value.get("response") is not None:
                             if "headers" in value.get("response"):
                                 if "server" in value.get("response").get("headers"):
@@ -295,10 +307,10 @@ class Command(BaseCommand):
                                 if "Pragma" in value.get("response").get("headers"):
                                     website.timezone = value.get("response").get("headers").get("Pragma", "")
                                 if "Set-Cookie" in value.get("response").get("headers"):
-                                    if "PHPSESSID" in value.get("response").get("headers").get("Set-Cookie"):
-                                        website.script += "PHP"
-                                    if "JSESSIONID" in value.get("response").get("headers").get("Set-Cookie"):
-                                        website.script += "Java"
+                                    c2lang = {"ASPSESSIONID": "ASP", "JSESSIONID": "Java", "PHPSESSID": "PHP", "CGISESSID": "Perl"}
+                                    for k, v in c2lang.items():
+                                        if k in value.get("response").get("headers").get("Set-Cookie"):
+                                            website.script = "{}/{}".format(website.script, v)
                         new_websites += 1
                         create_websites.append(website)
 
