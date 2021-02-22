@@ -198,7 +198,9 @@ def curated(request):
 def details(request, pk):
     context = {}
     website = get_object_or_404(Website, pk=pk)
-    context['calls'] = website.calls.all().order_by('datetime')
+    show_for_x_days = 30
+    latest_time = website.calls.latest("datetime").datetime
+    context['calls'] = website.calls.filter(datetime__date__gte=latest_time-timedelta(days=show_for_x_days)).order_by('-datetime')
     context['website'] = website
     return render(request, 'details.html', context)
 

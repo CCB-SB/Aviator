@@ -299,6 +299,7 @@ class Command(BaseCommand):
                             website = orig_url_2_website[o]
                         # update if we can reach the website, or if it's the first time we query the website
                         if status == WebsiteStatus.ONLINE or o not in orig_url_2_website:
+                            website.ip = ip
                             website.server = value.get("response_headers_server", "")
                             website.analytics = value.get("analytics", "")
                             website.timezone = value.get("response_headers_Pragma", "")
