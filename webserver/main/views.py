@@ -16,6 +16,7 @@ from .forms import CaptchaForm
 
 def filter_queryset(qs, filter_col2v, colnames, email_field):
     numeric_fields = {"year"}
+    bool_agg_fields = {"ssl": "websites__certificate_secure"}
     if hasattr(qs.model, "websites"):
         numeric_agg_field = {"percentage": "websites__percentage"}
     elif hasattr(qs.model, "website"):
@@ -27,7 +28,16 @@ def filter_queryset(qs, filter_col2v, colnames, email_field):
         field_name = colnames[col]
         if field_name in email_field:
             v = v.replace("[at]", "@")
-        if field_name in numeric_fields:
+        if field_name in bool_agg_fields:
+            agg_filter = {}
+            agg_filter["{}__gte".format(bool_agg_fields[field_name])] = v == 'true'
+            annot_addition = {
+                "{}_filter".format(field_name): BoolOr(Q(**agg_filter),
+                                                       output_field=BooleanField())
+            }
+            qs = qs.annotate(**annot_addition)
+            qs_filter["{}_filter".format(field_name)] = True
+        elif field_name in numeric_fields:
             min_str, max_str = v.split(';')
             if min_str and max_str:
                 qs_filter["{}__range".format(field_name)] = (float(min_str), float(max_str))

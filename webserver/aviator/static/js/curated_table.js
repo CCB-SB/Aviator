@@ -89,7 +89,7 @@ $(document).ready(function () {
             }, {
                 "data": "description", render: function (data) {
                     ++description_counter;
-                    return createCellText("<div style='display:none' id='description" + description_counter + "'>" + data + "</div><button class=\"btn btn-outline-light my-2 my-sm-0\" type=\"button\" data-toggle=\"modal\" onclick=\"showDescription(document.getElementById('description" + description_counter + "').innerHTML)\" data-target=\"#descriptionModal\">Abstract</button>", true);
+                    return createCellText("<div style='display:none' id='description" + description_counter + "'>" + data + "</div><button class=\"btn btn-outline-light my-2 my-sm-0\" type=\"button\" data-toggle=\"modal\" onclick=\"showDescription(document.getElementById('description" + description_counter + "').innerHTML)\" data-target=\"#descriptionModal\">Description</button>", true);
                 }
             }, {
                 data: "url", render: function (data) {
@@ -114,6 +114,25 @@ $(document).ready(function () {
             var api = this.api();
             api.columns().every(function (i) {
                 var column = this;
+                // websites
+                if (i == 10) {
+                    $('<p></p>').appendTo($(column.footer()).empty())
+                    return;
+                }
+                // status
+                if (i == 1) {
+                    $('<select class="custom-select form-control">' +
+                        '<option value></option>' +
+                        '<option value="O">Online</option>' +
+                        '<option value="F">Offline</option>' +
+                        '<option value="T">Temp. offline</option>').appendTo($(column.footer()).empty())
+                        .on('change', function () {
+                            column
+                                .search($(this).val())
+                                .draw();
+                        });
+                    return;
+                }
                 if (numeric_cols.indexOf(i) !== -1) {
                     var el = $('<input id="cs_from_' + i + '" class="form-control" placeholder="From" type="number"></th>')
                         .appendTo($(column.footer()).empty())
