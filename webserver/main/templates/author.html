@@ -18,9 +18,7 @@
 	<body>
     {% include "navbar.html" %}
     <div class="contact-container">
-      <form action="mailto:aviator.ccb@gmail.com" method="get" enctype="text/plain" name="EmailForm" onsubmit="return prepareEmail();">
-        <input type="hidden" name="subject" id="mail_subject" value="">
-        <input type="hidden" name="body" id="mail_body" value="">
+      <form>
         <div class="form-group">
           <label for="input_name">Name</label>
           <input type="text" class="form-control" id="input_name" placeholder="Name">
@@ -54,7 +52,7 @@
         </div>
         <br>
         <div class="form-group">
-          <label for="input_tooldesc">Abstract</label>
+          <label for="input_tooldesc">Description</label>
           <textarea class="form-control" id="input_tooldesc" rows="5" placeholder="Description"></textarea>
         </div>
         <div class="form-group">
@@ -76,7 +74,7 @@
           <label class="custom-control-label" for="messageValidation">I want to get an automated message to the given email address, if the website is down for more than <input type="number" id="days_reminder" name="days_reminder" min="1" max="28" value="3" width="2"> days.</label>
         </div>
         <br>
-        <button type="submit" class="btn btn-outline-light">Submit</button>
+        <a id="sendmail" target="_blank" rel="noopener" class="btn btn-outline-light" href="mailto:aviator.ccb@gmail.com" onclick="prepareEmail()">Send email</a>
       </form>
   </div>
 	</body>
@@ -96,9 +94,9 @@
     text += "I want to be informed, if the website is down: "+ (document.getElementById("messageValidation").checked ? "Yes" : "No") + "\r\n";
     text += "Days before reminder: "+ (document.getElementById("days_reminder").value) + "\r\n";
 
-    //document.getElementById("mail_body").value = encodeURIComponent(text);
-    document.getElementById("mail_body").value = (text);
-    document.getElementById("mail_subject").value = document.getElementById("input_pubmed").value;
+    text = encodeURIComponent(text)
+
+    document.getElementById("sendmail").href = `mailto:aviator.ccb@gmail.com?subject=${document.getElementById("input_pubmed").value}&body=${text}`
     return true;
   }
 </script>
