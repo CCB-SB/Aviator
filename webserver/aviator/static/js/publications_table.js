@@ -292,8 +292,8 @@ $(document).ready(function () {
                     if(i == 13){
                         $('<select class="custom-select form-control">' +
                             '<option value></option>' +
-                            '<option value="Yes">Yes</option>' +
-                            '<option value="No">No</option>').appendTo($(column.footer()).empty())
+                            '<option value="true">Yes</option>' +
+                            '<option value="false">No</option>').appendTo($(column.footer()).empty())
                         .on('change', function () {
                             column
                                 .search($(this).val())
