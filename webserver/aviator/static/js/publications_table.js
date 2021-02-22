@@ -269,6 +269,38 @@ $(document).ready(function () {
                     //     minLength: 1
                     // });
                 } else {
+                    // websites
+                    if(i == 15){
+                        $('<p></p>').appendTo($(column.footer()).empty())
+                        return;
+                    }
+                    // status
+                    if(i == 1){
+                        $('<select class="custom-select form-control">' +
+                            '<option value></option>' +
+                            '<option value="O">Online</option>' +
+                            '<option value="F">Offline</option>' +
+                        '<option value="T">Temp. offline</option>').appendTo($(column.footer()).empty())
+                        .on('change', function () {
+                            column
+                                .search($(this).val())
+                                .draw();
+                        });
+                        return;
+                    }
+                    // SSL
+                    if(i == 13){
+                        $('<select class="custom-select form-control">' +
+                            '<option value></option>' +
+                            '<option value="Yes">Yes</option>' +
+                            '<option value="No">No</option>').appendTo($(column.footer()).empty())
+                        .on('change', function () {
+                            column
+                                .search($(this).val())
+                                .draw();
+                        });
+                        return;
+                    }
                     $('<input id="cs_' + i + '" class="form-control" type="text" value="' + (search_column == i ? search_string : "") + '"></th>')
                         .appendTo($(column.footer()).empty())
                         .on('change', function () {
