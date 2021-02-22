@@ -99,7 +99,7 @@ class Command(BaseCommand):
             input = random.randint(10, 999)
             result = str(sum_digits(input))
             try:
-                req = Request(f"{website.api_url}?input={input}", headers={'User-Agent': 'AVIATOR/1.0'})
+                req = Request(f"{website.api_url}?input={input}", headers={'User-Agent': 'Aviator/1.0'})
                 response = urlopen(req, timeout=30).read().decode()
             except Exception:
                 response = "0"

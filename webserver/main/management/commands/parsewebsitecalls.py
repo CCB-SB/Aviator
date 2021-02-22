@@ -284,37 +284,47 @@ class Command(BaseCommand):
                     status = WebsiteStatus.OFFLINE
 
                 for o in orig_urls:
-                    if o not in orig_url_2_website and o not in already_done:
+                    if o not in already_done:
                         already_done.add(o)
                         ip = value.get("ip", None)
                         if ip == "NA":
                             ip = None
-                        website = Website(original_url=o,
-                                          status=status,
-                                          ip=ip,
-                                          derived_url=value["url"]
-                                          )
-                        website.server = value.get("response_headers_server", "")
-                        website.analytics = value.get("analytics", "")
-                        website.timezone = value.get("response_headers_Pragma", "")
-                        website.certificate_secure = value.get("certificateSecurityState",
-                                                               "unknown") == "secure"
-                        website.script = value.get("programming", "")
-                        if "response" in value and value.get("response") is not None:
-                            if "headers" in value.get("response"):
-                                if "server" in value.get("response").get("headers"):
-                                    website.server = value.get("response").get("headers").get("server", "")
-                                if "Pragma" in value.get("response").get("headers"):
-                                    website.timezone = value.get("response").get("headers").get("Pragma", "")
-                                if "Set-Cookie" in value.get("response").get("headers"):
-                                    c2lang = {"ASPSESSIONID": "ASP", "JSESSIONID": "Java", "PHPSESSID": "PHP", "CGISESSID": "Perl"}
-                                    for k, v in c2lang.items():
-                                        if k in value.get("response").get("headers").get("Set-Cookie"):
-                                            website.script = "{}/{}".format(website.script, v)
-                        new_websites += 1
-                        create_websites.append(website)
+                        if o not in orig_url_2_website:
+                            website = Website(original_url=o,
+                                              status=status,
+                                              ip=ip,
+                                              derived_url=value["url"]
+                                              )
+                        else:
+                            website = orig_url_2_website[o]
+                        # update if we can reach the website, or if it's the first time we query the website
+                        if status == WebsiteStatus.ONLINE or o not in orig_url_2_website:
+                            website.server = value.get("response_headers_server", "")
+                            website.analytics = value.get("analytics", "")
+                            website.timezone = value.get("response_headers_Pragma", "")
+                            website.certificate_secure = value.get("certificateSecurityState",
+                                                                   "unknown") == "secure"
+                            website.script = value.get("programming", "")
+                            if "response" in value and value.get("response") is not None:
+                                if "headers" in value.get("response"):
+                                    if "server" in value.get("response").get("headers"):
+                                        website.server = value.get("response").get("headers").get("server", "")
+                                    if "Pragma" in value.get("response").get("headers"):
+                                        website.timezone = value.get("response").get("headers").get("Pragma", "")
+                                    if "Set-Cookie" in value.get("response").get("headers"):
+                                        c2lang = {"ASPSESSIONID": "ASP", "JSESSIONID": "Java", "PHPSESSID": "PHP", "CGISESSID": "Perl"}
+                                        for k, v in c2lang.items():
+                                            if k in value.get("response").get("headers").get("Set-Cookie"):
+                                                website.script = "{}/{}".format(website.script, v)
+                        if o not in orig_url_2_website:
+                            new_websites += 1
+                            create_websites.append(website)
+                        else:
+                            update_websites.append(website)
+
 
             create_websites = Website.objects.bulk_create(create_websites)
+            Website.objects.bulk_update(update_websites, ["server", "analytics", "timezone", "certificate_secure", "script"])
 
             # connect new websites to publications
             origurl2paper = defaultdict(list)
