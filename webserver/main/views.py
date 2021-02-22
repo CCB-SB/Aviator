@@ -285,13 +285,16 @@ def curated_autocomplete(request):
 def generate_autocomplete_list(columns, email_fields, ignore_cols, listed_cols, qs,
                                request):
     def remove_duplicates(x):
-        return list(dict.fromkeys(x))
+        return sorted(set(e.strip() for e in x))
 
-    field_name = columns[int(request.GET.get('q'))]
-    if int(request.GET.get('q')) in ignore_cols:
+    column_i = int(request.GET.get('q'))
+    field_name = columns[column_i]
+    if column_i in ignore_cols:
         return JsonResponse(list(), safe=False)
-    elif int(request.GET.get('q')) in listed_cols:
+    elif column_i in listed_cols:
         search = request.GET.get(request.GET.get('q')).lower()
+        if field_name in email_fields:
+            search = search.replace("[at]", "@")
         seen = {}
         sList = []
         values = qs.values(field_name)
@@ -303,9 +306,10 @@ def generate_autocomplete_list(columns, email_fields, ignore_cols, listed_cols, 
                 sList.append(item)
         sList.sort()
         sList = sList[:5]
-        if columns[int(request.GET.get('q'))] in email_fields:
+        if field_name in email_fields:
             for i in range(len(sList)):
                 sList[i] = sList[i].replace("@", "[at]")
+            sList = remove_duplicates(sList)
         return JsonResponse(sList, safe=False)
     else:
         return JsonResponse(remove_duplicates(
@@ -345,7 +349,7 @@ class Table(BaseDatatableView):
                        "[value]" in k and "columns" in k and len(self.request.GET[k]) > 0]
         filter_col2v = {int(k.split('[')[1].split(']')[0]): self.request.GET[k] for k in
                         filter_keys}
-        return filter_queryset(qs, filter_col2v, self.columns, email_field={})
+        return filter_queryset(qs, filter_col2v, self.columns, email_field={'contact_mail'})
 
     def prepare_results(self, qs):
         data = []
