@@ -256,18 +256,6 @@ $(document).ready(function () {
                                 .search($(this).prev().val() + ";" + $(this).val())
                                 .draw();
                         });
-                    // $("#cs_from_" + i).autocomplete({
-                    //     source: function (request, response) {
-                    //         $.getJSON(autocomplete_url, createTableSearchData(i), response);
-                    //     },
-                    //     minLength: 1
-                    // });
-                    // $("#cs_to_" + i).autocomplete({
-                    //     source: function (request, response) {
-                    //         $.getJSON(autocomplete_url, createTableSearchData(i), response);
-                    //     },
-                    //     minLength: 1
-                    // });
                 } else {
                     // websites
                     if(i == 15){
@@ -301,21 +289,22 @@ $(document).ready(function () {
                         });
                         return;
                     }
-                    $('<input id="cs_' + i + '" class="form-control" type="text" value="' + (search_column == i ? search_string : "") + '"></th>')
-                        .appendTo($(column.footer()).empty())
-                        .on('change', function () {
-                            column
-                                .search($(this).val())
-                                .draw();
-                        });
-                    $("#cs_" + i).autocomplete({
+                    var el = $('<input id="cs_' + i + '" class="form-control" type="text" value="' + (search_column == i ? search_string : "") + '"></th>')
+                        .appendTo($(column.footer()).empty());
+
+                    el.autocomplete({
                         source: function (request, response) {
                             $.getJSON(autocomplete_url, createTableSearchData(i), response);
                         },
                         minLength: 1
                     });
-                    if ($("#cs_" + i).autocomplete().data("ui-autocomplete") != undefined) {
-                        $("#cs_" + i).autocomplete().data("ui-autocomplete")._renderItem = function (ul, item) {
+                    el.on('change', function () {
+                            column
+                                .search($(this).val())
+                                .draw();
+                    });
+                    if (el.autocomplete().data("ui-autocomplete") != undefined) {
+                        el.autocomplete().data("ui-autocomplete")._renderItem = function (ul, item) {
                             var newText = String(item.value).replace(
                                 new RegExp(this.term, "gi"),
                                 "<span style='color: white;'><strong>$&</strong></span>");
