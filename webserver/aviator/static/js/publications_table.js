@@ -303,11 +303,16 @@ $(document).ready(function () {
                                 .draw();
                         }
                     });
-/*                    el.on('change', function () {
+
+                    el.on('keypress', function(e){
+                        if(e.key == "Enter") {
                             column
                                 .search($(this).val())
                                 .draw();
-                    });*/
+                            el.autocomplete("close");
+                        }
+                    })
+
                     if (el.autocomplete().data("ui-autocomplete") != undefined) {
                         el.autocomplete().data("ui-autocomplete")._renderItem = function (ul, item) {
                             var newText = String(item.value).replace(
