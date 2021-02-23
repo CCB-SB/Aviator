@@ -316,7 +316,10 @@ class Command(BaseCommand):
                                         c2lang = {"ASPSESSIONID": "ASP", "JSESSIONID": "Java", "PHPSESSID": "PHP", "CGISESSID": "Perl"}
                                         for k, v in c2lang.items():
                                             if k in value.get("response").get("headers").get("Set-Cookie"):
-                                                website.script = "{}/{}".format(website.script, v)
+                                                if website.script == "":
+                                                    website.script = v
+                                                else:
+                                                    website.script = "{}/{}".format(website.script, v)
                         if o not in orig_url_2_website:
                             new_websites += 1
                             create_websites.append(website)
