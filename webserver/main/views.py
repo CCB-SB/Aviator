@@ -200,8 +200,10 @@ def details(request, pk):
     website = get_object_or_404(Website, pk=pk)
     show_for_x_days = 30
     latest_time = website.calls.latest("datetime").datetime
+    first_call = website.calls.earliest("datetime").datetime
     context['calls'] = website.calls.filter(datetime__date__gte=latest_time-timedelta(days=show_for_x_days)).order_by('-datetime')
     context['website'] = website
+    context["first_call"] = first_call
     return render(request, 'details.html', context)
 
 
