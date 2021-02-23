@@ -325,7 +325,7 @@ class Command(BaseCommand):
 
 
             create_websites = Website.objects.bulk_create(create_websites)
-            Website.objects.bulk_update(update_websites, ["server", "analytics", "timezone", "certificate_secure", "script"])
+            Website.objects.bulk_update(update_websites, ["server", "analytics", "timezone", "certificate_secure", "script", "ip"])
 
             # connect new websites to publications
             origurl2paper = defaultdict(list)
