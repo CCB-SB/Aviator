@@ -296,13 +296,18 @@ $(document).ready(function () {
                         source: function (request, response) {
                             $.getJSON(autocomplete_url, createTableSearchData(i), response);
                         },
-                        minLength: 1
-                    });
-                    el.on('change', function () {
+                        minLength: 1,
+                        change: function () {
                             column
                                 .search($(this).val())
                                 .draw();
+                        }
                     });
+/*                    el.on('change', function () {
+                            column
+                                .search($(this).val())
+                                .draw();
+                    });*/
                     if (el.autocomplete().data("ui-autocomplete") != undefined) {
                         el.autocomplete().data("ui-autocomplete")._renderItem = function (ul, item) {
                             var newText = String(item.value).replace(
