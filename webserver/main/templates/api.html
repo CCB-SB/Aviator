@@ -58,6 +58,8 @@
           <button id="api_btn_4" type="button" class="btn btn-secondary" onclick="show_code(4)">
             Python/Django
           </button>
+          <button id="api_btn_5" type="button" class="btn btn-secondary" onclick="show_code(5)">Java
+          </button>
         </div>
       </div>
     </div>
@@ -110,7 +112,42 @@ exit 0;</code></pre>
         return HttpResponse(sum(int(e) for e in request.GET["input"]), content_type="text/plain")
     return HttpResponse()</code></pre>
       </div>
-
+      <div id="api_box_5" class="code-box java" style="display: none;">
+<pre><code>import io.swagger.annotations.Api;
+  import io.swagger.annotations.ApiOperation;
+  import io.swagger.annotations.ApiParam;
+  
+  import javax.servlet.ServletContext;
+  import javax.servlet.http.HttpServletRequest;
+  import javax.ws.rs.*;
+  import javax.ws.rs.core.Context;
+  import javax.ws.rs.core.MediaType;
+  
+  @Path("/aviator_api")
+  @Api(
+    value = "/aviator_api",
+    description = "API endpoints for the Aviator service."
+  )
+  public class Aviator {
+    @GET
+    @Produces(MediaType.TEXT_PLAIN)
+    @ApiOperation(
+      value = "API endpoint for Aviator (sum of the digits)."
+    )
+    public String sum_of_digits(
+      @ApiParam(value="Input", required=true) @QueryParam("input") long input,
+      @Context HttpServletRequest request
+    ) {
+      long sum = 0;
+            while (input > 0) {
+                  sum = sum + input % 10;
+                  input = input / 10;
+            }
+      return Long.toString(sum);
+    }
+  }
+  </code></pre>
+      </div>
     </div>
   </div>
 </div>
