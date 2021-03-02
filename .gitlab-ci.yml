@@ -8,9 +8,9 @@ stages:
  - manage-env-production
 
 services:
-  - docker:dind
+  - docker:20.10.3-dind
 
-image: docker
+image: docker:20.10.3
 
 variables:
   GIT_SUBMODULE_STRATEGY: none
