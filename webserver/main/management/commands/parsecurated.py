@@ -30,7 +30,7 @@ class Command(BaseCommand):
 
         for cw in cw_to_update:
             cw.title = cw_dict["Tool"][cw.pubmed_id]
-            cw.description = cw_dict["Abstract"][cw.pubmed_id]
+            cw.description = cw_dict["Description"][cw.pubmed_id]
             cw.year = cw_dict["year"][cw.pubmed_id]
             cw.authors = cw_dict["Authors"][cw.pubmed_id].split(", ")
             cw.journal = cw_dict["journal"][cw.pubmed_id]
