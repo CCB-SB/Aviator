@@ -24,7 +24,7 @@ mails = glob(os.path.join(args.email_dir, "*"))
 def parse_mail(mail):
     result = dict()
     kws = ["Name", "Email", "Tool", "PubMed ID", "URL",
-           "API", "Authors", "Abstract", "Tags",
+           "API", "Authors", "Description", "Tags",
            "I want to be informed, if the website is down",
            "Days before reminder",
            "Comments"
