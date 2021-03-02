@@ -40,7 +40,7 @@ def get_all_statistics(pub_queryset, curated=False):
         p_websites = pub_queryset.values_list("journal", "year", "website__id", "states", "status",
                                               "pubmed_id")
         num_pubs = len(p_websites)
-        website_papers = {w[2]: [(w[0], w[1])] for w in p_websites}
+        website_papers = defaultdict(list)
         website2states = dict()
         for e in p_websites:
             website_papers[e[2]].append((e[0], e[1]))

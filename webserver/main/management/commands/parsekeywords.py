@@ -15,7 +15,7 @@ class Command(BaseCommand):
         except:
             raise CommandError('Please provide an input file')
 
-        tags = [l.strip() for l in open(csv_file)]
+        tags = set(l.strip() for l in open(csv_file))
         new_tags = list()
         for tag in tags:
             if Tag.objects.filter(name=tag).count() == 0:
