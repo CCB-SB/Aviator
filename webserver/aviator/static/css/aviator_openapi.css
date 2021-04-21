@@ -70,3 +70,17 @@ td {
 .swagger-ui .prop-format {
     color: #909090 !important;
 }
+.swagger-ui .download-contents {
+    width: unset !important;
+}
+.swagger-ui .copy-to-clipboard {
+    font-size: 1.2rem !important;
+    line-height: 1 !important;
+}
+.swagger-ui .curl-command .copy-to-clipboard {
+    width: 30px !important;
+    height: 30px !important;
+}
+.swagger-ui .curl-command .copy-to-clipboard button {
+    padding-left: 25px !important;
+}
