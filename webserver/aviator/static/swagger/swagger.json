@@ -26,7 +26,7 @@
           {
             "name": "input",
             "in": "query",
-            "description": "The input parameter to compute the digit sum from.",
+            "description": "A random number.",
             "required": true,
             "type": "integer",
             "format": "int64"

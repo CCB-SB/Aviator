@@ -21,10 +21,12 @@ h2 {
     color: var(--font-color) !important;
 }
 td {
-    word-wrap: normal;word-break: normal;
+    word-wrap: normal;
+    word-break: normal;
 }
 .swagger-ui .parameters-col_description {
-    width: 87%;margin-bottom: 2em;
+    width: 87%;
+    margin-bottom: 2em;
 }
 .swagger-ui .opblock-tag {
     color: var(--font-color) !important;
@@ -50,6 +52,9 @@ td {
 .swagger-ui .info .base-url {
     color: var(--font-color) !important;
 }
+.swagger-ui .responses-inner h4, .swagger-ui .responses-inner h5 {
+    color: var(--font-color) !important;
+}
 .swagger-ui .scheme-container {
     margin: 0 40px 20px 40px;
 }
@@ -57,11 +62,11 @@ td {
     fill: var(--font-color) !important;
 }
 .swagger-ui .parameter__name.required span {
-    color: #f00;
+    color: #f00 !important;
 }
 .swagger-ui .parameter__name.required::after {
-    color: rgb(255, 0, 0);
+    color: #f00 !important;
 }
 .swagger-ui .prop-format {
-    color: #909090;
+    color: #909090 !important;
 }
