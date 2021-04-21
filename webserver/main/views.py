@@ -609,6 +609,6 @@ class CuratedTable(Table):
             return self.handle_exception(e)
 
 def aviator_api(request):    
-    if "input" in request.GET and request.GET["input"]).isdigit():
+    if "input" in request.GET and request.GET["input"].isdigit():
         return HttpResponse(sum(int(e) for e in request.GET["input"]), content_type="text/plain")
     return HttpResponse()
