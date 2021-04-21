@@ -5,7 +5,7 @@
     "version": "1.0.0",
     "title": "Aviator"
   },
-  "host": "www.anathema.cs.uni-saarland.de",
+  "host": "anathema.cs.uni-saarland.de",
   "basePath": "/aviator",
   "schemes": [
     "https",
