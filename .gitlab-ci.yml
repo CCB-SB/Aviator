@@ -64,6 +64,7 @@ build:
   script:
     - *check_newer_commit
     - docker login -u gitlab-ci-token -p ${CI_JOB_TOKEN} ${CI_REGISTRY}
+    - docker login -u s9pahirs -p ${DOCKERHUB_TOKEN}
     - docker-compose -f webserver/production.yml pull --ignore-pull-failures
     - docker-compose -f webserver/production.yml build
     - *check_newer_commit
@@ -81,6 +82,7 @@ build:
     - *check_newer_commit
     - *setup_docker_tls
     - docker login -u gitlab-ci-token -p ${CI_JOB_TOKEN} ${CI_REGISTRY}
+    - docker login -u s9pahirs -p ${DOCKERHUB_TOKEN}
     - docker-compose -f webserver/production.yml down --rmi all --remove-orphans
     - *check_newer_commit
     - docker-compose -f webserver/production.yml pull $(docker-compose -f webserver/production.yml config --services | grep -v -e celery -e flower)
