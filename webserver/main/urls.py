@@ -19,4 +19,5 @@ urlpatterns = [
     path('api', views.api, name='api'),
     path('curated', views.curated, name='curated'),
     path('curated_autocomplete', views.curated_autocomplete, name='curated_autocomplete'),
+    path('aviator_api', views.aviator_api, name='aviator_api'),
 ]
