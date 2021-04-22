@@ -82,8 +82,8 @@ class Command(BaseCommand):
                 if remind and (website.states[len(website.states) - (website.days_reminder + 1)]):
                     try:
                         send_mail(
-                            'Your website has been offline for 3 days',
-                            f'This is an automated email from aviator to inform you, that your website {website.url} has been offline for 3 days',
+                            f'Your website has been offline for {website.days_reminder} days',
+                            f'This is an automated email from aviator to inform you, that your website {website.url} has been offline for {website.days_reminder} days',
                             'no-reply@aviator.ccb.uni-saarland.de',
                             [website.contact_mail],
                             fail_silently=False,
