@@ -2,6 +2,10 @@ from django.db import models
 from django.contrib.postgres.fields import JSONField, ArrayField
 from djchoices import DjangoChoices, ChoiceItem
 
+#Single Row table
+class GlobalStatistics(models.Model):
+    data_size = models.BigIntegerField()
+    num_calls = models.BigIntegerField()
 
 class Publication(models.Model):
     title = models.TextField(db_index=True)
@@ -40,7 +44,7 @@ class Website(models.Model):
     certificate_secure = models.BooleanField()
     security_issuer = models.CharField(max_length=100)
     # store offline/online/NA per day in ascending date order
-    states = ArrayField(models.NullBooleanField(), default=list)
+    states = ArrayField(models.BooleanField(null=True), default=list)
     percentage = models.FloatField(null=True, default=None)
     last_heap_size = models.IntegerField(default=0)
 
@@ -73,7 +77,8 @@ class CuratedWebsite(models.Model):
     status = models.CharField(max_length=1, choices=WebsiteStatus.choices,
                               default=WebsiteStatus.UNKNOWN)
     dates = ArrayField(models.DateTimeField(), default=list)
-    states = ArrayField(models.NullBooleanField(), default=list)
+    #TODO Change for prod
+    states = ArrayField(models.BooleanField(null=True), default=list)
     percentage = models.FloatField(null=True, default=None)
     contact_mail = models.EmailField(null=True, blank=True)
     days_reminder = models.IntegerField(default=0)
