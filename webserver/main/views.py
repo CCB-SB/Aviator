@@ -1,7 +1,7 @@
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, render
 from django.views.decorators.cache import cache_page
-from .models import Website, WebsiteCall, Publication, Tag, CuratedWebsite
+from .models import Website, WebsiteCall, Publication, Tag, CuratedWebsite, GlobalStatistics
 from datetime import timedelta
 import json
 from django.contrib.postgres.aggregates import ArrayAgg, BoolOr
@@ -107,6 +107,11 @@ def prepare_csv_export(qs, columns, header, request, email_fields, ignore_fields
 
 def index(request):
     context = get_index_stats()
+    context['overall_calls'] = 0
+    context['overall_size'] = 0
+    for gs in GlobalStatistics.objects.all():
+        context['overall_calls'] = "{:,}".format(gs.data_size)
+        context['overall_size'] = "{:,}".format(gs.num_calls)
     return render(request, 'index.html', context)
 
 
