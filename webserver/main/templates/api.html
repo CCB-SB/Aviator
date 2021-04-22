@@ -206,7 +206,7 @@ exit 0;</code></pre>
 <script>
 window.onload = function() {
   const ui = SwaggerUIBundle({
-    url: 'https://anathema.cs.uni-saarland.de/aviator/static/swagger/swagger.json',//"{% static '/swagger/swagger.json' %}",
+    url: "{% static '/swagger/swagger.json' %}",//"",
     dom_id: '#swagger-ui',
     presets: [
       SwaggerUIBundle.presets.apis,
