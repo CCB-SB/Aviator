@@ -264,10 +264,23 @@ def statistics(request):
         context['weekdays_offline'] = gs.weekdays_offline
         for n in range(len(context['weekdays_average'])):
             context['weekdays_average'][n] = context['weekdays_online'][0] - context['weekdays_online'][n + 1]
-        context['recovery_rate'] = gs.recovery_rate
+        #recovery_rate
+        index = 0
+        state = 0
+        for n in range(len(gs.recovery_rate)):
+            if gs.recovery_rate[n] == 0:
+                if state == 0:
+                    index = n
+                    state = 1
+            else:
+                state = 0
+
+        context['recovery_rate'] = []
         context['recovery_rate_legend'] = []
-        for n in range(len(context['recovery_rate'])):
-            context['recovery_rate_legend'].append(f'{n}')
+        for n in range(index + 1):
+            context['recovery_rate'].append(gs.recovery_rate[n])
+            context['recovery_rate_legend'].append(n)
+        ##
     return render(request, 'statistics.html', context)
 
 
