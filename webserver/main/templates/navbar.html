@@ -1,4 +1,4 @@
-{% load staticfiles %}
+{% load static %} <!-- TODO: staticfiles-->
 
 {% url 'main:index' as index %}
 {% url 'main:overview' as overview %}
@@ -32,10 +32,10 @@
         <a class="nav-link" href="{{ index }}"><i class="fas fa-home"></i> Home</a>
       </li>
       <li class="nav-item {% if request.path == publications %}active{% endif %}">
-        <a class="nav-link" href="{{ publications }}"><i class="fas fa-table"></i> Tools</a>
+        <a class="nav-link" href="{{ publications }}"><i class="fas fa-table"></i> Tool List</a>
       </li>
       <li class="nav-item {% if request.path == curated %}active{% endif %}">
-        <a class="nav-link" href="{{ curated }}"><i class="fas fa-tools"></i> Aviator-enabled</a>
+        <a class="nav-link" href="{{ curated }}"><i class="fas fa-tools"></i> API Queried</a>
       </li>
       <li class="nav-item {% if request.path == author %}active{% endif %}">
         <a class="nav-link" href="{{ author }}"><i class="fas fa-paper-plane"></i> Register</a>
@@ -44,7 +44,7 @@
         <a class="nav-link" href="{{ statistics }}"><i class="fas fa-chart-bar"></i> Statistics</a>
       </li>
       <li class="nav-item {% if request.path == api %}active{% endif %}">
-        <a class="nav-link" href="{{ api }}"><i class="fas fa-cloud"></i> Aviator-enable</a>
+        <a class="nav-link" href="{{ api }}"><i class="fas fa-cloud"></i> API instruction</a>
       </li>
       <li class="nav-item {% if request.path == help %}active{% endif %}">
         <a class="nav-link" href="{{ help }}"><i class="fas fa-info-circle"></i> Help</a>
