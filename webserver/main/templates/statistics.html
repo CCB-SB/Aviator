@@ -302,16 +302,16 @@ new Chart(document.getElementById('weekdays').getContext('2d'), {
   data: {
     labels: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
     datasets: [{
-      label: 'Differences',
+      label: 'Differences to the average',
       data: {{ weekdays_average|safe }},
-      backgroundColor: 'rgba(75, 192, 192, 0.2)',
-      borderColor: 'rgba(75, 192, 192, 1)',
+      backgroundColor: 'rgba(255, 206, 86, 0.2)',
+      borderColor: 'rgba(255, 206, 86, 1)',
       borderWidth: 2
     }/*
       label: 'Average',
       data: {{ top10_journals_tmp_offline|safe }},
-      backgroundColor: 'rgba(255, 206, 86, 0.2)',
-      borderColor: 'rgba(255, 206, 86, 1)',
+      backgroundColor: 'rgba(75, 192, 192, 0.2)',
+      borderColor: 'rgba(75, 192, 192, 1)',
       borderWidth: 2
   }*/
 ]
