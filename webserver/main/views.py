@@ -255,6 +255,11 @@ def statistics(request):
         Publication.objects.all().prefetch_related('websites').annotate(
             website_pks=ArrayAgg('websites'),
             status=ArrayAgg('websites__status')))
+    context['weekdays_online'] = [0,0,0,0,0,0,0,0]
+    context['weekdays_offline'] = [0,0,0,0,0,0,0,0]
+    for gs in GlobalStatistics.objects.all():
+        context['weekdays_online'] = gs.weekdays_online
+        context['weekdays_offline'] = gs.weekdays_offline
     return render(request, 'statistics.html', context)
 
 
