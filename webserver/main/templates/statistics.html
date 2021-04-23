@@ -305,7 +305,7 @@ new Chart(document.getElementById('recovery').getContext('2d'), {
   data: {
     labels: {{ recovery_rate_legend|safe }},
     datasets: [{
-      label: 'Recovery duration in days',
+      label: 'Recovered websites',
       data: {{ recovery_rate|safe }},
       backgroundColor: 'rgba(255, 206, 86, 0.2)',
       borderColor: 'rgba(255, 206, 86, 1)',
