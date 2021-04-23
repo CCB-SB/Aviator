@@ -67,13 +67,10 @@ class Command(BaseCommand):
                         if last_state == 0:
                             last_state = 1
                         if last_state == 2:
-                            days = (last_date-d_date).days
+                            days = (d_date-last_date).days
                             if days < len(recovery_rate):
                                 recovery_rate[days] = recovery_rate[days] + 1
                             last_state = 0
-                            print(f'{last_date}')
-                            print(f'{d_date}')
-                            print(f'{days}: {website.derived_url}')
                     else:
                         offline += 1
                         tmp_weekdays_offline[d_date.isoweekday()] = tmp_weekdays_offline[d_date.isoweekday()] + 1
