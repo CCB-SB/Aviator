@@ -39,7 +39,7 @@ class Command(BaseCommand):
         weekdays_online = [0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]
         weekdays_offline = [0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]
         #recovery statistics
-        recovery_rate = [0] * max_days
+        recovery_rate = [0] * (max_days + 1)
         #######################################
         for website in tqdm(Website.objects.all()):
             states = []
@@ -71,8 +71,7 @@ class Command(BaseCommand):
                             if days < len(recovery_rate):
                                 recovery_rate[days] = recovery_rate[days] + 1
                             last_state = 0
-                            if days == 22:
-                                print(website.pubmed_id)
+                            print(f'{days}: {website.pubmed_id}')
                     else:
                         offline += 1
                         tmp_weekdays_offline[d_date.isoweekday()] = tmp_weekdays_offline[d_date.isoweekday()] + 1
