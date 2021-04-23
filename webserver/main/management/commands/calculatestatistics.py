@@ -39,6 +39,7 @@ class Command(BaseCommand):
         weekdays_online = [0,0,0,0,0,0,0,0]
         weekdays_offline = [0,0,0,0,0,0,0,0]
         weekdays_num = [0,0,0,0,0,0,0,0]
+        weekdays_l = Website.objects.all().count()
         #######################################
 
         for website in tqdm(Website.objects.all()):
@@ -60,7 +61,6 @@ class Command(BaseCommand):
                             tmp_weekdays_states[d_date] = tmp_weekdays_states[d_date] + 1
                         else:
                             tmp_weekdays_states[d_date] = 1
-                            tmp_weekdays_nums[d_date] = 1
                     else:
                         offline += 1
                         if d_date in tmp_weekdays_states:
@@ -95,8 +95,8 @@ class Command(BaseCommand):
 
         #weekday statistics
         for n in range(len(weekdays_num)):
-            weekdays_online[n] = weekdays_online[n] // weekdays_num[n]
-            weekdays_offline[n] = weekdays_offline[n] // weekdays_num[n]
+            weekdays_online[n] = weekdays_online[n] // (weekdays_num[n] / weekdays_l)
+            weekdays_offline[n] = weekdays_offline[n] // (weekdays_num[n] / weekdays_l)
         weekdays_online[0] = weekdays_online[0] // 7
         weekdays_offline[0] = weekdays_offline[0] // 7
         if GlobalStatistics.objects.all().count() <= 0:
