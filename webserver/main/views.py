@@ -110,8 +110,8 @@ def index(request):
     context['overall_calls'] = 0
     context['overall_size'] = 0
     for gs in GlobalStatistics.objects.all():
-        context['overall_calls'] = "{:,}".format(gs.num_calls // 1000000000)
-        context['overall_size'] = "{:,}".format(gs.data_size)
+        context['overall_calls'] = "{:,}".format(gs.num_calls)
+        context['overall_size'] = "{:,}".format(gs.data_size // 1000000000)
     return render(request, 'index.html', context)
 
 
@@ -258,11 +258,16 @@ def statistics(request):
     context['weekdays_online'] = [0,0,0,0,0,0,0,0]
     context['weekdays_offline'] = [0,0,0,0,0,0,0,0]
     context['weekdays_average'] = [0,0,0,0,0,0,0]
+    context['recovery_rate'] = [0,0,0,0,0,0,0]
     for gs in GlobalStatistics.objects.all():
         context['weekdays_online'] = gs.weekdays_online
         context['weekdays_offline'] = gs.weekdays_offline
         for n in range(len(context['weekdays_average'])):
             context['weekdays_average'][n] = context['weekdays_online'][0] - context['weekdays_online'][n + 1]
+        context['recovery_rate'] = gs.recovery_rate
+        context['recovery_rate_legend'] = []
+        for n in range(len(context['recovery_rate'])):
+            context['recovery_rate_legend'].append(f'{n}')
     return render(request, 'statistics.html', context)
 
 

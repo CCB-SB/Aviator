@@ -8,6 +8,7 @@ class GlobalStatistics(models.Model):
     num_calls = models.BigIntegerField()
     weekdays_online = ArrayField(models.IntegerField(), default=list)
     weekdays_offline = ArrayField(models.IntegerField(), default=list)
+    recovery_rate = ArrayField(models.IntegerField(), default=list)
 
 class Publication(models.Model):
     title = models.TextField(db_index=True)
