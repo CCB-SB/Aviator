@@ -38,12 +38,17 @@ class Command(BaseCommand):
         #weekday statistics
         weekdays_online = [0,0,0,0,0,0,0,0]
         weekdays_offline = [0,0,0,0,0,0,0,0]
+        weekdays_num = [0,0,0,0,0,0,0,0]
         #######################################
 
         for website in tqdm(Website.objects.all()):
             states = []
             offline = 0
             online = 0
+            tmp_weekdays_states = dict()
+            tmp_weekdays_nums = dict()
+            #tmp_weekdays_online = [0,0,0,0,0,0,0,0]
+            #tmp_weekdays_offline = [0,0,0,0,0,0,0,0]
             for day_delta in range(max_days, -1, -1):
                 d_date = (latest_time-timedelta(days=day_delta)).date()
                 state = website_states[website.id].get(d_date, None)
@@ -51,12 +56,27 @@ class Command(BaseCommand):
                 if state is not None:
                     if state:
                         online += 1
-                        weekdays_online[0] = weekdays_online[0] + 1
-                        weekdays_online[d_date.isoweekday()] = weekdays_online[d_date.isoweekday()] + 1
+                        if d_date in tmp_weekdays_states:
+                            tmp_weekdays_states[d_date] = tmp_weekdays_states[d_date] + 1
+                        else:
+                            tmp_weekdays_states[d_date] = 1
+                            tmp_weekdays_nums[d_date] = 1
                     else:
                         offline += 1
-                        weekdays_offline[0] = weekdays_offline[0] + 1
-                        weekdays_offline[d_date.isoweekday()] = weekdays_offline[d_date.isoweekday()] + 1
+                        if d_date in tmp_weekdays_states:
+                            tmp_weekdays_states[d_date] = tmp_weekdays_states[d_date] - 1
+                        else:
+                            tmp_weekdays_states[d_date] = -1
+            for (key, value) in range(len(tmp_weekdays_states)):
+                weekdays_num[0] = weekdays_num[0] + 1
+                weekdays_num[key.isoweekday()] = weekdays_num[key.isoweekday()] + 1
+                if value >= 0:
+                    weekdays_online[0] = weekdays_online[0] + 1
+                    weekdays_online[key.isoweekday()] = weekdays_online[d_date.isoweekday()] + 1
+                else:
+                    weekdays_offline[0] = weekdays_offline[0] + 1
+                    weekdays_offline[key.isoweekday()] = weekdays_offline[d_date.isoweekday()] + 1
+                
             if "total_heap_size" in website.calls.latest("datetime").json_data:
                 website.last_heap_size = website.calls.latest("datetime").json_data["total_heap_size"]#used_heap_size
             else:
@@ -74,6 +94,9 @@ class Command(BaseCommand):
         Website.objects.bulk_update(website_updates, ["status", "states", "percentage", "last_heap_size"])
 
         #weekday statistics
+        for n in range(len(weekdays_num)):
+            weekdays_online[n] = weekdays_online[n] // weekdays_num[n]
+            weekdays_offline[n] = weekdays_offline[n] // weekdays_num[n]
         weekdays_online[0] = weekdays_online[0] // 7
         weekdays_offline[0] = weekdays_offline[0] // 7
         if GlobalStatistics.objects.all().count() <= 0:
