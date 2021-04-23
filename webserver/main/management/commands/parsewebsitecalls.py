@@ -407,7 +407,7 @@ class Command(BaseCommand):
         starting_size = 2089000000000
         if GlobalStatistics.objects.all().count() <= 0:
             starting_calls = WebsiteCall.objects.all().count()
-            gs = GlobalStatistics(data_size=starting_size+starting_size, num_calls=starting_calls+new_websitecalls)
+            gs = GlobalStatistics(data_size=starting_size+overall_size, num_calls=starting_calls+new_websitecalls)
             gs.save()
         else:
             for gs in GlobalStatistics.objects.all():
