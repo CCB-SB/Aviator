@@ -36,20 +36,17 @@ class Command(BaseCommand):
             website_states[w['website']][w["datetime"].date()] = w["ok"]
 
         #weekday statistics
-        weekdays_online = [0,0,0,0,0,0,0,0]
-        weekdays_offline = [0,0,0,0,0,0,0,0]
-        weekdays_num = [0,0,0,0,0,0,0,0]
-        weekdays_l = Website.objects.all().count()
+        weekdays_online = [0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]
+        weekdays_offline = [0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]
         #######################################
 
         for website in tqdm(Website.objects.all()):
             states = []
             offline = 0
             online = 0
-            tmp_weekdays_states = dict()
-            tmp_weekdays_nums = dict()
-            #tmp_weekdays_online = [0,0,0,0,0,0,0,0]
-            #tmp_weekdays_offline = [0,0,0,0,0,0,0,0]
+            tmp_weekdays_online = [0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]
+            tmp_weekdays_offline = [0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]
+            tmp_weekdays_divisiors = [0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]
             for day_delta in range(max_days, -1, -1):
                 d_date = (latest_time-timedelta(days=day_delta)).date()
                 state = website_states[website.id].get(d_date, None)
@@ -57,25 +54,19 @@ class Command(BaseCommand):
                 if state is not None:
                     if state:
                         online += 1
-                        if d_date in tmp_weekdays_states:
-                            tmp_weekdays_states[d_date] = tmp_weekdays_states[d_date] + 1
-                        else:
-                            tmp_weekdays_states[d_date] = 1
+                        tmp_weekdays_online[d_date.isoweekday()] = tmp_weekdays_online[d_date.isoweekday()] + 1
+                        tmp_weekdays_divisiors[d_date.isoweekday()] = tmp_weekdays_divisiors[d_date.isoweekday()] + 1
+                        tmp_weekdays_online[0] = tmp_weekdays_online[0] + 1
+                        tmp_weekdays_divisiors[0] = tmp_weekdays_divisiors[0] + 1
                     else:
                         offline += 1
-                        if d_date in tmp_weekdays_states:
-                            tmp_weekdays_states[d_date] = tmp_weekdays_states[d_date] - 1
-                        else:
-                            tmp_weekdays_states[d_date] = -1
-            for key, value in tmp_weekdays_states.items():
-                weekdays_num[0] = weekdays_num[0] + 1
-                weekdays_num[key.isoweekday()] = weekdays_num[key.isoweekday()] + 1
-                if value >= 0:
-                    weekdays_online[0] = weekdays_online[0] + 1
-                    weekdays_online[key.isoweekday()] = weekdays_online[d_date.isoweekday()] + 1
-                else:
-                    weekdays_offline[0] = weekdays_offline[0] + 1
-                    weekdays_offline[key.isoweekday()] = weekdays_offline[d_date.isoweekday()] + 1
+                        tmp_weekdays_offline[d_date.isoweekday()] = tmp_weekdays_offline[d_date.isoweekday()] + 1
+                        tmp_weekdays_divisiors[d_date.isoweekday()] = tmp_weekdays_divisiors[d_date.isoweekday()] + 1
+                        tmp_weekdays_offline[0] = tmp_weekdays_offline[0] + 1
+                        tmp_weekdays_divisiors[0] = tmp_weekdays_divisiors[0] + 1
+            for n in range(len(tmp_weekdays_divisiors)):
+                weekdays_online[n] = weekdays_online[n] + (tmp_weekdays_online[n] / tmp_weekdays_divisiors[n])
+                weekdays_offline[n] = weekdays_offline[n] + (tmp_weekdays_offline[n] / tmp_weekdays_divisiors[n])
                 
             if "total_heap_size" in website.calls.latest("datetime").json_data:
                 website.last_heap_size = website.calls.latest("datetime").json_data["total_heap_size"]#used_heap_size
@@ -94,11 +85,13 @@ class Command(BaseCommand):
         Website.objects.bulk_update(website_updates, ["status", "states", "percentage", "last_heap_size"])
 
         #weekday statistics
-        for n in range(len(weekdays_num)):
-            weekdays_online[n] = weekdays_online[n] // (weekdays_num[n] / weekdays_l)
-            weekdays_offline[n] = weekdays_offline[n] // (weekdays_num[n] / weekdays_l)
-        weekdays_online[0] = weekdays_online[0] // 7
-        weekdays_offline[0] = weekdays_offline[0] // 7
+        new_weekdays_online = [0,0,0,0,0,0,0,0]
+        new_weekdays_offline = [0,0,0,0,0,0,0,0]
+        for n in range(len(weekdays_online)):
+            new_weekdays_online[n] = int(weekdays_online[n])
+            new_weekdays_offline[n] = int(weekdays_offline[n])
+        #weekdays_online[0] = weekdays_online[0] // 7
+        #weekdays_offline[0] = weekdays_offline[0] // 7
         if GlobalStatistics.objects.all().count() <= 0:
             starting_calls = WebsiteCall.objects.all().count()
             gs = GlobalStatistics(data_size=0, num_calls=0, weekdays_online=weekdays_online, weekdays_offline=weekdays_offline)
