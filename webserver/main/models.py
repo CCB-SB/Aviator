@@ -6,6 +6,8 @@ from djchoices import DjangoChoices, ChoiceItem
 class GlobalStatistics(models.Model):
     data_size = models.BigIntegerField()
     num_calls = models.BigIntegerField()
+    weekdays_online = ArrayField(models.IntegerField(), default=list)
+    weekdays_offline = ArrayField(models.IntegerField(), default=list)
 
 class Publication(models.Model):
     title = models.TextField(db_index=True)
@@ -77,7 +79,7 @@ class CuratedWebsite(models.Model):
     status = models.CharField(max_length=1, choices=WebsiteStatus.choices,
                               default=WebsiteStatus.UNKNOWN)
     dates = ArrayField(models.DateTimeField(), default=list)
-    #TODO Change for prod
+    # store offline/online/NA per day in ascending date order
     states = ArrayField(models.BooleanField(null=True), default=list)
     percentage = models.FloatField(null=True, default=None)
     contact_mail = models.EmailField(null=True, blank=True)

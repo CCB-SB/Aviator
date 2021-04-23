@@ -2,7 +2,7 @@ from django.core.management.base import BaseCommand
 from django.conf import settings
 from django.contrib.postgres.aggregates import BoolOr
 from django.core.mail import send_mail
-from main.models import Website, WebsiteCall, WebsiteStatus, CuratedWebsite
+from main.models import Website, WebsiteCall, WebsiteStatus, CuratedWebsite, GlobalStatistics
 
 from datetime import timedelta, date, datetime
 
@@ -35,6 +35,11 @@ class Command(BaseCommand):
         for w in website_ok:
             website_states[w['website']][w["datetime"].date()] = w["ok"]
 
+        #weekday statistics
+        weekdays_online = [0,0,0,0,0,0,0,0]
+        weekdays_offline = [0,0,0,0,0,0,0,0]
+        #######################################
+
         for website in tqdm(Website.objects.all()):
             states = []
             offline = 0
@@ -46,8 +51,12 @@ class Command(BaseCommand):
                 if state is not None:
                     if state:
                         online += 1
+                        weekdays_online[0] = weekdays_online[0] + 1
+                        weekdays_online[d_date.isoweekday()] = weekdays_online[d_date.isoweekday()] + 1
                     else:
                         offline += 1
+                        weekdays_offline[0] = weekdays_offline[0] + 1
+                        weekdays_offline[d_date.isoweekday()] = weekdays_offline[d_date.isoweekday()] + 1
             if "total_heap_size" in website.calls.latest("datetime").json_data:
                 website.last_heap_size = website.calls.latest("datetime").json_data["total_heap_size"]#used_heap_size
             else:
@@ -63,6 +72,20 @@ class Command(BaseCommand):
             website_updates.append(website)
 
         Website.objects.bulk_update(website_updates, ["status", "states", "percentage", "last_heap_size"])
+
+        #weekday statistics
+        weekdays_online[0] = weekdays_online[0] // 7
+        weekdays_offline[0] = weekdays_offline[0] // 7
+        if GlobalStatistics.objects.all().count() <= 0:
+            starting_calls = WebsiteCall.objects.all().count()
+            gs = GlobalStatistics(data_size=0, num_calls=0, weekdays_online=weekdays_online, weekdays_offline=weekdays_offline)
+            gs.save()
+        else:
+            for gs in GlobalStatistics.objects.all():
+                gs.weekdays_online = weekdays_online
+                gs.weekdays_offline = weekdays_offline
+                gs.save()
+        #######################################
 
         def sum_digits(n):
             s = 0
@@ -82,8 +105,8 @@ class Command(BaseCommand):
                 if remind and (website.states[len(website.states) - (website.days_reminder + 1)]):
                     try:
                         send_mail(
-                            'Your website has been offline for 3 days',
-                            f'This is an automated email from aviator to inform you, that your website {website.url} has been offline for 3 days',
+                            f'Your website has been offline for {website.days_reminder} days',
+                            f'This is an automated email from aviator to inform you, that your website {website.url} has been offline for {website.days_reminder} days',
                             'no-reply@aviator.ccb.uni-saarland.de',
                             [website.contact_mail],
                             fail_silently=False,
