@@ -319,8 +319,8 @@ def generate_autocomplete_list(columns, email_fields, ignore_cols, listed_cols, 
         values = qs.values(field_name)
         for hm in values:
             for item in hm[field_name]:
-                if item in seen: continue
-                if search not in item.lower(): continue
+                if str(item) in seen: continue
+                if search not in str(item).lower(): continue
                 seen[item] = 1
                 sList.append(item)
         sList.sort()
