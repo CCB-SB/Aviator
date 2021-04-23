@@ -38,15 +38,21 @@ class Command(BaseCommand):
         #weekday statistics
         weekdays_online = [0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]
         weekdays_offline = [0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]
+        #recovery statistics
+        recovery_rate = [0] * max_days
         #######################################
-
         for website in tqdm(Website.objects.all()):
             states = []
             offline = 0
             online = 0
+            #weekday statistics
             tmp_weekdays_online = [0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]
             tmp_weekdays_offline = [0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]
             tmp_weekdays_divisiors = [0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]
+            #recovery statistics
+            last_state = -1
+            last_date = None
+            ########
             for day_delta in range(max_days, -1, -1):
                 d_date = (latest_time-timedelta(days=day_delta)).date()
                 state = website_states[website.id].get(d_date, None)
@@ -58,12 +64,22 @@ class Command(BaseCommand):
                         tmp_weekdays_divisiors[d_date.isoweekday()] = tmp_weekdays_divisiors[d_date.isoweekday()] + 1
                         tmp_weekdays_online[0] = tmp_weekdays_online[0] + 1
                         tmp_weekdays_divisiors[0] = tmp_weekdays_divisiors[0] + 1
+                        if last_state < 0:
+                            last_state = 1
+                        if last_state == 2:
+                            days = (last_date-d_date).days
+                            if days < len(recovery_rate):
+                                recovery_rate[days] = recovery_rate[days] + 1
+                            last_state = -1
                     else:
                         offline += 1
                         tmp_weekdays_offline[d_date.isoweekday()] = tmp_weekdays_offline[d_date.isoweekday()] + 1
                         tmp_weekdays_divisiors[d_date.isoweekday()] = tmp_weekdays_divisiors[d_date.isoweekday()] + 1
                         tmp_weekdays_offline[0] = tmp_weekdays_offline[0] + 1
                         tmp_weekdays_divisiors[0] = tmp_weekdays_divisiors[0] + 1
+                        if last_state == 1:
+                            last_state = 2
+                            last_date = d_date
             for n in range(len(tmp_weekdays_divisiors)):
                 weekdays_online[n] = weekdays_online[n] + (tmp_weekdays_online[n] / tmp_weekdays_divisiors[n])
                 weekdays_offline[n] = weekdays_offline[n] + (tmp_weekdays_offline[n] / tmp_weekdays_divisiors[n])
@@ -93,7 +109,7 @@ class Command(BaseCommand):
         starting_size = 2089000000000
         if GlobalStatistics.objects.all().count() <= 0:
             starting_calls = WebsiteCall.objects.all().count()
-            gs = GlobalStatistics(data_size=starting_size, num_calls=starting_calls, weekdays_online=weekdays_online, weekdays_offline=weekdays_offline)
+            gs = GlobalStatistics(data_size=starting_size, num_calls=starting_calls, weekdays_online=weekdays_online, weekdays_offline=weekdays_offline, recovery_rate=recovery_rate)
             gs.save()
         else:
             for gs in GlobalStatistics.objects.all():
@@ -103,6 +119,7 @@ class Command(BaseCommand):
                     gs.num_calls = WebsiteCall.objects.all().count()
                 gs.weekdays_online = weekdays_online
                 gs.weekdays_offline = weekdays_offline
+                gs.recovery_rate = recovery_rate
                 gs.save()
         #######################################
 

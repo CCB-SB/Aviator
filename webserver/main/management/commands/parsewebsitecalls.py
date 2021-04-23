@@ -404,20 +404,10 @@ class Command(BaseCommand):
             WebsiteCall.objects.bulk_create(create_websitecalls)
 
         #Update Global Statistics
-        starting_size = 2089000000000
-        if GlobalStatistics.objects.all().count() <= 0:
-            starting_calls = WebsiteCall.objects.all().count()
-            gs = GlobalStatistics(data_size=starting_size+overall_size, num_calls=starting_calls+new_websitecalls)
+        for gs in GlobalStatistics.objects.all():
+            gs.data_size = gs.data_size + overall_size
+            gs.num_calls = gs.num_calls + new_websitecalls
             gs.save()
-        else:
-            for gs in GlobalStatistics.objects.all():
-                if gs.data_size <= 0:
-                    gs.data_size = starting_size
-                if gs.num_calls <= 0:
-                    gs.num_calls = WebsiteCall.objects.all().count()
-                gs.data_size = gs.data_size + overall_size
-                gs.num_calls = gs.num_calls + new_websitecalls
-                gs.save()
 
 
         # Save as csv
