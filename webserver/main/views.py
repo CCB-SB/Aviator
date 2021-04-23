@@ -110,8 +110,8 @@ def index(request):
     context['overall_calls'] = 0
     context['overall_size'] = 0
     for gs in GlobalStatistics.objects.all():
-        context['overall_calls'] = "{:,}".format(gs.data_size)
-        context['overall_size'] = "{:,}".format(gs.num_calls)
+        context['overall_calls'] = "{:,}".format(gs.num_calls)
+        context['overall_size'] = "{:,}".format(gs.data_size)
     return render(request, 'index.html', context)
 
 
