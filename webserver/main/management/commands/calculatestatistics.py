@@ -67,7 +67,7 @@ class Command(BaseCommand):
                             tmp_weekdays_states[d_date] = tmp_weekdays_states[d_date] - 1
                         else:
                             tmp_weekdays_states[d_date] = -1
-            for (key, value) in range(len(tmp_weekdays_states)):
+            for key, value in tmp_weekdays_states:
                 weekdays_num[0] = weekdays_num[0] + 1
                 weekdays_num[key.isoweekday()] = weekdays_num[key.isoweekday()] + 1
                 if value >= 0:
