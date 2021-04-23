@@ -35,6 +35,11 @@
       <canvas id="top10_journals_availability" width="400" height="300"></canvas>
     </div>
   </div>
+  <div class="row">
+    <div class="col-md-6">
+      <canvas id="weekdays" width="400" height="300"></canvas>
+    </div>
+  </div>
 </div>
 {% include "footer.html" %}
 <script>
@@ -254,6 +259,43 @@
       }
     }
   });
+
+new Chart(document.getElementById('top10_journals_availability').getContext('2d'), {
+  type: 'bar',
+  data: {
+    labels: [Average, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday],
+    datasets: [{
+      label: 'Online',
+      data: {{ weekdays_online|safe }},
+      backgroundColor: 'rgba(75, 192, 192, 0.2)',
+      borderColor: 'rgba(75, 192, 192, 1)',
+      borderWidth: 2
+    }, {
+      label: 'Offline',
+      data: {{ weekdays_offline|safe }},
+      backgroundColor: 'rgba(255, 99, 132, 0.2)',
+      borderColor: 'rgba(255, 99, 132, 1)',
+      borderWidth: 2
+    }]
+  },
+  options: {
+    title: {
+      display: true,
+      text: 'Availability by weekdays'
+    },
+    scales: {
+      yAxes: [{
+        ticks: {
+          beginAtZero: true
+        },
+        stacked: true,
+      }],
+      xAxes: [{
+        stacked: true
+      }],
+    }
+  }
+});
 </script>
 </body>
 </html>
