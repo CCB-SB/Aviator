@@ -259,7 +259,7 @@
       }
     }
   });
-
+/*
 new Chart(document.getElementById('weekdays').getContext('2d'), {
   type: 'bar',
   data: {
@@ -277,6 +277,44 @@ new Chart(document.getElementById('weekdays').getContext('2d'), {
       borderColor: 'rgba(255, 99, 132, 1)',
       borderWidth: 2
     }]
+  },
+  options: {
+    title: {
+      display: true,
+      text: 'Availability by weekdays'
+    },
+    scales: {
+      yAxes: [{
+        ticks: {
+          beginAtZero: true
+        },
+        stacked: true,
+      }],
+      xAxes: [{
+        stacked: true
+      }],
+    }
+  }
+});
+*/
+new Chart(document.getElementById('weekdays').getContext('2d'), {
+  type: 'line',
+  data: {
+    labels: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+    datasets: [{
+      label: 'Differences',
+      data: {{ weekdays_average|safe }},
+      backgroundColor: 'rgba(75, 192, 192, 0.2)',
+      borderColor: 'rgba(75, 192, 192, 1)',
+      borderWidth: 2
+    }/*
+      label: 'Average',
+      data: {{ top10_journals_tmp_offline|safe }},
+      backgroundColor: 'rgba(255, 206, 86, 0.2)',
+      borderColor: 'rgba(255, 206, 86, 1)',
+      borderWidth: 2
+  }*/
+]
   },
   options: {
     title: {
