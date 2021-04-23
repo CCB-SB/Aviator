@@ -263,7 +263,7 @@
 new Chart(document.getElementById('top10_journals_availability').getContext('2d'), {
   type: 'bar',
   data: {
-    labels: [Average, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday],
+    labels: ['Average', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
     datasets: [{
       label: 'Online',
       data: {{ weekdays_online|safe }},
