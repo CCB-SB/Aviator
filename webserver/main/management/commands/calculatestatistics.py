@@ -50,7 +50,7 @@ class Command(BaseCommand):
             tmp_weekdays_offline = [0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]
             tmp_weekdays_divisiors = [0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]
             #recovery statistics
-            last_state = -1
+            last_state = 0
             last_date = None
             ########
             for day_delta in range(max_days, -1, -1):
@@ -64,13 +64,15 @@ class Command(BaseCommand):
                         tmp_weekdays_divisiors[d_date.isoweekday()] = tmp_weekdays_divisiors[d_date.isoweekday()] + 1
                         tmp_weekdays_online[0] = tmp_weekdays_online[0] + 1
                         tmp_weekdays_divisiors[0] = tmp_weekdays_divisiors[0] + 1
-                        if last_state < 0:
+                        if last_state == 0:
                             last_state = 1
                         if last_state == 2:
                             days = (last_date-d_date).days
                             if days < len(recovery_rate):
                                 recovery_rate[days] = recovery_rate[days] + 1
-                            last_state = -1
+                            last_state = 0
+                            if days == 22:
+                                print(website.pubmed_id)
                     else:
                         offline += 1
                         tmp_weekdays_offline[d_date.isoweekday()] = tmp_weekdays_offline[d_date.isoweekday()] + 1
