@@ -90,14 +90,17 @@ class Command(BaseCommand):
         for n in range(len(weekdays_online)):
             new_weekdays_online[n] = int(weekdays_online[n])
             new_weekdays_offline[n] = int(weekdays_offline[n])
-        #weekdays_online[0] = weekdays_online[0] // 7
-        #weekdays_offline[0] = weekdays_offline[0] // 7
+        starting_size = 2089000000000
         if GlobalStatistics.objects.all().count() <= 0:
             starting_calls = WebsiteCall.objects.all().count()
-            gs = GlobalStatistics(data_size=0, num_calls=0, weekdays_online=weekdays_online, weekdays_offline=weekdays_offline)
+            gs = GlobalStatistics(data_size=starting_size, num_calls=starting_calls, weekdays_online=weekdays_online, weekdays_offline=weekdays_offline)
             gs.save()
         else:
             for gs in GlobalStatistics.objects.all():
+                if gs.data_size <= 0:
+                    gs.data_size = starting_size
+                if gs.num_calls <= 0:
+                    gs.num_calls = WebsiteCall.objects.all().count()
                 gs.weekdays_online = weekdays_online
                 gs.weekdays_offline = weekdays_offline
                 gs.save()
