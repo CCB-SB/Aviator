@@ -318,7 +318,7 @@ def autocomplete(request):
 
 def curated_autocomplete(request):
     if 'q' in request.GET:
-        columns = ['title', 'status', 'percentage', 'authors', 'year', 'journal', 'pubmed_id', 'biotools_id',
+        columns = ['title', 'status', 'percentage', 'authors', 'year', 'journal', 'pubmed_id',
                    'description', 'url', 'tag_tags', 'website']
         qs = CuratedWebsite.objects.all().prefetch_related('tags').annotate(
             tag_tags=ArrayAgg('tags__name'))
