@@ -1,6 +1,6 @@
 
     .js-plotly-plot .plotly, .js-plotly-plot .plotly div {
-        margin: auto;
+        margin: auto !important;
       }
       @media (min-width: 768px) {
         #third {
