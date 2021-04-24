@@ -9,6 +9,8 @@
   <title>Aviator</title>
   <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet" type="text/css">
   <link href="{% static 'css/aviator.css' %}" rel="stylesheet" type="text/css">
+  <link href="{% static 'css/swagger-ui.css' %}" rel="stylesheet" type="text/css">
+  <link href="{% static 'css/aviator_openapi.css' %}" rel="stylesheet" type="text/css">
 
   <link rel="stylesheet"
         href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.4.1/styles/a11y-dark.min.css">
@@ -16,6 +18,8 @@
   <script src="{% static 'js/jquery.min.js' %}"></script>
   <script src="{% static 'js/popper.min.js' %}"></script>
   <script src="{% static 'js/bootstrap.min.js' %}"></script>
+  <script src="{% static 'js/swagger-ui-bundle.js' %}"></script>
+  <script src="{% static 'js/swagger-ui-standalone-preset.js' %}"></script>
 </head>
 <body>
 {% include "navbar.html" %}
@@ -30,6 +34,7 @@
         parameter
         provided as a GET request. This endpoint will only be queried with valid input values.
       </p>
+      <!--
       <p>
         Example:
       </p>
@@ -38,6 +43,7 @@
         Query: <a href="https://www.ccb.uni-saarland.de/mirmaster/aviator_api?input=47816514687315">https://www.ccb.uni-saarland.de/mirmaster/aviator_api?input=47816514687315</a><br>
         Result: 66
       </p>
+      -->
     </div>
   </div>
   <br>
@@ -64,7 +70,6 @@
       </div>
     </div>
   </div>
-
 
   <div class="row" style="margin-top: 1rem">
     <div class="col-12">
@@ -150,6 +155,36 @@ exit 0;</code></pre>
       </div>
     </div>
   </div>
+
+
+  <br>
+  <br>
+
+  <div class="card aviator-card">
+    <div class="card-body">
+      <h3>
+        Example:
+      </h3>
+      <p>
+        Endpoint: <a href="https://www.ccb.uni-saarland.de/mirmaster/aviator_api">https://www.ccb.uni-saarland.de/mirmaster/aviator_api</a><br>
+        Query: <a href="https://www.ccb.uni-saarland.de/mirmaster/aviator_api?input=47816514687315">https://www.ccb.uni-saarland.de/mirmaster/aviator_api?input=47816514687315</a><br>
+        Result: 66
+      </p>
+    </div>
+  </div>
+  <br>
+  <br>
+  <div class="card aviator-card">
+    <div class="card-body">
+        <h3>
+          Open API Example:
+        </h3>
+
+        <div id="swagger-ui"></div>
+      </div>
+    </div>
+  </div>
+
 </div>
 </body>
 </html>
@@ -166,5 +201,20 @@ exit 0;</code></pre>
     }
     document.getElementById("api_box_" + num).style.display = "block";
   }
+
+</script>
+<script>
+window.onload = function() {
+  const ui = SwaggerUIBundle({
+    url: "{% static '/swagger/swagger.json' %}",//"",
+    dom_id: '#swagger-ui',
+    presets: [
+      SwaggerUIBundle.presets.apis,
+      SwaggerUIStandalonePreset
+    ]
+  })
+
+  window.ui = ui
+}
 </script>
 <script>hljs.initHighlightingOnLoad();</script>

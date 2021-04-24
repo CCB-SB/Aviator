@@ -107,6 +107,23 @@
         <div class="chart-container" style="position: relative; width: 40vw">
           <canvas id="myChart" height="150" width="400"></canvas>
         </div>
+        <div style="text-align:right">
+          <table style="margin-left: auto;margin-right: auto;">
+            <tr>
+              <td style="padding-right:25px;">Overall processed Website Calls:</td>
+              <td style="padding-right:5px;">{{ overall_calls }}</td>
+              <td style="text-align:left">calls</td>
+            </tr>
+            <tr>
+              <td style="padding-right:25px;">Overall used disk space:</td>
+              <td style="padding-right:5px;">{{ overall_size }}</td>
+              <td style="text-align:left">gigabytes</td>
+            </tr>
+          </table>
+          
+          <br>
+          <br>
+        </div>
       </div>
     </div>
   </div>

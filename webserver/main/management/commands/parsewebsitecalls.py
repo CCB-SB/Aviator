@@ -3,6 +3,7 @@ from main.models import Website
 from main.models import WebsiteCall
 from main.models import WebsiteStatus
 from main.models import Publication
+from main.models import GlobalStatistics
 import os, gzip
 import orjson as json
 from datetime import datetime, timedelta
@@ -14,9 +15,6 @@ from os.path import join, basename
 from collections import defaultdict
 from django.contrib.postgres.aggregates import BoolOr
 import ahocorasick
-
-
-
 
 class Command(BaseCommand):
     help = 'Creates the website / website calls model and a csv from a given source folder'
@@ -47,7 +45,17 @@ class Command(BaseCommand):
                            'fox-metrics', 'mixpanel', 'heap', 'statcounter', 'stat-counter',
                            'chartbeat', 'clicky',
                            'leadfeeder', 'piwik']
+        def get_size(start_path = '.'):
+            total_size = 0
+            for dirpath, dirnames, filenames in os.walk(start_path):
+                for f in filenames:
+                    fp = os.path.join(dirpath, f)
+                    # skip if it is symbolic link
+                    if not os.path.islink(fp):
+                        total_size += os.path.getsize(fp)
 
+            return total_size
+    
         def make_automaton(words, idx_only=False):
             result = ahocorasick.Automaton()
             for i, w in enumerate(words):
@@ -210,10 +218,12 @@ class Command(BaseCommand):
             telemetry_folders = [inputfolder]
         self.stdout.write(f"Found {len(telemetry_folders)} telemetry folders")
 
+        overall_size = 0
         new_websites = 0
         new_websitecalls = 0
         new_paper_connections = 0
         for tf in tqdm(telemetry_folders):
+            overall_size += get_size(tf)
             result = {}
             all_tbls = pd.concat((pd.read_csv(f, sep='\t') for f in glob(join(tf, "*.csv"))))
             all_tbls.set_index("Original URL", inplace=True)
@@ -393,6 +403,11 @@ class Command(BaseCommand):
 
             WebsiteCall.objects.bulk_create(create_websitecalls)
 
+        #Update Global Statistics
+        for gs in GlobalStatistics.objects.all():
+            gs.data_size = gs.data_size + overall_size
+            gs.num_calls = gs.num_calls + new_websitecalls
+            gs.save()
 
 
         # Save as csv

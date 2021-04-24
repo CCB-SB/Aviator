@@ -1,7 +1,7 @@
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, render
 from django.views.decorators.cache import cache_page
-from .models import Website, WebsiteCall, Publication, Tag, CuratedWebsite
+from .models import Website, WebsiteCall, Publication, Tag, CuratedWebsite, GlobalStatistics
 from datetime import timedelta
 import json
 from django.contrib.postgres.aggregates import ArrayAgg, BoolOr
@@ -107,6 +107,11 @@ def prepare_csv_export(qs, columns, header, request, email_fields, ignore_fields
 
 def index(request):
     context = get_index_stats()
+    context['overall_calls'] = 0
+    context['overall_size'] = 0
+    for gs in GlobalStatistics.objects.all():
+        context['overall_calls'] = "{:,}".format(gs.num_calls)
+        context['overall_size'] = "{:,}".format(gs.data_size // 1000000000)
     return render(request, 'index.html', context)
 
 
@@ -250,6 +255,39 @@ def statistics(request):
         Publication.objects.all().prefetch_related('websites').annotate(
             website_pks=ArrayAgg('websites'),
             status=ArrayAgg('websites__status')))
+    context['weekdays_online'] = [0,0,0,0,0,0,0,0]
+    context['weekdays_offline'] = [0,0,0,0,0,0,0,0]
+    context['weekdays_average'] = [0,0,0,0,0,0,0]
+    context['recovery_rate'] = [0,0,0,0,0,0,0]
+    for gs in GlobalStatistics.objects.all():
+        context['weekdays_online'] = gs.weekdays_online
+        context['weekdays_offline'] = gs.weekdays_offline
+        for n in range(len(context['weekdays_average'])):
+            context['weekdays_average'][n] = context['weekdays_online'][0] - context['weekdays_online'][n + 1]
+        #recovery_rate
+        start = 0
+        index = 0
+        state = 0
+        for n in range(len(gs.recovery_rate)):
+            if n == 0:
+                if gs.recovery_rate[n] == 0:
+                    start = 1
+            if gs.recovery_rate[n] == 0:
+                if state == 0:
+                    index = n
+                    state = 1
+            else:
+                state = 0
+
+        context['recovery_rate'] = []
+        context['recovery_rate_legend'] = []
+        for n in range(start, index + 1):
+            context['recovery_rate'].append(gs.recovery_rate[n])
+            if n == 1:
+                context['recovery_rate_legend'].append(f'{n} day')
+            else:
+                context['recovery_rate_legend'].append(f'{n} days')
+        ##
     return render(request, 'statistics.html', context)
 
 
@@ -314,8 +352,8 @@ def generate_autocomplete_list(columns, email_fields, ignore_cols, listed_cols, 
         values = qs.values(field_name)
         for hm in values:
             for item in hm[field_name]:
-                if item in seen: continue
-                if search not in item.lower(): continue
+                if str(item) in seen: continue
+                if search not in str(item).lower(): continue
                 seen[item] = 1
                 sList.append(item)
         sList.sort()
@@ -607,3 +645,8 @@ class CuratedTable(Table):
             return ret
         except Exception as e:
             return self.handle_exception(e)
+
+def aviator_api(request):    
+    if "input" in request.GET and request.GET["input"].isdigit():
+        return HttpResponse(sum(int(e) for e in request.GET["input"]), content_type="text/plain")
+    return HttpResponse()

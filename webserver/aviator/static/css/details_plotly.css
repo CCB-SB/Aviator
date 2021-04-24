@@ -1,0 +1,9 @@
+
+    .js-plotly-plot .plotly, .js-plotly-plot .plotly div {
+        margin: auto !important;
+      }
+      @media (min-width: 768px) {
+        #third {
+          max-width: 33%;
+        }
+      }
