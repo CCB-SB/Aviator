@@ -37,10 +37,6 @@ class Command(BaseCommand):
         else:
             self.stdout.write("No biotoolsid2pmid")
 
-        ###########################
-        Publication.objects.all().delete()
-        ###################################
-
         pub_tbl = pd.read_csv(csv_file, sep='\t', index_col="PMID")
         pub_tbl.index = pub_tbl.index.astype(str)
         pub_dict = pub_tbl.to_dict()
