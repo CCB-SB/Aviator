@@ -150,10 +150,10 @@ def publications(request):
             columns = ['title', 'status', 'percentage', 'authors', 'year', 'journal', 'pubmed_id', 'biotools_id',
                        'abstract', 'original_url', 'derived_url', 'contact_mail', 'user_kwds',
                        'scripts', 'ssl', 'heap_size', 'website_pks']
-            header = ['Title', 'Status', 'Last 30 days', 'Authors', 'Year', 'Journal', 'PubMed',
+            header = ['Publication Title', 'Status', 'Last 30 days', 'Authors', 'Year', 'Journal', 'PubMed ID', 'bio.tools ID',
                       'Abstract',
-                      'Original URL', 'Derived URL', 'Contact Mail', 'Keywords',
-                      'Programming Languages', 'SSL', 'RAM Usage', 'Websites']
+                      'Original URL', 'Derived URL', 'Contact E-Mail', 'Keywords',
+                      'Programming Languages', 'SSL', 'RAM Usage', 'Details']
             email_fields = {"contact_mail"}
             ignore_fields = {"website_pks"}
             return prepare_csv_export(qs, columns, header, request, email_fields,
@@ -178,8 +178,8 @@ def curated(request):
         if form.is_valid():
             columns = ['title', 'status', 'percentage', 'authors', 'year', 'journal', 'pubmed_id',
                        'description', 'url', 'tag_tags', 'website']
-            header = ['Tool', 'Status', 'Last 30 days', 'Authors', 'Year', 'Journal', 'PubMed',
-                      'Description', 'URL', 'Keywords', 'Website']
+            header = ['Tool', 'Status', 'Last 30 days', 'Authors', 'Year', 'Journal', 'PubMed ID',
+                      'Description', 'URL', 'Keywords', 'Website Details']
             qs = CuratedWebsite.objects.all().prefetch_related('tags').annotate(
                 tag_tags=ArrayAgg('tags__name'))
             email_fields = {}
