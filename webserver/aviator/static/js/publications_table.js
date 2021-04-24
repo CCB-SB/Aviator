@@ -3,7 +3,7 @@ var numeric_cols = [2, 4];
 
 $(document).ready(function () {
     let cookie_name = "pubs_hidden_columns";
-    let standard_hidden_columns = [10, 12, 13, 14, 15];
+    let standard_hidden_columns = [7, 10, 12, 13, 14, 15];
     let save_days = 60;
 
     async function apply_foreign_filter() {
