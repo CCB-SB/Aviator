@@ -81,6 +81,7 @@ class Command(BaseCommand):
                     urls = [u for u in urls if u in filter_orig_urls]
                 if len(urls) > 0:
                     yield Publication(pubmed_id=i,
+                                      biotool_id = "",
                                       authors=str(row["authors"]).split(", "),
                                       title=row["title"],
                                       abstract=row["abstract"],
