@@ -53,27 +53,30 @@
     </tr>
   </table>
   <br>
-  
-  <div class="plots-header">
+  <style>
+    @media (min-width: 768px) {
+      .col-md-6 {
+        -ms-flex: 0 0 50%;
+        flex: 0 0 50%;
+        max-width: 33%;
+      }
+    }
+  </style>
+  <div class="statistics-box">
     <div class="row">
       <div class="col-md-6">
-        <canvas id="chart" width="300" height="150"></canvas>
+        <div id="frontend-chart"></div>
       </div>
       <div class="col-md-6">
-        <div id="frontend-chart"></div>
+        <canvas id="chart" width="300" height="150"></canvas>
       </div>
       <div class="col-md-6">
         <div id="backend-chart"></div>
       </div>
     </div>
   </div>
-  <!---->
-  <div class="plots-header">
-  </div>
-  <div class="plots-header">
-  </div>
-  <!---->
   <br>
+
   <table id="calls" class="table table-striped  table-dark">
     <thead>
     <tr>
@@ -212,15 +215,20 @@
   var layout = {
     title: 'Frontend response time',
     autosize: false,
-    width: 500,
-    height: 500,
+    width: 300,
+    height: 300,
     margin: {
       l: 50,
       r: 50,
-      b: 100,
+      b: 50,
       t: 100,
       pad: 4
-    }
+    },
+    xaxis: {
+      'visible': False, 
+      'showticklabels': False
+    },
+    template: plotly_dark
   };
   var data = [{
     y: [
@@ -240,15 +248,20 @@
   var layout = {
     title: 'Backend response time',
     autosize: false,
-    width: 500,
-    height: 500,
+    width: 300,
+    height: 300,
     margin: {
       l: 50,
       r: 50,
-      b: 100,
+      b: 50,
       t: 100,
       pad: 4
-    }
+    },
+    xaxis: {
+      'visible': False, 
+      'showticklabels': False
+    },
+    template: plotly_dark
   };
   var data = [{
     y: [
