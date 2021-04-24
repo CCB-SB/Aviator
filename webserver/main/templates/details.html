@@ -79,7 +79,16 @@
   <table id="calls" class="table table-striped  table-dark">
     <thead>
     <tr>
-      <th colspan="8" style="text-align:center;">Last Website Calls</th>
+      <th>
+        <div class="col-sm-12 col-md-6">
+          <div class="dt-buttons btn-group">
+            <button class="btn btn-secondary" tabindex="0" aria-controls="table" type="button" onclick="download_table_as_csv('calls');">
+              <span><i class="fas fa-download"></i> CSV</span>
+            </button> 
+          </div>
+        </div>
+      </th>
+      <th colspan="7" style="text-align:center;">Last Website Calls</th>
     </tr>
     <tr>
       <th>Datetime</th>
@@ -209,7 +218,11 @@ function download_table_as_csv(table_id, separator = ';') {
       title: 'Frontend response time'
   };
   var data = [{
-    y: call.json_data.frontend,
+    y: [
+        {% for call in calls %}
+          "{{ call.json_data.frontend }}",
+        {% endfor %}
+      ],
     boxpoints: 'all',
     jitter: 0.3,
     pointpos: -1.8,
@@ -223,7 +236,11 @@ function download_table_as_csv(table_id, separator = ';') {
       title: 'Backend response time'
   };
   var data = [{
-    y: call.json_data.backend,
+    y: [
+        {% for call in calls %}
+          "{{ call.json_data.backend }}",
+        {% endfor %}
+      ],
     boxpoints: 'all',
     jitter: 0.3,
     pointpos: -1.8,
