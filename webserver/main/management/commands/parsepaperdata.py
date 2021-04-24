@@ -37,6 +37,10 @@ class Command(BaseCommand):
         else:
             self.stdout.write("No biotoolsid2pmid")
 
+        ###########################
+        Publication.objects.all().delete()
+        ###################################
+
         pub_tbl = pd.read_csv(csv_file, sep='\t', index_col="PMID")
         pub_tbl.index = pub_tbl.index.astype(str)
         pub_dict = pub_tbl.to_dict()
@@ -64,9 +68,9 @@ class Command(BaseCommand):
             p.contact_mail = split_w_nan(pub_dict["Email"][p.pubmed_id], ';')
             if pmid2biotoolsid:
                 if p.pubmed_id in pmid2biotoolsid:
-                    p.biotool_id = pmid2biotoolsid[p.pubmed_id]
+                    p.biotools_id = pmid2biotoolsid[p.pubmed_id]
                 else:
-                    p.biotool_id = ""
+                    p.biotools_id = ""
 
         Publication.objects.bulk_update(papers_to_update,
                                         ["title", "abstract", "year", "authors", "journal", "url",
@@ -79,9 +83,13 @@ class Command(BaseCommand):
                 urls = row["URL"].split('; ')
                 if filter_orig_urls:
                     urls = [u for u in urls if u in filter_orig_urls]
+                biotools_id = ""
+                if pmid2biotoolsid:
+                    if i in pmid2biotoolsid:
+                        biotools_id = pmid2biotoolsid[i]
                 if len(urls) > 0:
                     yield Publication(pubmed_id=i,
-                                      biotool_id = "",
+                                      biotools_id = biotools_id,
                                       authors=str(row["authors"]).split(", "),
                                       title=row["title"],
                                       abstract=row["abstract"],
