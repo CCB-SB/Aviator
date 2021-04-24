@@ -377,7 +377,6 @@ $(document).ready(function () {
 
     function getHiddenColumns() {
         if (getCookie(cookie_name) == null) {
-            console.log("getCookie: " + standard_hidden_columns);
             return standard_hidden_columns;
         }
         values = getCookie(cookie_name).split(",");

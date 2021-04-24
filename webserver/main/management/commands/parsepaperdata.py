@@ -65,6 +65,8 @@ class Command(BaseCommand):
             if pmid2biotoolsid:
                 if p.pubmed_id in pmid2biotoolsid:
                     p.biotool_id = pmid2biotoolsid[p.pubmed_id]
+                else:
+                    p.biotool_id = ""
 
         Publication.objects.bulk_update(papers_to_update,
                                         ["title", "abstract", "year", "authors", "journal", "url",
