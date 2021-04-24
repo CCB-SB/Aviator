@@ -6,7 +6,8 @@ rule all:
         "results/nar_ws.pubmed_info.csv",
         "results/wos_results_filtered_pmids",
         "results/publication_table_for_webservice.csv",
-        expand("download/urls2query.{n}.csv", n=range(1, BATCHES + 1))
+        expand("download/urls2query.{n}.csv", n=range(1, BATCHES + 1)),
+	"results/biotoolsid2pmid.csv"
 
 rule get_query_table:
     output:
@@ -47,6 +48,14 @@ rule get_biotools_pubmed_tbl:
         csv="results/biotools.filtered.pubmed_info.csv"
     conda: "envs/biopython.yml"
     script: "scripts/get_biotools_pubmed_info.py"
+
+rule get_biotoolsid2pmid:
+    input:
+        filtered="results/biotools.filtered.csv",
+        json="results/biotools.json"
+    output:
+        "results/biotoolsid2pmid.csv"
+    script: "scripts/add_biotools_id.R"
 
 rule collect_nar_ws_pubmed_tbl:
     input:
