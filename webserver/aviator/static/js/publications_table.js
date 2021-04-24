@@ -110,7 +110,7 @@ $(document).ready(function () {
             }
         }, {
             "data": "biotools_id", render: function (data) {
-                return createCellText(`<a target="_blank" rel="noopener" href="https://https://bio.tools/${data}/">${data}</a>`);
+                return createCellText(`<a target="_blank" rel="noopener" href="https://bio.tools/${data}">${data}</a>`);
             }
         }, {
             "data": "abstract", render: function (data) {
