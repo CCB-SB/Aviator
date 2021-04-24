@@ -245,6 +245,22 @@ calculatestatistics-production:
   stage: managedb-production
   <<: *calculatestatistics
   <<: *production_vars
+
+.parsebiotoolsid: &parsebiotoolsid
+  script:
+    - *setup_docker_tls
+    - docker-compose -f webserver/production.yml run --rm django python manage.py parsebiotoolsid ${BIOTOOLSID_PATH}
+  <<: *manage_only_master_remote
+
+parsebiotoolsid-staging:
+  stage: managedb-staging
+  <<: *parsebiotoolsid
+  <<: *staging_vars
+
+parsebiotoolsid-production:
+  stage: managedb-production
+  <<: *parsebiotoolsid
+  <<: *production_vars
   
 .reset_db: &reset_db
   script:
