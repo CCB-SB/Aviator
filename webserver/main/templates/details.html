@@ -14,6 +14,7 @@
   <script src="{% static 'js/popper.min.js' %}"></script>
   <script src="{% static 'js/bootstrap.min.js' %}"></script>
   <script src="{% static 'js/chart.min.js' %}"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/plotly.js/1.58.4/plotly.min.js"></script>
 </head>
 <body>
 {% include "navbar.html" %}
@@ -53,7 +54,13 @@
   </table>
   <br>
   <div class="chart-box">
-    <canvas id="chart" width="400" height="200"></canvas>
+    <canvas id="chart" width="300" height="150"></canvas>
+  </div>
+  <div class="chart-box">
+    <canvas id="frontend-chart" width="300" height="150"></canvas>
+  </div>
+  <div class="chart-box">
+    <canvas id="backend-chart" width="300" height="150"></canvas>
   </div>
   <br>
   <table class="table table-striped  table-dark">
@@ -125,6 +132,10 @@
       }]
     },
     options: {
+      title: {
+        display: true,
+        text: 'Availability'
+      },
       legend: {
         display: false
       },
@@ -149,4 +160,73 @@
       }
     }
   });
+  ////////////////////
+  var layout = {
+      title: 'Frontend response time'
+  };
+  var data = [{
+    y: call.json_data.frontend,
+    boxpoints: 'all',
+    jitter: 0.3,
+    pointpos: -1.8,
+    type: 'box'
+  }];
+
+  Plotly.newPlot('frontend-chart', data, layout);
+  /////////////////////////
+  ////////////////////
+  var layout = {
+      title: 'Backend response time'
+  };
+  var data = [{
+    y: call.json_data.backend,
+    boxpoints: 'all',
+    jitter: 0.3,
+    pointpos: -1.8,
+    type: 'box'
+  }];
+
+  Plotly.newPlot('backend-chart', data, layout);
+  /////////////////////////
+/*
+  var ctx1 = document.getElementById('frontend-chart').getContext('2d');
+  var myChart = new Chart(ctx1, {
+    type: 'scatter',
+    data: call.json_data.frontend,
+    options: {
+      title: {
+        display: true,
+        text: 'Frontend response time'
+      },
+      scales: {
+        x: {
+          type: 'linear',
+          position: 'bottom'
+        }
+      }
+    }
+  });
+  var ctx3 = document.getElementById('backend-chart').getContext('2d');
+  var myChart = new Chart(ctx1, {
+    type: 'scatter',
+    data: [
+          {% for call in calls %}
+            {% if call.ok and call.error == "" and call.code == 200 %}1{% else %}0{% endif %},
+          {% endfor %}
+        ]
+    //call.json_data.backend,
+    options: {
+      title: {
+        display: true,
+        text: 'Backend response time'
+      },
+      scales: {
+        x: {
+          type: 'linear',
+          position: 'bottom'
+        }
+      }
+    }
+  });
+  */
 </script>
