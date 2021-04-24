@@ -11,6 +11,7 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument('csv_file')
         parser.add_argument('url_filter', default=None)
+        parser.add_argument('biotoolsid2pmid', default=None)
 
     def handle(self, *args, **options):
         try:
@@ -26,6 +27,15 @@ class Command(BaseCommand):
             self.stdout.write("Filter applied")
         else:
             self.stdout.write("No Filter applied")
+
+        pmid2biotoolsid = None
+        if options["biotoolsid2pmid"] is not None and \
+            options["biotoolsid2pmid"] not in {"None", "null", ""}:
+            df = pd.read_csv(options['biotoolsid2pmid'], sep='\t', names = ["biotoolsID","pmid"])
+            pmid2biotoolsid = dict(zip(list(df.pmid), list(df.biotoolsID)))
+            self.stdout.write("Applied biotoolsid2pmid")
+        else:
+            self.stdout.write("No biotoolsid2pmid")
 
         pub_tbl = pd.read_csv(csv_file, sep='\t', index_col="PMID")
         pub_tbl.index = pub_tbl.index.astype(str)
@@ -43,7 +53,7 @@ class Command(BaseCommand):
             p.title = pub_dict["title"][p.pubmed_id]
             p.abstract = pub_dict["abstract"][p.pubmed_id]
             p.year = pub_dict["year"][p.pubmed_id]
-            p.authors = pub_dict["authors"][p.pubmed_id].split(", ")
+            p.authors = str(pub_dict["authors"][p.pubmed_id]).split(", ")
             p.journal = pub_dict["journal"][p.pubmed_id]
             urls = pub_dict["URL"][p.pubmed_id].split('; ')
             if filter_orig_urls:
@@ -52,6 +62,9 @@ class Command(BaseCommand):
             p.user_kwds = split_w_nan(pub_dict["keywords_all"][p.pubmed_id], ';')
             p.mesh_terms = split_w_nan(pub_dict["mesh_terms_all"][p.pubmed_id], ';')
             p.contact_mail = split_w_nan(pub_dict["Email"][p.pubmed_id], ';')
+            if pmid2biotoolsid:
+                if p.pubmed_id in pmid2biotoolsid:
+                    p.biotool_id = pmid2biotoolsid[p.pubmed_id]
 
         Publication.objects.bulk_update(papers_to_update,
                                         ["title", "abstract", "year", "authors", "journal", "url",

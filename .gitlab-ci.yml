@@ -118,7 +118,7 @@ deploy-production:
 .filldb: &filldb
   script:
     - *setup_docker_tls
-    - docker-compose -f webserver/production.yml run --rm django python manage.py parsepaperdata ${PUBLICATIONS_PATH} ${FILTER_PATH}
+    - docker-compose -f webserver/production.yml run --rm django python manage.py parsepaperdata ${PUBLICATIONS_PATH} ${FILTER_PATH} ${BIOTOOLSID_PATH}
     - docker-compose -f webserver/production.yml run --rm django python manage.py parsecurated ${CURATED_PATH}
     - docker-compose -f webserver/production.yml run --rm django python manage.py parsekeywords ${KEYWORDS_PATH}
   <<: *manage_only_master_remote
@@ -201,7 +201,7 @@ update_websitecalls_and_stats-production:
 .parsepaperdata: &parsepaperdata
   script:
     - *setup_docker_tls
-    - docker-compose -f webserver/production.yml run --rm django python manage.py parsepaperdata ${PUBLICATIONS_PATH} ${FILTER_PATH}
+    - docker-compose -f webserver/production.yml run --rm django python manage.py parsepaperdata ${PUBLICATIONS_PATH} ${FILTER_PATH} ${BIOTOOLSID_PATH}
   <<: *manage_only_master_remote
 
 parsepaperdata-staging:
