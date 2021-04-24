@@ -2,7 +2,7 @@ from django.core.management.base import BaseCommand
 from django.conf import settings
 from django.contrib.postgres.aggregates import BoolOr
 from django.core.mail import send_mail
-from main.models import Website, WebsiteCall, WebsiteStatus, CuratedWebsite
+from main.models import Website, WebsiteCall, WebsiteStatus, CuratedWebsite, GlobalStatistics
 
 from datetime import timedelta, date, datetime
 
@@ -35,10 +35,24 @@ class Command(BaseCommand):
         for w in website_ok:
             website_states[w['website']][w["datetime"].date()] = w["ok"]
 
+        #weekday statistics
+        weekdays_online = [0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]
+        weekdays_offline = [0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]
+        #recovery statistics
+        recovery_rate = [0] * (max_days + 1)
+        #######################################
         for website in tqdm(Website.objects.all()):
             states = []
             offline = 0
             online = 0
+            #weekday statistics
+            tmp_weekdays_online = [0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]
+            tmp_weekdays_offline = [0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]
+            tmp_weekdays_divisiors = [0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]
+            #recovery statistics
+            last_state = 0
+            last_date = None
+            ########
             for day_delta in range(max_days, -1, -1):
                 d_date = (latest_time-timedelta(days=day_delta)).date()
                 state = website_states[website.id].get(d_date, None)
@@ -46,8 +60,30 @@ class Command(BaseCommand):
                 if state is not None:
                     if state:
                         online += 1
+                        tmp_weekdays_online[d_date.isoweekday()] = tmp_weekdays_online[d_date.isoweekday()] + 1
+                        tmp_weekdays_divisiors[d_date.isoweekday()] = tmp_weekdays_divisiors[d_date.isoweekday()] + 1
+                        tmp_weekdays_online[0] = tmp_weekdays_online[0] + 1
+                        tmp_weekdays_divisiors[0] = tmp_weekdays_divisiors[0] + 1
+                        if last_state == 0:
+                            last_state = 1
+                        if last_state == 2:
+                            days = (d_date-last_date).days
+                            if days < len(recovery_rate):
+                                recovery_rate[days] = recovery_rate[days] + 1
+                            last_state = 0
                     else:
                         offline += 1
+                        tmp_weekdays_offline[d_date.isoweekday()] = tmp_weekdays_offline[d_date.isoweekday()] + 1
+                        tmp_weekdays_divisiors[d_date.isoweekday()] = tmp_weekdays_divisiors[d_date.isoweekday()] + 1
+                        tmp_weekdays_offline[0] = tmp_weekdays_offline[0] + 1
+                        tmp_weekdays_divisiors[0] = tmp_weekdays_divisiors[0] + 1
+                        if last_state == 1:
+                            last_state = 2
+                            last_date = d_date
+            for n in range(len(tmp_weekdays_divisiors)):
+                weekdays_online[n] = weekdays_online[n] + (tmp_weekdays_online[n] / tmp_weekdays_divisiors[n])
+                weekdays_offline[n] = weekdays_offline[n] + (tmp_weekdays_offline[n] / tmp_weekdays_divisiors[n])
+                
             if "total_heap_size" in website.calls.latest("datetime").json_data:
                 website.last_heap_size = website.calls.latest("datetime").json_data["total_heap_size"]#used_heap_size
             else:
@@ -63,6 +99,29 @@ class Command(BaseCommand):
             website_updates.append(website)
 
         Website.objects.bulk_update(website_updates, ["status", "states", "percentage", "last_heap_size"])
+
+        #weekday statistics
+        new_weekdays_online = [0,0,0,0,0,0,0,0]
+        new_weekdays_offline = [0,0,0,0,0,0,0,0]
+        for n in range(len(weekdays_online)):
+            new_weekdays_online[n] = int(weekdays_online[n])
+            new_weekdays_offline[n] = int(weekdays_offline[n])
+        starting_size = 2089000000000
+        if GlobalStatistics.objects.all().count() <= 0:
+            starting_calls = WebsiteCall.objects.all().count()
+            gs = GlobalStatistics(data_size=starting_size, num_calls=starting_calls, weekdays_online=weekdays_online, weekdays_offline=weekdays_offline, recovery_rate=recovery_rate)
+            gs.save()
+        else:
+            for gs in GlobalStatistics.objects.all():
+                if gs.data_size <= 0:
+                    gs.data_size = starting_size
+                if gs.num_calls <= 0:
+                    gs.num_calls = WebsiteCall.objects.all().count()
+                gs.weekdays_online = weekdays_online
+                gs.weekdays_offline = weekdays_offline
+                gs.recovery_rate = recovery_rate
+                gs.save()
+        #######################################
 
         def sum_digits(n):
             s = 0
@@ -82,8 +141,8 @@ class Command(BaseCommand):
                 if remind and (website.states[len(website.states) - (website.days_reminder + 1)]):
                     try:
                         send_mail(
-                            'Your website has been offline for 3 days',
-                            f'This is an automated email from aviator to inform you, that your website {website.url} has been offline for 3 days',
+                            f'Your website has been offline for {website.days_reminder} days',
+                            f'This is an automated email from aviator to inform you, that your website {website.url} has been offline for {website.days_reminder} days',
                             'no-reply@aviator.ccb.uni-saarland.de',
                             [website.contact_mail],
                             fail_silently=False,

@@ -1,0 +1,47 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "To monitor the tool functionality more effectively than over their entry page we provide simple API snippets in different programming languages that can be integrated into your web-server. The API endpoint computes and returns the digit sum for the \"input\" parameter provided as a GET request. This endpoint will only be queried with valid input values.",
+    "version": "1.0.0",
+    "title": "Aviator"
+  },
+  "host": "anathema.cs.uni-saarland.de",
+  "basePath": "/aviator",
+  "schemes": [
+    "https",
+    "http"
+  ],
+  "paths": {
+    "/aviator_api": {
+      "get": {
+        "tags": [
+          "Aviator"
+        ],
+        "summary": "Returns the digit sum",
+        "description": "Computes and returns the digit sum for the \"input\" parameter provided as a GET request.",
+        "produces": [
+          "text/plain"
+        ],
+        "parameters": [
+          {
+            "name": "input",
+            "in": "query",
+            "description": "A random number.",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        }
+      }
+    }
+  }
+}

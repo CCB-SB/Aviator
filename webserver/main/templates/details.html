@@ -10,10 +10,12 @@
   <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet" type="text/css">
   <link href="{% static 'css/chart.min.css' %}" rel="stylesheet" type="text/css">
   <link href="{% static 'css/aviator.css' %}" rel="stylesheet" type="text/css">
+  <link href="{% static 'css/details_plotly.css' %}" rel="stylesheet" type="text/css">
   <script src="{% static 'js/jquery.min.js' %}"></script>
   <script src="{% static 'js/popper.min.js' %}"></script>
   <script src="{% static 'js/bootstrap.min.js' %}"></script>
   <script src="{% static 'js/chart.min.js' %}"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/plotly.js/1.58.4/plotly.min.js"></script>
 </head>
 <body>
 {% include "navbar.html" %}
@@ -21,7 +23,7 @@
   <table class="table table-striped  table-dark">
     <thead>
     <tr>
-      <th colspan="6" style="text-align:center;">Website</th>
+      <th colspan="10" style="text-align:center;">Website</th>
     </tr>
     <tr>
       <th>Original URL</th>
@@ -52,14 +54,38 @@
     </tr>
   </table>
   <br>
-  <div class="chart-box">
-    <canvas id="chart" width="400" height="200"></canvas>
+  <div class="statistics-box">
+    <div class="row">
+      <div class="col-md-6" id="third">
+        <div id="frontend-chart"></div>
+      </div>
+      <div class="col-md-6" id="third">
+        <canvas id="chart" width="300" height="150"></canvas>
+      </div>
+      <div class="col-md-6" id="third">
+        <div id="backend-chart"></div>
+      </div>
+    </div>
   </div>
   <br>
-  <table class="table table-striped  table-dark">
+
+  <table id="calls" class="table table-striped  table-dark">
     <thead>
     <tr>
-      <th colspan="5" style="text-align:center;">Last Website Calls</th>
+      <th>
+        <div id="table_wrapper" class="dataTables_wrapper dt-bootstrap4">
+          <div class="row">
+            <div class="col-sm-12 col-md-6">
+              <div class="dt-buttons btn-group">
+                <button class="btn btn-secondary" tabindex="0" aria-controls="table" type="button" onclick="download_table_as_csv('calls');">
+                  <span><i class="fas fa-download"></i> CSV</span>
+                </button> 
+              </div>
+            </div>
+          </div>
+        </div>
+      </th>
+      <th colspan="7" style="text-align:center;">Last Website Calls</th>
     </tr>
     <tr>
       <th>Datetime</th>
@@ -91,13 +117,37 @@
       </tr>
     {% endfor %}
   </table>
-  >
 
 </div>
+
 </body>
 </html>
 
 <script>
+  function download_table_as_csv(table_id, separator = ';') {
+      var rows = document.querySelectorAll('table#' + table_id + ' tr');
+      var csv = [];
+      for (var i = 0; i < rows.length; i++) {
+          var row = [], cols = rows[i].querySelectorAll('td, th');
+          for (var j = 0; j < cols.length; j++) {
+              var data = cols[j].innerText.replace(/(\r\n|\n|\r)/gm, '').replace(/(\s\s)/gm, ' ')
+              data = data.replace(/"/g, '""');
+              row.push('"' + data + '"');
+          }
+          csv.push(row.join(separator));
+      }
+      var csv_string = csv.join('\n');
+      var filename = 'export_' + {{ website.pk }} + '_' + new Date().toLocaleDateString() + '.csv';
+      var link = document.createElement('a');
+      link.style.display = 'none';
+      link.setAttribute('target', '_blank');
+      link.setAttribute('href', 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv_string));
+      link.setAttribute('download', filename);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+  }
+
   Chart.defaults.global.defaultFontColor = "#dee2e6";
   var ctx2 = document.getElementById('chart').getContext('2d');
   var myChart = new Chart(ctx2, {
@@ -125,6 +175,10 @@
       }]
     },
     options: {
+      title: {
+        display: true,
+        text: 'Availability'
+      },
       legend: {
         display: false
       },
@@ -149,4 +203,113 @@
       }
     }
   });
+  ////////////////////
+  var layout = {
+    title: 'Frontend response time (in ms)',
+    autosize: false,
+    width: 300,
+    height: 300,
+    margin: {
+      l: 50,
+      r: 50,
+      b: 50,
+      t: 100,
+      pad: 4
+    },
+    xaxis: {
+      'visible': false, 
+      'showticklabels': false
+    },
+    plot_bgcolor:"#c8c8c8",
+    paper_bgcolor:"#c8c8c8"
+  };
+  var data = [{
+    y: [
+        {% for call in calls %}
+          "{{ call.json_data.frontend }}",
+        {% endfor %}
+      ],
+    boxpoints: 'all',
+    jitter: 0.3,
+    pointpos: -1.8,
+    type: 'box'
+  }];
+
+  Plotly.newPlot('frontend-chart', data, layout);
+  /////////////////////////
+  ////////////////////
+  var layout = {
+    title: 'Backend response time (in ms)',
+    autosize: false,
+    width: 300,
+    height: 300,
+    margin: {
+      l: 50,
+      r: 50,
+      b: 50,
+      t: 100,
+      pad: 4
+    },
+    xaxis: {
+      'visible': false, 
+      'showticklabels': false
+    },
+    plot_bgcolor:"#c8c8c8",
+    paper_bgcolor:"#c8c8c8"
+  };
+  var data = [{
+    y: [
+        {% for call in calls %}
+          "{{ call.json_data.backend }}",
+        {% endfor %}
+      ],
+    boxpoints: 'all',
+    jitter: 0.3,
+    pointpos: -1.8,
+    type: 'box'
+  }];
+
+  Plotly.newPlot('backend-chart', data, layout);
+  /////////////////////////
+/*
+  var ctx1 = document.getElementById('frontend-chart').getContext('2d');
+  var myChart = new Chart(ctx1, {
+    type: 'scatter',
+    data: call.json_data.frontend,
+    options: {
+      title: {
+        display: true,
+        text: 'Frontend response time'
+      },
+      scales: {
+        x: {
+          type: 'linear',
+          position: 'bottom'
+        }
+      }
+    }
+  });
+  var ctx3 = document.getElementById('backend-chart').getContext('2d');
+  var myChart = new Chart(ctx1, {
+    type: 'scatter',
+    data: [
+          {% for call in calls %}
+            {% if call.ok and call.error == "" and call.code == 200 %}1{% else %}0{% endif %},
+          {% endfor %}
+        ]
+    //call.json_data.backend,
+    options: {
+      title: {
+        display: true,
+        text: 'Backend response time'
+      },
+      scales: {
+        x: {
+          type: 'linear',
+          position: 'bottom'
+        }
+      }
+    }
+  });
+  */
 </script>
