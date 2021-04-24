@@ -147,7 +147,7 @@ def publications(request):
                 ssl=ArrayAgg('websites__certificate_secure'),
                 heap_size=ArrayAgg('websites__last_heap_size'),
                 website_pks=ArrayAgg('websites__pk'))
-            columns = ['title', 'status', 'percentage', 'authors', 'year', 'journal', 'pubmed_id',
+            columns = ['title', 'status', 'percentage', 'authors', 'year', 'journal', 'pubmed_id', 'biotools_id',
                        'abstract', 'original_url', 'derived_url', 'contact_mail', 'user_kwds',
                        'scripts', 'ssl', 'heap_size', 'website_pks']
             header = ['Title', 'Status', 'Last 30 days', 'Authors', 'Year', 'Journal', 'PubMed',
@@ -245,7 +245,7 @@ def websiteData(request):
 def paperData(request):
     data_papers = list(
         Publication.objects.all().values('pk', 'title', 'url', 'authors', 'abstract', 'year',
-                                         'journal', 'pubmed_id', 'contact_mail',
+                                         'journal', 'pubmed_id', 'biotools_id', 'contact_mail',
                                          'user_kwds').annotate(websites=ArrayAgg('websites')))
     return JsonResponse({"data": data_papers})
 
@@ -300,7 +300,7 @@ def autocomplete(request):
             ssl=ArrayAgg('websites__certificate_secure'),
             heap_size=ArrayAgg('websites__last_heap_size'),
             website_pks=ArrayAgg('websites'))
-        columns = ['title', 'status', 'percentage', 'authors', 'year', 'journal', 'pubmed_id',
+        columns = ['title', 'status', 'percentage', 'authors', 'year', 'journal', 'pubmed_id', 'biotools_id',
                    'abstract', 'original_url', 'derived_url', 'contact_mail', 'user_kwds',
                    'scripts', 'ssl', 'heap_size', 'website_pks']
         email_fields = {"contact_mail"}
@@ -309,8 +309,8 @@ def autocomplete(request):
                         str(k) in request.GET and request.GET[str(k)] not in {"", ";"}}
         qs = filter_queryset(qs, filter_col2v, columns, email_fields)
 
-        listed_cols = {1, 2, 3, 8, 9, 10, 11, 12, 13, 14, 15}
-        ignore_cols = {2, 4, 15}
+        listed_cols = {1, 2, 3, 9, 10, 11, 12, 13, 14, 15, 16}
+        ignore_cols = {2, 4, 16}
         return generate_autocomplete_list(columns, email_fields, ignore_cols, listed_cols, qs,
                                           request)
     return JsonResponse(list(), safe=False)
@@ -318,7 +318,7 @@ def autocomplete(request):
 
 def curated_autocomplete(request):
     if 'q' in request.GET:
-        columns = ['title', 'status', 'percentage', 'authors', 'year', 'journal', 'pubmed_id',
+        columns = ['title', 'status', 'percentage', 'authors', 'year', 'journal', 'pubmed_id', 'biotools_id',
                    'description', 'url', 'tag_tags', 'website']
         qs = CuratedWebsite.objects.all().prefetch_related('tags').annotate(
             tag_tags=ArrayAgg('tags__name'))
@@ -327,8 +327,8 @@ def curated_autocomplete(request):
                         str(k) in request.GET and request.GET[str(k)] not in {"", ";"}}
         qs = filter_queryset(qs, filter_col2v, columns, email_fields)
 
-        listed_cols = {3, 9}
-        ignore_cols = {10}
+        listed_cols = {3, 10}
+        ignore_cols = {11}
         return generate_autocomplete_list(columns, email_fields, ignore_cols, listed_cols, qs,
                                           request)
     return JsonResponse(list(), safe=False)
@@ -371,7 +371,7 @@ def generate_autocomplete_list(columns, email_fields, ignore_cols, listed_cols, 
 
 class Table(BaseDatatableView):
     model = Publication
-    columns = ['title', 'status', 'percentage', 'authors', 'year', 'journal', 'pubmed_id',
+    columns = ['title', 'status', 'percentage', 'authors', 'year', 'journal', 'pubmed_id', 'biotools_id',
                'abstract', 'original_url', 'derived_url', 'contact_mail', 'user_kwds',
                'scripts', 'ssl', 'heap_size', 'website_pks']
     max_display_length = 500
