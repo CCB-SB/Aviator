@@ -56,35 +56,28 @@
   <div class="chart-box">
     <canvas id="chart" width="300" height="150"></canvas>
   </div>
-  <div class="chart-box">
-    <canvas id="frontend-chart" width="300" height="150"></canvas>
+  <!---->
+  <div class="plots-header">
+    <div id="frontend-chart"></div>
   </div>
-  <div class="chart-box">
-    <canvas id="backend-chart" width="300" height="150"></canvas>
+  <div class="plots-header">
+    <div id="backend-chart"></div>
   </div>
+  <!---->
   <br>
-  <!---->
-  <div id="table_wrapper" class="dataTables_wrapper dt-bootstrap4">
-    <div class="row">
-      <div class="col-sm-12 col-md-6">
-        <div class="dt-buttons btn-group">
-          <button class="btn btn-secondary" tabindex="0" aria-controls="table" type="button" onclick="download_table_as_csv('calls');">
-            <span><i class="fas fa-download"></i> CSV</span>
-          </button> 
-        </div>
-      </div>
-    </div>
-  </div>
-  <!---->
   <table id="calls" class="table table-striped  table-dark">
     <thead>
     <tr>
       <th>
-        <div class="col-sm-12 col-md-6">
-          <div class="dt-buttons btn-group">
-            <button class="btn btn-secondary" tabindex="0" aria-controls="table" type="button" onclick="download_table_as_csv('calls');">
-              <span><i class="fas fa-download"></i> CSV</span>
-            </button> 
+        <div id="table_wrapper" class="dataTables_wrapper dt-bootstrap4">
+          <div class="row">
+            <div class="col-sm-12 col-md-6">
+              <div class="dt-buttons btn-group">
+                <button class="btn btn-secondary" tabindex="0" aria-controls="table" type="button" onclick="download_table_as_csv('calls');">
+                  <span><i class="fas fa-download"></i> CSV</span>
+                </button> 
+              </div>
+            </div>
           </div>
         </div>
       </th>
