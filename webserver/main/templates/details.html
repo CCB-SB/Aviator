@@ -10,6 +10,7 @@
   <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet" type="text/css">
   <link href="{% static 'css/chart.min.css' %}" rel="stylesheet" type="text/css">
   <link href="{% static 'css/aviator.css' %}" rel="stylesheet" type="text/css">
+  <link href="{% static 'css/details_plotly.css' %}" rel="stylesheet" type="text/css">
   <script src="{% static 'js/jquery.min.js' %}"></script>
   <script src="{% static 'js/popper.min.js' %}"></script>
   <script src="{% static 'js/bootstrap.min.js' %}"></script>
@@ -53,22 +54,15 @@
     </tr>
   </table>
   <br>
-  <style>
-    @media (min-width: 768px) {
-      .statistics-box > .row > col-md-6 {
-        max-width: 33%;
-      }
-    }
-  </style>
   <div class="statistics-box">
     <div class="row">
-      <div class="col-md-6">
+      <div class="col-md-6" id="third">
         <div id="frontend-chart"></div>
       </div>
-      <div class="col-md-6">
+      <div class="col-md-6" id="third">
         <canvas id="chart" width="300" height="150"></canvas>
       </div>
-      <div class="col-md-6">
+      <div class="col-md-6" id="third">
         <div id="backend-chart"></div>
       </div>
     </div>
