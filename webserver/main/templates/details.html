@@ -220,8 +220,11 @@
       'visible': false, 
       'showticklabels': false
     },
-    plot_bgcolor:"#c8c8c8",
-    paper_bgcolor:"#c8c8c8"
+    plot_bgcolor: "#454d55",
+    paper_bgcolor: "#454d55",
+    font: {
+        color: '#dee2e6'
+    }
   };
   var data = [{
     y: [
@@ -254,9 +257,33 @@
       'visible': false, 
       'showticklabels': false
     },
-    plot_bgcolor:"#c8c8c8",
-    paper_bgcolor:"#c8c8c8"
+    plot_bgcolor: "#454d55",
+    paper_bgcolor: "#454d55",
+    font: {
+        color: '#dee2e6'
+    }
   };
+  /*
+  
+    var layout = {
+        plot_bgcolor: "#454d55",
+        paper_bgcolor: "#454d55",
+        font: {
+            color: '#dee2e6'
+        },
+        height: 600,
+        hovermode: 'closest',
+        yaxis: {
+            title: {
+                text: "Website"
+            },
+            autorange: "reversed"
+        },
+        xaxis: {
+            title: "Date"
+        }
+    };
+  */
   var data = [{
     y: [
         {% for call in calls %}
