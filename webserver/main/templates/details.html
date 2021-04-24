@@ -22,7 +22,7 @@
   <table class="table table-striped  table-dark">
     <thead>
     <tr>
-      <th colspan="6" style="text-align:center;">Website</th>
+      <th colspan="10" style="text-align:center;">Website</th>
     </tr>
     <tr>
       <th>Original URL</th>
@@ -63,10 +63,23 @@
     <canvas id="backend-chart" width="300" height="150"></canvas>
   </div>
   <br>
-  <table class="table table-striped  table-dark">
+  <!---->
+  <div id="table_wrapper" class="dataTables_wrapper dt-bootstrap4">
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <div class="dt-buttons btn-group">
+          <button class="btn btn-secondary" tabindex="0" aria-controls="table" type="button" onclick="download_table_as_csv('calls');">
+            <span><i class="fas fa-download"></i> CSV</span>
+          </button> 
+        </div>
+      </div>
+    </div>
+  </div>
+  <!---->
+  <table id="calls" class="table table-striped  table-dark">
     <thead>
     <tr>
-      <th colspan="5" style="text-align:center;">Last Website Calls</th>
+      <th colspan="8" style="text-align:center;">Last Website Calls</th>
     </tr>
     <tr>
       <th>Datetime</th>
@@ -98,13 +111,44 @@
       </tr>
     {% endfor %}
   </table>
-  >
 
 </div>
+
 </body>
 </html>
 
 <script>
+  /////////////////////////////////////// Quick and simple export target #table_id into a csv
+function download_table_as_csv(table_id, separator = ';') {
+    // Select rows from table_id
+    var rows = document.querySelectorAll('table#' + table_id + ' tr');
+    // Construct csv
+    var csv = [];
+    for (var i = 0; i < rows.length; i++) {
+        var row = [], cols = rows[i].querySelectorAll('td, th');
+        for (var j = 0; j < cols.length; j++) {
+            // Clean innertext to remove multiple spaces and jumpline (break csv)
+            var data = cols[j].innerText.replace(/(\r\n|\n|\r)/gm, '').replace(/(\s\s)/gm, ' ')
+            // Escape double-quote with double-double-quote
+            data = data.replace(/"/g, '""');
+            // Push escaped string
+            row.push('"' + data + '"');
+        }
+        csv.push(row.join(separator));
+    }
+    var csv_string = csv.join('\n');
+    // Download it
+    var filename = 'export_' + {{ website.pk }} + '_' + new Date().toLocaleDateString() + '.csv';
+    var link = document.createElement('a');
+    link.style.display = 'none';
+    link.setAttribute('target', '_blank');
+    link.setAttribute('href', 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv_string));
+    link.setAttribute('download', filename);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+  ////////////////////////////////////
   Chart.defaults.global.defaultFontColor = "#dee2e6";
   var ctx2 = document.getElementById('chart').getContext('2d');
   var myChart = new Chart(ctx2, {
