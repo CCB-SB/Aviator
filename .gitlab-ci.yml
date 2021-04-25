@@ -17,7 +17,7 @@ variables:
 
 before_script:
   - apk add --update git py-pip
-  - pip install docker-compose==1.23.2
+  - pip install docker-compose==1.28.5
   - mkdir -p webserver/.envs/.production
   - echo "$DJANGO_ENV" > webserver/.envs/.production/.django
   - echo "$POSTGRES_ENV" > webserver/.envs/.production/.postgres
