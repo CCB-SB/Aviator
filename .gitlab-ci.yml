@@ -88,6 +88,7 @@ build:
     - docker-compose -f webserver/production.yml pull $(docker-compose -f webserver/production.yml config --services | grep -v -e celery -e flower)
     - docker-compose -f webserver/production.yml run --rm large_data_service /update_data
     - *check_newer_commit
+    - tail -n 50 webserver/.envs/.production/.*
     - docker-compose -f webserver/production.yml up -d --force-recreate
   only:
     - master
