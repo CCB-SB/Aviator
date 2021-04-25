@@ -263,7 +263,7 @@ def statistics(request):
         context['weekdays_online'] = gs.weekdays_online
         context['weekdays_offline'] = gs.weekdays_offline
         for n in range(len(context['weekdays_average'])):
-            context['weekdays_average'][n] = context['weekdays_online'][0] - context['weekdays_online'][n + 1]
+            context['weekdays_average'][n] = context['weekdays_online'][n + 1] - context['weekdays_online'][0]
         #recovery_rate
         start = 0
         index = 0
