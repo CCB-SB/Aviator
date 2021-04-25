@@ -203,7 +203,7 @@
       }
     }
   });
-  ////////////////////
+  
   var layout = {
     title: 'Frontend response time (in ms)',
     autosize: false,
@@ -218,10 +218,17 @@
     },
     xaxis: {
       'visible': false, 
-      'showticklabels': false
+      'showticklabels': false,
+      'gridcolor': '#dee2e6'
     },
-    plot_bgcolor:"#c8c8c8",
-    paper_bgcolor:"#c8c8c8"
+    yaxis: {
+      'gridcolor': '#dee2e6'
+    },
+    plot_bgcolor: "#393f45",
+    paper_bgcolor: "#393f45",
+    font: {
+        color: '#dee2e6'
+    }
   };
   var data = [{
     y: [
@@ -236,8 +243,6 @@
   }];
 
   Plotly.newPlot('frontend-chart', data, layout);
-  /////////////////////////
-  ////////////////////
   var layout = {
     title: 'Backend response time (in ms)',
     autosize: false,
@@ -252,10 +257,17 @@
     },
     xaxis: {
       'visible': false, 
-      'showticklabels': false
+      'showticklabels': false,
+      'gridcolor': '#dee2e6'
     },
-    plot_bgcolor:"#c8c8c8",
-    paper_bgcolor:"#c8c8c8"
+    yaxis: {
+      'gridcolor': '#dee2e6'
+    },
+    plot_bgcolor: "#393f45",
+    paper_bgcolor: "#393f45",
+    font: {
+        color: '#dee2e6'
+    }
   };
   var data = [{
     y: [
@@ -270,46 +282,4 @@
   }];
 
   Plotly.newPlot('backend-chart', data, layout);
-  /////////////////////////
-/*
-  var ctx1 = document.getElementById('frontend-chart').getContext('2d');
-  var myChart = new Chart(ctx1, {
-    type: 'scatter',
-    data: call.json_data.frontend,
-    options: {
-      title: {
-        display: true,
-        text: 'Frontend response time'
-      },
-      scales: {
-        x: {
-          type: 'linear',
-          position: 'bottom'
-        }
-      }
-    }
-  });
-  var ctx3 = document.getElementById('backend-chart').getContext('2d');
-  var myChart = new Chart(ctx1, {
-    type: 'scatter',
-    data: [
-          {% for call in calls %}
-            {% if call.ok and call.error == "" and call.code == 200 %}1{% else %}0{% endif %},
-          {% endfor %}
-        ]
-    //call.json_data.backend,
-    options: {
-      title: {
-        display: true,
-        text: 'Backend response time'
-      },
-      scales: {
-        x: {
-          type: 'linear',
-          position: 'bottom'
-        }
-      }
-    }
-  });
-  */
 </script>

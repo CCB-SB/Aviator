@@ -3,7 +3,7 @@ var numeric_cols = [2, 4];
 
 $(document).ready(function () {
     let cookie_name = "pubs_hidden_columns";
-    let standard_hidden_columns = [9, 11, 12, 13, 14];
+    let standard_hidden_columns = [10, 12, 13, 14, 15];
     let save_days = 60;
 
     async function apply_foreign_filter() {
@@ -38,8 +38,8 @@ $(document).ready(function () {
         }),
         "columnDefs": [
             {'visible': false, 'targets': getHiddenColumns()},
-            {'width': 50, 'targets': [1, 4, 13]},
-            {'width': 100, 'targets': [2, 5, 6, 7, 14, 15]},
+            {'width': 50, 'targets': [1, 4, 14]},
+            {'width': 100, 'targets': [2, 5, 6, 7, 8, 15, 16]},
             {'width': 250, 'targets': [0]},
         ],
         deferRender: true,
@@ -107,6 +107,10 @@ $(document).ready(function () {
         }, {
             "data": "pubmed_id", render: function (data) {
                 return createCellText(`<a target="_blank" rel="noopener" href="https://pubmed.ncbi.nlm.nih.gov/${data}/">${data}</a>`);
+            }
+        }, {
+            "data": "biotools_id", render: function (data) {
+                return createCellText(`<a target="_blank" rel="noopener" href="https://bio.tools/${data}">${data}</a>`);
             }
         }, {
             "data": "abstract", render: function (data) {
@@ -258,7 +262,7 @@ $(document).ready(function () {
                         });
                 } else {
                     // websites
-                    if(i == 15){
+                    if(i == 16){
                         $('<p></p>').appendTo($(column.footer()).empty())
                         return;
                     }
@@ -277,7 +281,7 @@ $(document).ready(function () {
                         return;
                     }
                     // SSL
-                    if(i == 13){
+                    if(i == 14){
                         $('<select class="custom-select form-control">' +
                             '<option value></option>' +
                             '<option value="true">Yes</option>' +
@@ -373,7 +377,6 @@ $(document).ready(function () {
 
     function getHiddenColumns() {
         if (getCookie(cookie_name) == null) {
-            console.log("getCookie: " + standard_hidden_columns);
             return standard_hidden_columns;
         }
         values = getCookie(cookie_name).split(",");
@@ -408,7 +411,7 @@ $(document).ready(function () {
 
 function createTableSearchData(column) {
     data = {};
-    for (var i = 0; i <= 15; ++i) {
+    for (var i = 0; i <= 16; ++i) {
         if (numeric_cols.indexOf(i) !== -1 && $('#cs_from_' + i).val() != undefined) {
             data[i] = $('#cs_from_' + i).val() + ";" + $('#cs_to_' + i).val();
         } else if ($('#cs_' + i).val() != undefined) {

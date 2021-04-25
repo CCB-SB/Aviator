@@ -81,8 +81,9 @@ class Command(BaseCommand):
                             last_state = 2
                             last_date = d_date
             for n in range(len(tmp_weekdays_divisiors)):
-                weekdays_online[n] = weekdays_online[n] + (tmp_weekdays_online[n] / tmp_weekdays_divisiors[n])
-                weekdays_offline[n] = weekdays_offline[n] + (tmp_weekdays_offline[n] / tmp_weekdays_divisiors[n])
+                if tmp_weekdays_divisiors[n] > 0:
+                    weekdays_online[n] = weekdays_online[n] + (tmp_weekdays_online[n] / tmp_weekdays_divisiors[n])
+                    weekdays_offline[n] = weekdays_offline[n] + (tmp_weekdays_offline[n] / tmp_weekdays_divisiors[n])
                 
             if "total_heap_size" in website.calls.latest("datetime").json_data:
                 website.last_heap_size = website.calls.latest("datetime").json_data["total_heap_size"]#used_heap_size
