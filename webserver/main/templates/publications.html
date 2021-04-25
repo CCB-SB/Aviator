@@ -10,7 +10,7 @@
   <title>Aviator</title>
   {% include "favicon.html" %}
   {% load compress %}
-  {% compress css %}
+  {% compress css inline %}
   <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet" type="text/css">
   <link href="{% static 'css/aviator.css' %}" rel="stylesheet" type="text/css">
   <link href="{% static 'css/chart.min.css' %}" rel="stylesheet" type="text/css">
@@ -232,11 +232,15 @@
   }
 </script>
 
+{% compress js inline %}  
 <script src="{% static 'js/datatables_pipeline.js' %}"></script>
+{% endcompress %}
 <script>
   var tbl_data_url = "{% url 'main:table_data' %}";
   var autocomplete_url = "{% url 'main:autocomplete' %}";
 </script>
+{% compress js inline %}  
 <script src="{% static 'js/publications_table.js' %}"></script>
+{% endcompress %}
 </body>
 </html>
