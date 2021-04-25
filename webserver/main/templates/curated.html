@@ -9,7 +9,7 @@
   <title>Aviator</title>
   {% include "favicon.html" %}
   {% load compress %}
-  {% compress css %}
+  {% compress css inline %}
   <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet" type="text/css">
   <link href="{% static 'css/aviator.css' %}" rel="stylesheet" type="text/css">
   <link href="{% static 'css/chart.min.css' %}" rel="stylesheet" type="text/css">
@@ -26,7 +26,7 @@
 
 <body>
 {% include "navbar.html" %}
-{% compress js %}
+{% compress js inline %}
 <script src="{% static 'js/popper.min.js' %}"></script>
 <script src="{% static 'js/bootstrap.min.js' %}"></script>
 <script type="text/javascript"
@@ -207,12 +207,16 @@
   }
 </script>
 
+{% compress js inline %}
 <script src="{% static 'js/datatables_pipeline.js' %}"></script>
+{% endcompress %}
 <script>
   var tbl_data_url = "{% url 'main:curated_data' %}";
   var autocomplete_url = "{% url 'main:curated_autocomplete' %}";
 </script>
+{% compress js inline %}
 <script src="{% static 'js/curated_table.js' %}"></script>
+{% endcompress %}
 <script>
   $(document).ready(function () {
   });

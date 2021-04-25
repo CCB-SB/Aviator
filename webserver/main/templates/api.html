@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-{% load staticfiles %}
+{% load static %}
 {% url 'main:details' as details %}
 <html lang="en">
 <head>
@@ -9,7 +9,7 @@
   <title>Aviator</title>
 
   {% load compress %}
-  {% compress css %}
+  {% compress css inline %}
   <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet" type="text/css">
   <link href="{% static 'css/aviator.css' %}" rel="stylesheet" type="text/css">
   <link href="{% static 'css/swagger-ui.css' %}" rel="stylesheet" type="text/css">
@@ -22,7 +22,7 @@
 <body>
 {% include "navbar.html" %}
 <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.4.1/highlight.min.js"></script>
-{% compress js %}
+{% compress js inline %}
 <script src="{% static 'js/jquery.min.js' %}"></script>
 <script src="{% static 'js/popper.min.js' %}"></script>
 <script src="{% static 'js/bootstrap.min.js' %}"></script>
