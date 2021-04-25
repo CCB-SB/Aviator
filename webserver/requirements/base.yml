@@ -19,6 +19,6 @@ dependencies:
     - django-choices==1.7.1
     - testfixtures
     - django-recaptcha==2.0.6
-    - rcssmin==1.0.6 --install-option="--without-c-extensions"
-    - rjsmin==1.0.12 --install-option="--without-c-extensions"
+    - rcssmin==1.0.6 --no-binary --install-option="--without-c-extensions"
+    - rjsmin==1.0.12 --no-binary --install-option="--without-c-extensions"
     - django_compressor==2.4.1
