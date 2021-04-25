@@ -10,18 +10,18 @@ stages:
 services:
   - docker:20.10.3-dind
 
-image: docker:20.10.3
+image: tmaier/docker-compose:20.10
 
 variables:
   GIT_SUBMODULE_STRATEGY: none
 
 before_script:
-  - apk add --update git py-pip
-  - pip install docker-compose==1.23.2
+  - apk add --update git
   - mkdir -p webserver/.envs/.production
   - echo "$DJANGO_ENV" > webserver/.envs/.production/.django
   - echo "$POSTGRES_ENV" > webserver/.envs/.production/.postgres
   - echo "CI_REPOSITORY_URL=${CI_REPOSITORY_URL}" > webserver/.git_env
+  - cp .env webserver/.env
 
 .staging_vars: &staging_vars
   variables:
