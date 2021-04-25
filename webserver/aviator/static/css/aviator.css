@@ -49,11 +49,11 @@ iframe {
 }
 
 .index-search-dd {
-  width: 7rem !important;
+  width: 9rem !important;
 }
 
 .index-search-text {
-  width: calc(100% - 24.5rem) !important;
+  width: calc(100% - 26.5rem) !important;
 }
 
 .index-search-btn {

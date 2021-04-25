@@ -118,7 +118,7 @@ deploy-production:
 .filldb: &filldb
   script:
     - *setup_docker_tls
-    - docker-compose -f webserver/production.yml run --rm django python manage.py parsepaperdata ${PUBLICATIONS_PATH} ${FILTER_PATH}
+    - docker-compose -f webserver/production.yml run --rm django python manage.py parsepaperdata ${PUBLICATIONS_PATH} ${FILTER_PATH} ${BIOTOOLSID_PATH}
     - docker-compose -f webserver/production.yml run --rm django python manage.py parsecurated ${CURATED_PATH}
     - docker-compose -f webserver/production.yml run --rm django python manage.py parsekeywords ${KEYWORDS_PATH}
   <<: *manage_only_master_remote
@@ -201,7 +201,7 @@ update_websitecalls_and_stats-production:
 .parsepaperdata: &parsepaperdata
   script:
     - *setup_docker_tls
-    - docker-compose -f webserver/production.yml run --rm django python manage.py parsepaperdata ${PUBLICATIONS_PATH} ${FILTER_PATH}
+    - docker-compose -f webserver/production.yml run --rm django python manage.py parsepaperdata ${PUBLICATIONS_PATH} ${FILTER_PATH} ${BIOTOOLSID_PATH}
   <<: *manage_only_master_remote
 
 parsepaperdata-staging:
@@ -245,7 +245,39 @@ calculatestatistics-production:
   stage: managedb-production
   <<: *calculatestatistics
   <<: *production_vars
+
+.parsebiotoolsid: &parsebiotoolsid
+  script:
+    - *setup_docker_tls
+    - docker-compose -f webserver/production.yml run --rm django python manage.py parsebiotoolsid ${BIOTOOLSID_PATH}
+  <<: *manage_only_master_remote
+
+parsebiotoolsid-staging:
+  stage: managedb-staging
+  <<: *parsebiotoolsid
+  <<: *staging_vars
+
+parsebiotoolsid-production:
+  stage: managedb-production
+  <<: *parsebiotoolsid
+  <<: *production_vars
   
+.removepublications: &removepublications
+  script:
+    - *setup_docker_tls
+    - docker-compose -f webserver/production.yml run --rm django python manage.py removepublications
+  <<: *manage_only_master_remote
+
+removepublications-staging:
+  stage: managedb-staging
+  <<: *removepublications
+  <<: *staging_vars
+
+removepublications-production:
+  stage: managedb-production
+  <<: *removepublications
+  <<: *production_vars
+
 .reset_db: &reset_db
   script:
     - *setup_docker_tls
