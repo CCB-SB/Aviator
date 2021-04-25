@@ -3,7 +3,6 @@ dependencies:
   - wheel=0.35.1
   - psycopg2=2.8.5  # https://github.com/psycopg/psycopg2
   - conda-forge::pyahocorasick=1.4.0 # doesn't build over pip
-  - conda-forge::rcssmin=1.0.6
 
   - pip:
     - django==2.2.16
@@ -20,5 +19,3 @@ dependencies:
     - django-choices==1.7.1
     - testfixtures
     - django-recaptcha==2.0.6
-    - rjsmin==1.1.0
-    - django_compressor==2.4.1
