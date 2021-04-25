@@ -19,3 +19,4 @@ dependencies:
     - django-choices==1.7.1
     - testfixtures
     - django-recaptcha==2.0.6
+    - django_compressor==2.4.1
