@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-{% load staticfiles %}
+{% load static %}
 {% url 'main:details' as details %}
 {% url 'main:paperData' as paperData %}
 <html lang="en">
@@ -27,7 +27,7 @@
 
 <body>
 {% include "navbar.html" %}
-{% compress js %}  
+{% compress js inline %}  
 <script src="{% static 'js/popper.min.js' %}"></script>
 <script src="{% static 'js/bootstrap.min.js' %}"></script>
 <script type="text/javascript"
