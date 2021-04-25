@@ -63,8 +63,8 @@ DJANGO_APPS = [
 ]
 
 THIRD_PARTY_APPS = [
-    'captcha',    'compressor',
-
+    'captcha',
+    'compressor',
 ]
 
 LOCAL_APPS = [
@@ -91,7 +91,7 @@ MIDDLEWARE = [
 # STATIC
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#static-root
-STATIC_ROOT = str(ROOT_DIR('aviator/static/'))#str(ROOT_DIR('staticfiles'))
+STATIC_ROOT = str(ROOT_DIR('aviator/static'))#str(ROOT_DIR('staticfiles'))
 # https://docs.djangoproject.com/en/dev/ref/settings/#static-url
 STATIC_URL = '/static/'
 # https://docs.djangoproject.com/en/dev/ref/contrib/staticfiles/#std:setting-STATICFILES_DIRS
