@@ -5,7 +5,7 @@
     "version": "1.0.0",
     "title": "Aviator"
   },
-  "host": "anathema.cs.uni-saarland.de",
+  "host": "ccb-compute2.cs.uni-saarland.de",
   "basePath": "/aviator",
   "schemes": [
     "https",
