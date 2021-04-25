@@ -60,10 +60,10 @@ class Command(BaseCommand):
                 if state is not None:
                     if state:
                         online += 1
-                        tmp_weekdays_online[d_date.isoweekday()] = tmp_weekdays_online[d_date.isoweekday()] + 1
-                        tmp_weekdays_divisiors[d_date.isoweekday()] = tmp_weekdays_divisiors[d_date.isoweekday()] + 1
-                        tmp_weekdays_online[0] = tmp_weekdays_online[0] + 1
-                        tmp_weekdays_divisiors[0] = tmp_weekdays_divisiors[0] + 1
+                        tmp_weekdays_online[d_date.isoweekday()] = tmp_weekdays_online[d_date.isoweekday()] + 1.0
+                        tmp_weekdays_divisiors[d_date.isoweekday()] = tmp_weekdays_divisiors[d_date.isoweekday()] + 1.0
+                        tmp_weekdays_online[0] = tmp_weekdays_online[0] + 1.0
+                        tmp_weekdays_divisiors[0] = tmp_weekdays_divisiors[0] + 1.0
                         if last_state == 0:
                             last_state = 1
                         if last_state == 2:
@@ -73,10 +73,10 @@ class Command(BaseCommand):
                             last_state = 0
                     else:
                         offline += 1
-                        tmp_weekdays_offline[d_date.isoweekday()] = tmp_weekdays_offline[d_date.isoweekday()] + 1
-                        tmp_weekdays_divisiors[d_date.isoweekday()] = tmp_weekdays_divisiors[d_date.isoweekday()] + 1
-                        tmp_weekdays_offline[0] = tmp_weekdays_offline[0] + 1
-                        tmp_weekdays_divisiors[0] = tmp_weekdays_divisiors[0] + 1
+                        tmp_weekdays_offline[d_date.isoweekday()] = tmp_weekdays_offline[d_date.isoweekday()] + 1.0
+                        tmp_weekdays_divisiors[d_date.isoweekday()] = tmp_weekdays_divisiors[d_date.isoweekday()] + 1.0
+                        tmp_weekdays_offline[0] = tmp_weekdays_offline[0] + 1.0
+                        tmp_weekdays_divisiors[0] = tmp_weekdays_divisiors[0] + 1.0
                         if last_state == 1:
                             last_state = 2
                             last_date = d_date

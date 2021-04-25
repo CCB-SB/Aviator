@@ -63,7 +63,8 @@ DJANGO_APPS = [
 ]
 
 THIRD_PARTY_APPS = [
-    'captcha',
+    'captcha',    'compressor',
+
 ]
 
 LOCAL_APPS = [
@@ -101,6 +102,8 @@ STATICFILES_DIRS = [
 STATICFILES_FINDERS = [
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    'compressor.finders.CompressorFinder',
+
 ]
 
 # MEDIA
