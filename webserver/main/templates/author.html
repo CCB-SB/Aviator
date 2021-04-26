@@ -13,16 +13,16 @@
     <link href="{% static 'css/aviator.css' %}" rel="stylesheet" type="text/css">
     {% endcompress %}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.css" />
-	</head>
-	<body>
-    {% include "navbar.html" %}
+	
     {% compress js inline %}
     <script src="{% static 'js/jquery.min.js' %}"></script>
     <script src="{% static 'js/popper.min.js' %}"></script>
     <script src="{% static 'js/bootstrap.min.js' %}"></script>
     {% endcompress %}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
-    <div class="contact-container">
+  </head>
+	<body>
+    {% include "navbar.html" %} <div class="contact-container">
       <form>
         <div class="form-group">
           <label for="input_name">Name</label>

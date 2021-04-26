@@ -18,17 +18,17 @@
   <link rel="stylesheet"
         href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.4.1/styles/a11y-dark.min.css">
 
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.4.1/highlight.min.js"></script>
+  {% compress js inline %}
+  <script src="{% static 'js/jquery.min.js' %}"></script>
+  <script src="{% static 'js/popper.min.js' %}"></script>
+  <script src="{% static 'js/bootstrap.min.js' %}"></script>
+  <script src="{% static 'js/swagger-ui-bundle.js' %}"></script>
+  <script src="{% static 'js/swagger-ui-standalone-preset.js' %}"></script>
+  {% endcompress %}
 </head>
 <body>
 {% include "navbar.html" %}
-<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.4.1/highlight.min.js"></script>
-{% compress js inline %}
-<script src="{% static 'js/jquery.min.js' %}"></script>
-<script src="{% static 'js/popper.min.js' %}"></script>
-<script src="{% static 'js/bootstrap.min.js' %}"></script>
-<script src="{% static 'js/swagger-ui-bundle.js' %}"></script>
-<script src="{% static 'js/swagger-ui-standalone-preset.js' %}"></script>
-{% endcompress %}
 <div class="api-box">
 
   <div class="card aviator-card">

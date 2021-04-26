@@ -12,9 +12,6 @@
 		<link href="{% static 'css/dataTables.bootstrap.min.css' %}" rel="stylesheet" type="text/css">
 		<link href="{% static 'css/aviator.css' %}" rel="stylesheet" type="text/css">
     {% endcompress %}
-	</head>
-	<body>
-    {% include "navbar.html" %}
     {% compress js inline %}
     <script src="{% static 'js/jquery.min.js' %}"></script>
     <script src="{% static 'js/popper.min.js' %}"></script>
@@ -23,6 +20,9 @@
     <script src="{% static 'js/dataTables.bootstrap.min.js' %}"></script>
     <script src="{% static 'js/dataTables.fixedHeader.min.js' %}"></script>
     {% endcompress %}
+	</head>
+	<body>
+    {% include "navbar.html" %}
     <div class="content-container">
       <table id="table" class="table table-striped table-dark" style="display:block;">
         <tbody>
