@@ -31,8 +31,6 @@
 {% compress js inline %}
 <script src="{% static 'js/popper.min.js' %}"></script>
 <script src="{% static 'js/bootstrap.min.js' %}"></script>
-<script type="text/javascript"
-        src="{% static 'js/custom_datatables.plugin.input.js' %}"></script>
 {% endcompress %}
 <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 <script type="text/javascript"
@@ -63,6 +61,8 @@
         src="https://cdn.datatables.net/responsive/2.2.3/js/responsive.bootstrap.min.js"></script>
 
   {% compress js inline %}
+  <script type="text/javascript"
+  src="{% static 'js/custom_datatables.plugin.input.js' %}"></script>
   <script type="text/javascript"
           src="{% static 'js/table_display_helper.js' %}"></script>
   <script src="{% static 'js/chart.min.js' %}"></script>
