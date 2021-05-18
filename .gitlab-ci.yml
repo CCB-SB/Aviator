@@ -33,7 +33,7 @@ before_script:
 .production_vars: &production_vars
   variables:
     DOCKER_TLS_VERIFY: "1"
-    DOCKER_HOST: "tcp://ccb-compute2.cs.uni-saarland.de:2376"
+    DOCKER_HOST: "tcp://raven.cs.uni-saarland.de:2376"
     DOCKER_CERT_PATH: "certs"
     IS_PROD: "1"
     COMPOSE_HTTP_TIMEOUT: "180"
@@ -113,7 +113,7 @@ deploy-production:
   when: manual
   environment:
     name: production
-    url: https://ccb-compute2.cs.uni-saarland.de/aviator
+    url: https://raven.cs.uni-saarland.de/aviator
 
 .filldb: &filldb
   script:
