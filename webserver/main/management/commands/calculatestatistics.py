@@ -149,7 +149,7 @@ class Command(BaseCommand):
                             fail_silently=False,
                         )
                     except Exception as e:
-                        self.stdout.write(str(e.message))
+                        self.stdout.write(str(e))
 
         today = date.today()
         today_dt = datetime.now()
