@@ -17,4 +17,4 @@ To add your published web-server to Aviator a simple [API endpoint](https://ccb-
 
 ## License
 
-[MIT © CCB-SB](../LICENSE)
+[MIT © CCB-SB](/LICENSE)
