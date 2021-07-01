@@ -38,7 +38,7 @@ for j in jobs:
 
 # wait until job is done
 j.refresh()
-while j.status == "running":
+while j.status == "running" or j.status == "pending":
     time.sleep(10)
     j.refresh()
 
