@@ -11,7 +11,7 @@ import random
 from urllib.request import Request, urlopen
 
 from tqdm import tqdm
-
+import ssl
 
 class Command(BaseCommand):
     help = 'Updates the website statistics for the last 30 days'
@@ -151,6 +151,8 @@ class Command(BaseCommand):
                     except Exception as e:
                         self.stdout.write(str(e))
 
+        #Check curated websites
+        ssl._create_default_https_context = ssl._create_unverified_context
         today = date.today()
         today_dt = datetime.now()
         website_updates = []
