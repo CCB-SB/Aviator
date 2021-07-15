@@ -13,31 +13,13 @@ from os.path import join, dirname, exists
 
 import pandas as pd
 
+import timeout_decorator
+
 from pyvirtualdisplay import Display
 
 from selenium import webdriver
 from selenium.common.exceptions import TimeoutException, WebDriverException
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
-
-from tqdm import tqdm
-
-
-parser = argparse.ArgumentParser()
-parser.add_argument(
-    "--input-csv", help="Tab separated file with one URL and ID per line to check.", required=True,
-)
-parser.add_argument(
-    "--output-folder", help="Folder where to save the results, one folder per URL", required=True,
-)
-parser.add_argument(
-    "--output-csv", help="Tab separated file containing the results of the check", required=True,
-)
-parser.add_argument("--proxy-server", help="If we are behind a proxy (without authentication)")
-
-
-args = parser.parse_args()
-
-urls = pd.read_csv(args.input_csv, sep="\t")
 
 
 def create_driver(log, proxy, headless=False):
@@ -225,7 +207,7 @@ def get_current_url(driver, retries):
     for _ in range(retries):
         try:
             return driver.current_url
-        except WebDriverException as e:
+        except WebDriverException:
             pass
     return "NA"
 
@@ -334,7 +316,8 @@ def check_url(driver, url):
     }
 
 
-def get_driver(out_dir, timestamp, retry):
+def get_driver(out_dir, timestamp, proxy_server, retry):
+    driver = None
     for i in range(10):
         try:
             if exists(join(out_dir, f"{timestamp}.driver.log")):
@@ -345,16 +328,17 @@ def get_driver(out_dir, timestamp, retry):
                             break
                 else:
                     rename(join(out_dir, f"{timestamp}.driver.log"), join(out_dir, f"{timestamp}.driver.failed_{i}.log"))
-            driver = create_driver(join(out_dir, f"{timestamp}.driver.log"), args.proxy_server, retry)
+            driver = create_driver(join(out_dir, f"{timestamp}.driver.log"), proxy_server, retry)
             break
-        except WebDriverException as e:
+        except WebDriverException:
             # could not create chrome, retry in 2 seconds
             sleep(2)
     return driver
 
 
-def process(r, out_dir, timestamp, retry=False):
-    with get_driver(out_dir, timestamp, retry) as driver:
+@timeout_decorator.timeout(120, use_signals=False)
+def process(r, out_dir, timestamp, proxy_server, output_csv, retry=False):
+    with get_driver(out_dir, timestamp, proxy_server, retry) as driver:
         res = check_url(driver, r["URL"])
         logs = res["logs"]
         del res["logs"]
@@ -376,43 +360,61 @@ def process(r, out_dir, timestamp, retry=False):
         with gzip.open(join(out_dir, f"{timestamp}.logs.json.gz"), "wt", encoding="ascii") as f:
             json.dump(logs, f)
 
-        writer.writerow(
-            [
-                r["ID"],
-                r["URL"],
-                res["url"],
-                res["ok"],
-                res["msg"],
-                res["code"],
-                res["certificateSecurityState"],
-                res["transferred_bytes"],
-                res["ip"],
-                timestamp,
-            ]
-        )
+        with open(output_csv, "a", newline="") as f_res:
+            writer = csv.writer(f_res, dialect="excel-tab")
+            writer.writerow(
+                [
+                    r["ID"],
+                    r["URL"],
+                    res["url"],
+                    res["ok"],
+                    res["msg"],
+                    res["code"],
+                    res["certificateSecurityState"],
+                    res["transferred_bytes"],
+                    res["ip"],
+                    timestamp,
+                ]
+            )
 
     if exists(join(out_dir, f"{timestamp}.driver.log")):
         subprocess.run(["gzip", join(out_dir, f"{timestamp}.driver.log")], check=True)
 
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--input-csv", help="Tab separated file with one URL and ID per line to check.", required=True,
+    )
+    parser.add_argument(
+        "--output-folder", help="Folder where to save the results, one folder per URL", required=True,
+    )
+    parser.add_argument(
+        "--output-csv", help="Tab separated file containing the results of the check", required=True,
+    )
+    parser.add_argument("--proxy-server", help="If we are behind a proxy (without authentication)")
 
-with Display(visible=False, size=(1920, 1080)) as display:
-    makedirs(dirname(args.output_csv), exist_ok=True)
-    with open(args.output_csv, "w", newline="") as f_res:
-        writer = csv.writer(f_res, dialect="excel-tab")
-        writer.writerow(
-            [
-                "ID",
-                "Original URL",
-                "Derived URL",
-                "Status",
-                "Message",
-                "Code",
-                "Certificate",
-                "Transfer size",
-                "IP Address",
-                "Timestamp",
-            ]
-        )
+    args = parser.parse_args()
+
+    urls = pd.read_csv(args.input_csv, sep="\t")
+
+    with Display(visible=False, size=(1920, 1080)):
+        makedirs(dirname(args.output_csv), exist_ok=True)
+        with open(args.output_csv, "w", newline="") as f_res:
+            writer = csv.writer(f_res, dialect="excel-tab")
+            writer.writerow(
+                [
+                    "ID",
+                    "Original URL",
+                    "Derived URL",
+                    "Status",
+                    "Message",
+                    "Code",
+                    "Certificate",
+                    "Transfer size",
+                    "IP Address",
+                    "Timestamp",
+                ]
+            )
 
         for i, r in urls.iterrows():
             out_dir = join(args.output_folder, r["ID"])
@@ -422,10 +424,16 @@ with Display(visible=False, size=(1920, 1080)) as display:
             for i in range(10):
                 try:
                     retry = i > 0
-                    process(r, out_dir, timestamp, retry)
+                    process(r, out_dir, timestamp, args.proxy_server, args.output_csv, retry)
+                    break
+                except timeout_decorator.TimeoutError as e:
+                    # on timeout continue with next url
                     break
                 except Exception as e:
                     print(f"Unexpected exception: {e}")
                     _, _, exc_traceback = sys.exc_info()
                     traceback.print_tb(exc_traceback, limit=None, file=sys.stdout)
+
+if __name__ == "__main__":
+    main()
 
