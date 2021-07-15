@@ -365,7 +365,6 @@ allerdictor	24403538
 ccsol	24990610
 ena	27899630
 hogenom	19534752
-chebi_ws	91
 fetchprodom	15608179
 seql-nrps	26471456
 chemprot	23185041
@@ -667,7 +666,6 @@ wormbase	24194605
 transeq-ebi	10827456
 backtranambig-ebi	26673705
 ochem	21660515
-gene_set_to_diseases	91
 tagtog	24715220
 cellbase	22693220
 prank_api	16000407
@@ -681,7 +679,7 @@ osdb_api	27795739
 rnahybrid	15383676
 jali	12487762
 genefisher2	8877506
-orcid	91
+orcid	134
 infernal_cmscan	25392425
 eb-eye	20150321
 tnrs	23324024
@@ -692,6 +690,7 @@ lynx_multi-gene_annotations	24270788
 aquaria	25633501
 triplexrna	24875477
 stretcher-api-ebi	26673705
+gmd	134
 peptide_match	23958731
 interproscan_ws	24451626
 phobius_api	15111065
@@ -2860,7 +2859,7 @@ diana-mirgen	19850714
 diana-mirgen	17108354
 diana-lncbase	26612864
 diana-lncbase	23193281
-1000genomes_id_history_converter	91
+1000genomes_id_history_converter	134
 1000genomes_id_history_converter	22543379
 1000genomes_id_history_converter	20459805
 bcheck_rnpb	20626900
@@ -3152,7 +3151,6 @@ biq_analyzer_himod	24875479
 centiserver	26571275
 bober	29234984
 chemsar	29086046
-wtfgenes	91
 expresso	28529706
 shinysispa	30430005
 primerxl	28877663
@@ -3175,6 +3173,7 @@ bystro	29409527
 mdd-carb	29322938
 ntue	30135718
 bpac	28750606
+shinydiversity	134
 gac	29263780
 chromnet	27139377
 admetlab	29943074
@@ -3276,7 +3275,7 @@ mistic2	29905875
 rucs	28968748
 scrat	28505247
 guidescan	28263296
-topolink	91
+topolink	134
 spar	29733404
 sampdi	29091991
 discovery_environment	29126246
@@ -4603,7 +4602,7 @@ uniqueprot	12824419
 chop	15215452
 pbil	12824334
 scarf	19129211
-morca	91
+morca	134
 spliceport	17576680
 symd	24799435
 pred-signal	18988691
@@ -4991,7 +4990,7 @@ cpgplot-ebi	26673705
 relate	26673705
 fastm_ebi	26673705
 merav	26626150
-seqret-ebi	91
+seqret-ebi	134
 enzymeportal_protein_sequence_search	23514033
 rfam_search	25392425
 cscan	22669907
@@ -5040,7 +5039,7 @@ picmi	20940168
 maistas	21498402
 kinase_sarfari_small_molecule_search	26673705
 biomodels_database_converters	26673705
-pombase_data_slicer	91
+pombase_data_slicer	134
 pombase_data_slicer	27268795
 survcurve	26249811
 bubastis	20200009
@@ -5902,7 +5901,6 @@ h-invdb	19933760
 coryneregnet	22080556
 cogeme	20507428
 cleanex	19073704
-chebi	91
 cellimagelibrary	23203874
 cath	21097779
 catdb	17940091
@@ -6322,7 +6320,7 @@ sabio-rk	29092055
 3dbionotes	30768147
 metacrop	22086948
 uniprotkb_swiss-prot	18287689
-vce	91
+vce	134
 snpdb	11125122
 cr-est	15608274
 immunodb	17588928

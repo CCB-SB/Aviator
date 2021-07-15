@@ -1,8 +1,12 @@
+from collections import defaultdict
+
 from django.core.management.base import BaseCommand, CommandError
+from django.db.models import Count
+
+import pandas as pd
+
 from main.models import Website
 from main.models import Publication
-from collections import defaultdict
-import pandas as pd
 
 
 class Command(BaseCommand):
@@ -40,6 +44,12 @@ class Command(BaseCommand):
         pub_tbl = pd.read_csv(csv_file, sep='\t', index_col="PMID")
         pub_tbl.index = pub_tbl.index.astype(str)
         pub_dict = pub_tbl.to_dict()
+
+        # remove publications that are not in our list anymore
+        pubs_to_remove = Publication.objects.exclude(pubmed_id__in=pub_tbl.index)
+        pubs_to_remove.delete()
+        self.stdout.write(self.style.SUCCESS(
+            f"Removed {pubs_to_remove.count()} publications that are not in our table anymore. This can happen when duplicate records are deleted from PubMed."))
 
         papers_to_update = list(Publication.objects.filter(pubmed_id__in=pub_tbl.index))
 
@@ -118,3 +128,12 @@ class Command(BaseCommand):
 
         self.stdout.write(self.style.SUCCESS(
             f'Successfully added {len(new_pub_mdls)} new publications and updated {len(papers_to_update)} publications with {updated_websites} connections to webpages'))
+
+        # remove websites not linked to any papers
+        websites_wo_papers = Website.objects.annotate(p_count=Count("papers")).filter(p_count=0)
+        num_websites_wo_papers = websites_wo_papers.count()
+        self.stdout.write(
+            f"Found {num_websites_wo_papers} websites without associated publication.")
+        websites_wo_papers.delete()
+        self.stdout.write(self.style.SUCCESS(
+            f'Successfully removed {num_websites_wo_papers} websites without associated publication.'))

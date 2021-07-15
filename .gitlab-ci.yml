@@ -265,7 +265,6 @@ parsebiotoolsid-production:
 .updatedataset: &updatedataset
   script:
     - *setup_docker_tls
-    - docker-compose -f webserver/production.yml run --rm django python manage.py removepublications
     - docker-compose -f webserver/production.yml run --rm django python manage.py updatewebsiteurls ${ORIG2NEW_PATH} ${NEW2ORIG_PREV_PATH}
     - docker-compose -f webserver/production.yml run --rm django python manage.py parsepaperdata ${PUBLICATIONS_PATH} ${FILTER_PATH} ${BIOTOOLSID_PATH}
   <<: *manage_only_master_remote

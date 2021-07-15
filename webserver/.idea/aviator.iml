@@ -16,6 +16,8 @@
     <content url="file://$MODULE_DIR$">
       <excludeFolder url="file://$MODULE_DIR$/aviator_telemetry" />
       <excludeFolder url="file://$MODULE_DIR$/aviator_telemetry2" />
+      <excludeFolder url="file://$MODULE_DIR$/2021-07-14T21:18:43+00:00" />
+      <excludeFolder url="file://$MODULE_DIR$/2021-07-15T12:43:01+00:00" />
     </content>
     <orderEntry type="jdk" jdkName="Remote Python 3.8.5 Docker Compose (django at [/home/tobias/git_projects/aviator_pascal/webserver/local.yml])" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />

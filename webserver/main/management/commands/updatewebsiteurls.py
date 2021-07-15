@@ -2,8 +2,6 @@ from django.core.management.base import BaseCommand, CommandError
 from django.db.models import Count
 
 from main.models import Website
-from main.models import Publication
-from collections import defaultdict
 
 import pandas as pd
 import json
