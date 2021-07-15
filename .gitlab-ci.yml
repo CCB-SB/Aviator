@@ -261,6 +261,24 @@ parsebiotoolsid-production:
   stage: managedb-production
   <<: *parsebiotoolsid
   <<: *production_vars
+
+.updatedataset: &updatedataset
+  script:
+    - *setup_docker_tls
+    - docker-compose -f webserver/production.yml run --rm django python manage.py removepublications
+    - docker-compose -f webserver/production.yml run --rm django python manage.py updatewebsiteurls ${ORIG2NEW_PATH} ${NEW2ORIG_PREV_PATH}
+    - docker-compose -f webserver/production.yml run --rm django python manage.py parsepaperdata ${PUBLICATIONS_PATH} ${FILTER_PATH} ${BIOTOOLSID_PATH}
+  <<: *manage_only_master_remote
+
+updatedataset-staging:
+  stage: managedb-staging
+  <<: *updatedataset
+  <<: *staging_vars
+
+updatedataset-production:
+  stage: managedb-production
+  <<: *updatedataset
+  <<: *production_vars
   
 .removepublications: &removepublications
   script:
@@ -293,6 +311,22 @@ reset_db-staging:
 reset_db-production:
   stage: managedb-production
   <<: *reset_db
+  <<: *production_vars
+
+.backup_db: &backup_db
+  script:
+    - *setup_docker_tls
+    - docker-compose -f webserver/production.yml run --rm postgres backup
+  <<: *manage_only_master_remote
+
+backup_db-staging:
+  stage: managedb-staging
+  <<: *backup_db
+  <<: *staging_vars
+
+backup_db-production:
+  stage: managedb-production
+  <<: *backup_db
   <<: *production_vars
 
 .create_superuser: &create_superuser

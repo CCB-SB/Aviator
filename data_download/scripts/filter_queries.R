@@ -6,17 +6,28 @@ library(pbapply)
 #save.image()
 #stop()
 
-tbl = fread(snakemake@input$pubmed)
+tbl = fread(snakemake@input$pubmed, colClasses=c(PMID="character"))
 biotools = fread(snakemake@input$biotools, colClasses = c(PMID="character"))
-biotools = biotools[year>=2010]
+#biotools = biotools[year>=2010]
 nar = fread(snakemake@input$nar, colClasses = c(PMID="character"))
-nar_manual = fread(snakemake@input$nar_manual_cur)
+nar_manual = fread(snakemake@input$nar_manual_cur, colClasses = c(PMID="character"))
+other_manual = fread(snakemake@input$manual_cur, colClasses = c(PMID="character"))
+other_pminfo = fread(snakemake@input$manual_cur_pubmed, colClasses = c(PMID="character"))
 
-tbl = rbind(tbl, biotools, nar, fill=TRUE)
+manual_urls = rbind(nar_manual, other_manual)[URL != ""]
+setnames(manual_urls, "URL", "URL_Manual")
+
+tbl = rbind(tbl, biotools, nar, other_pminfo, fill=TRUE)
 tbl[, biotools_url:=biotools$biotools_url[match(PMID, biotools$PMID)]]
 
 # merge duplicate pmids
 tbl = tbl[, list(URL_BRACKET=paste(URL_BRACKET, collapse='; '), URL_XML=paste(URL_XML, collapse='; '), URL_Extractor=paste(URL_Extractor, collapse='; '), biotools_url=paste(URL_Extractor, collapse='; ')), by=c("PMID", "authors", "year", "title", "abstract", "journal")]
+
+tbl = merge(tbl, manual_urls, all.x = TRUE)
+
+# remove URLs for publications where we have manually curated entries
+tbl[!is.na(URL_Manual), `:=`(URL_BRACKET="", URL_Extractor="", URL_XML="", biotools_url="")]
+tbl[is.na(URL_Manual), URL_Manual:=""]
 
 # exclude PMIDs that are not ws
 no_ws_pmids = readLines(snakemake@input$no_ws_list)
@@ -37,15 +48,14 @@ fixes = c("www.AntibioticScout. ch"="www.AntibioticScout.ch",
           "http://www.ensembl.org.The"="http://www.ensembl.org",
           " http://www.ensemblgenomes.org.In"=" http://www.ensemblgenomes.org",
           "GlycanStructure.Org"="glycanstructure.org",
-          "http://www.\u2028neals.org"="http://www.neals.org")
+          "http://www.\u2028neals.org"="http://www.neals.org",
+          "http://sit.mfu.ac.th/lcgdb/index_FoxM1.php.Communicated"="http://sit.mfu.ac.th/lcgdb/index_FoxM1.php")
 
 for(e in names(fixes)){
   pos = grep(e, tbl$abstract)
-  tbl[pos, URL_BRACKET:=fixes[e]]
-  tbl[pos, URL_BRACKET_NORM:=fixes[e]]
-  tbl[pos, URL_XML:=fixes[e]]
-  tbl[pos, URL_XML_NORM:=fixes[e]]
-  tbl[pos, URL_Extractor:=fixes[e]]
+  set(tbl, pos, "URL_BRACKET", fixes[e])
+  set(tbl, pos, "URL_XML", fixes[e])
+  set(tbl, pos, "URL_Extractor", fixes[e])
 }
 
 # remove clinical trials, removes many false positives, but also a tiny fraction of real web servers
@@ -54,7 +64,7 @@ tbl = tbl[!grepl("clinical trial", abstract, ignore.case = T)]
 # filter URLs according to regex
 url_regex = "^(https?://(?:www\\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\\.[^\\s]{2,}|www\\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\\.[^\\s]{2,}|https?://(?:www\\.|(?!www))[a-zA-Z0-9]+\\.[^\\s]{2,}|www\\.[a-zA-Z0-9]+\\.[^\\s]{2,})"
 
-tbl[, URL:=unlist(pblapply(strsplit(paste(URL_BRACKET, URL_XML, URL_Extractor, biotools_url, sep = ';'), ';', fixed=T), function(x) {
+tbl[, URL:=unlist(pblapply(strsplit(paste(URL_BRACKET, URL_XML, URL_Extractor, biotools_url, URL_Manual, sep = ';'), ';', fixed=T), function(x) {
   res = unique(stringi::stri_trim_both(gsub("^\\s+", "", trimws(x, whitespace="[ \t\r\n.)(,;>\\[\\]]"))))
   
   # replace tilde
@@ -153,7 +163,7 @@ tbl[, URL:=unlist(pblapply(strsplit(paste(URL_BRACKET, URL_XML, URL_Extractor, b
   new_urls = new_urls[!duplicated(fs::path_sanitize(new_urls, replacement="."))]
 
   paste(new_urls, collapse='; ')
-}, cl = 1))]
+}, cl = snakemake@threads))]
 
 tbl = tbl[URL != ""]
 tbl = tbl[!duplicated(tbl)]
@@ -198,7 +208,7 @@ setnames(orig_new_df, "final_new", "new")
 orig_new_df[, new_ID:=fs::path_sanitize(new, replacement = ".")]
 orig_new_df[, orig_ID:=fs::path_sanitize(orig, replacement = ".")]
 
-fwrite(orig_new_df, snakemake@output$orig_url2new_id, sep='\t')
+fwrite(unique(orig_new_df), snakemake@output$orig_url2new_id, sep='\t')
 
 # update table urls
 tbl[, URL:=unlist(lapply(URL, function(x) {
@@ -208,26 +218,7 @@ tbl[, URL:=unlist(lapply(URL, function(x) {
   paste(new_urls, collapse='; ')
 }))]
 
-fwrite(tbl, snakemake@output$filtered_tbl, sep='\t')
-
-# kws = c("webserver", "web server", "web-server",
-#         "web service", "web-service",
-#         "web portal", "web-portal",
-#         "online tool",
-#         "website",
-#         "web based", "web-based",
-#         "web interface", "web-interface",
-#         "web tool", "web-tool",
-#         "network service", "network-service",
-#         "server")
-# 
-# kw_hits = unlist(lapply(kws, function(k) length(grep(k, tbl$abstract, ignore.case = T))))
-# names(kw_hits) = kws
-# kw_hits = kw_hits[order(kw_hits)]
-# 
-# kw_plot = data.frame(keyword=names(kw_hits), occurence=kw_hits)
-# 
-# ggplot(kw_plot, aes(x=keyword, y=occurence)) + geom_col()
+fwrite(tbl[order(as.numeric(PMID))], snakemake@output$filtered_tbl, sep='\t')
 
 urls = unique(unlist(strsplit(tbl$URL, '; ')))
 ids = fs::path_sanitize(urls, replacement = ".")

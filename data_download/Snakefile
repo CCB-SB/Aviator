@@ -1,3 +1,7 @@
+from glob import glob
+from os.path import basename, splitext
+from datetime import date
+
 BATCHES = 13
 rule all:
     input: 
@@ -6,8 +10,9 @@ rule all:
         "results/nar_ws.pubmed_info.csv",
         "results/wos_results_filtered_pmids",
         "results/publication_table_for_webservice.csv",
+        "results/new2orig_urls_all_previous.json",
         expand("download/urls2query.{n}.csv", n=range(1, BATCHES + 1)),
-	"results/biotoolsid2pmid.csv"
+	    "results/biotoolsid2pmid.csv"
 
 rule get_query_table:
     output:
@@ -31,7 +36,8 @@ rule parse_urls_python:
 
 rule filter_biotools:
     input:
-        biotools="results/biotools.json"
+        biotools="results/biotools.json",
+        doi2pmid="data/doi2pmid.csv"
     output: "results/biotools.filtered.csv"
     script: "scripts/filter_biotools.R"
 
@@ -65,13 +71,22 @@ rule collect_nar_ws_pubmed_tbl:
     conda: "envs/biopython.yml"
     script: "scripts/get_nar_ws_pubmed_info.py"
 
+rule collected_curated_url_pubmed_tbl:
+    input: "data/curated_urls.csv"
+    output: 
+        csv="results/curated_urls.pubmed_info.csv"
+    conda: "envs/biopython.yml"
+    script: "scripts/get_curated_urls_pubmed_info.py"
+
 rule filter_queries:
     input: 
         pubmed="results/query_table.java_python_urls.csv",
         biotools="results/biotools.filtered.pubmed_info.java_python_urls.csv",
         nar="results/nar_ws.pubmed_info.java_python_urls.csv",
         nar_manual_cur="data/nar_manual_curated_urls.csv",
-        no_ws_list="data/pmids_not_webservers.txt"
+        no_ws_list="data/pmids_not_webservers.txt",
+        manual_cur="data/curated_urls.csv",
+        manual_cur_pubmed="results/curated_urls.pubmed_info.csv"
     output: 
         filtered_tbl="results/query_table.filtered.csv",
         orig_url2new_id="results/orig2new_urls_and_id.csv",
@@ -80,7 +95,16 @@ rule filter_queries:
     params:
         batches=BATCHES
     conda: "envs/R.yml"
+    threads: 4
     script: "scripts/filter_queries.R"
+
+rule old_orig2new_url_map:
+    input:
+        glob("data/old_data/orig2new_urls*.csv")
+    output:
+        "results/new2orig_urls_all_previous.json"
+    conda: "envs/biopython.yml"
+    script: "scripts/create_previous_orig2new_url_map.py"
 
 rule download_wos_info:
     input: "results/query_table.filtered.csv"
@@ -119,3 +143,29 @@ rule download_folder:
     output: expand("download/urls2query.{n}.csv", n=range(1, BATCHES + 1))
     params: prefix="download"
     shell: "cp {input} {params.prefix}"
+
+WS_FILES = [
+    "urls2query.csv", "orig2new_urls_and_id.csv", "publication_table_for_webservice.csv",
+    "new2orig_urls_all_previous.json", "biotoolsid2pmid.csv"
+]
+
+def add_timestamp(files):
+    for f in files:
+        base, ext = splitext(f)
+        yield f"{base}.{date.today().isoformat()}{ext}"
+
+rule copy_with_timestamp:
+    input:
+        "results/{file}.{ext}"
+    output:
+        f"../webserver/data/{{file}}.{date.today().isoformat()}.{{ext}}"
+    shell: "cp {input} {output}"
+
+rule copy_to_app:
+    input: 
+        expand("../webserver/data/{file}", file=add_timestamp(WS_FILES))
+
+rule copy_old_ws_data:
+    input: glob("../webserver/data/orig2new_urls_and_id*.csv")
+    output: f"data/old_data/{basename(glob('../webserver/data/orig2new_urls_and_id*.csv')[-1])}"
+    shell: "cp {input} {output}"

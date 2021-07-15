@@ -3,7 +3,7 @@ library(rjson)
 
 biotools = rjson::fromJSON(file=snakemake@input$json)
 
-tbl = rbindlist(lapply(c("Web service", "Web API", "Web application"), function(s) {
+tbl = rbindlist(lapply(c("Web service", "Web API", "Web application", "Bioinformatics portal", "Database portal"), function(s) {
   pmids = unlist(lapply(biotools[[s]], function(x) paste(unlist(lapply(x$publication, function(y) y$pmid)), collapse = ';')))
   dois = unlist(lapply(biotools[[s]], function(x) paste(unlist(lapply(x$publication, function(y) y$doi)), collapse = ';')))
   homepage = unlist(lapply(biotools[[s]], function(x) x$homepage))
