@@ -3,6 +3,8 @@ from collections import defaultdict
 from django.core.management.base import BaseCommand, CommandError
 from django.db.models import Count
 
+from tqdm import tqdm
+
 import pandas as pd
 
 from main.models import Website
@@ -69,6 +71,7 @@ class Command(BaseCommand):
             if filter_orig_urls:
                 urls = [u for u in urls if u in filter_orig_urls]
             p.url = urls
+            p.websites.clear()
             p.user_kwds = split_w_nan(pub_dict["keywords_all"][p.pubmed_id], ';')
             p.mesh_terms = split_w_nan(pub_dict["mesh_terms_all"][p.pubmed_id], ';')
             p.contact_mail = split_w_nan(pub_dict["Email"][p.pubmed_id], ';')
@@ -95,7 +98,7 @@ class Command(BaseCommand):
                         biotools_id = pmid2biotoolsid[i]
                 if len(urls) > 0:
                     yield Publication(pubmed_id=i,
-                                      biotools_id = biotools_id,
+                                      biotools_id=biotools_id,
                                       authors=str(row["authors"]).split(", "),
                                       title=row["title"],
                                       abstract=row["abstract"],
@@ -121,8 +124,8 @@ class Command(BaseCommand):
                     url2pub[u].add(pmid2pub[p])
 
         updated_websites = 0
-        websites_to_update = Website.objects.filter(original_url__in=url2pub.keys())
-        for website in websites_to_update:
+        websites_to_update = list(Website.objects.filter(original_url__in=url2pub.keys()))
+        for website in tqdm(websites_to_update):
             website.papers.add(*url2pub[website.original_url])
             updated_websites += 1
 
