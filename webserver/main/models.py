@@ -62,6 +62,11 @@ class WebsiteCall(models.Model):
     code = models.IntegerField()
     json_data = JSONField()
 
+    class Meta:
+        indexes = [
+            models.Index(fields=['datetime', 'website']),
+        ]
+
 
 class Tag(models.Model):
     name = models.CharField(max_length=50)
