@@ -79,7 +79,12 @@ $.fn.dataTable.pipeline = function (opts) {
                 "dataType": "json",
                 "cache": false,
                 "success": function (json) {
-                    cacheLastJson = $.extend(true, {}, json);
+                    if(cacheLastJson === null || JSON.stringify(cacheLastJson.website_states) != JSON.stringify(json.website_states)){
+                        cacheLastJson = $.extend(true, {}, json);
+                        setTimeout(updatePlot, 0, json.website_states);
+                    } else {
+                        cacheLastJson = $.extend(true, {}, json);
+                    }
 
                     if (cacheLower != drawStart) {
                         json.data.splice(0, drawStart - cacheLower);
@@ -89,7 +94,6 @@ $.fn.dataTable.pipeline = function (opts) {
                     }
 
                     drawCallback(json);
-                    updatePlot(json.website_states);
                     updateStats(json.statistics);
                 }
             });
