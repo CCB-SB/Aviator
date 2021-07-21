@@ -32,7 +32,7 @@
    ORIG2NEW_PATH=data/orig2new_urls_and_id.2021-07-15.csv
 ```
 
-7. To update the database run **before** cron job website call the **updatedataset** job via the gitlab-ci
+7. To update the database run update_dl.sh, **before** the cron job
 
 ## To manually add new publication and URL
 Update data/curated_urls.csv
