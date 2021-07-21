@@ -7,7 +7,6 @@ rule all:
     input: 
         "results/query_table.filtered.csv",
         "results/biotools.filtered.pubmed_info.csv",
-        "results/nar_ws.pubmed_info.csv",
         "results/wos_results_filtered_pmids",
         "results/publication_table_for_webservice.csv",
         "results/new2orig_urls_all_previous.json",
@@ -63,13 +62,11 @@ rule get_biotoolsid2pmid:
         "results/biotoolsid2pmid.csv"
     script: "scripts/add_biotools_id.R"
 
-rule collect_nar_ws_pubmed_tbl:
-    input:
-        nar="data/nar_webserver_issue_articles_since_2010.csv"
+rule get_nar_ws_and_db_pubmed_tbl:
     output:
-        csv="results/nar_ws.pubmed_info.csv"
+        csv="results/nar_ws_and_db.pubmed_info.csv"
     conda: "envs/biopython.yml"
-    script: "scripts/get_nar_ws_pubmed_info.py"
+    script: "scripts/get_nar_ws_and_db_pubmed_info.py"
 
 rule collected_curated_url_pubmed_tbl:
     input: "data/curated_urls.csv"
@@ -82,7 +79,7 @@ rule filter_queries:
     input: 
         pubmed="results/query_table.java_python_urls.csv",
         biotools="results/biotools.filtered.pubmed_info.java_python_urls.csv",
-        nar="results/nar_ws.pubmed_info.java_python_urls.csv",
+        nar="results/nar_ws_and_db.pubmed_info.java_python_urls.csv",
         nar_manual_cur="data/nar_manual_curated_urls.csv",
         no_ws_list="data/pmids_not_webservers.txt",
         manual_cur="data/curated_urls.csv",
@@ -168,4 +165,4 @@ rule copy_to_app:
 rule copy_old_ws_data:
     input: glob("../webserver/data/orig2new_urls_and_id*.csv")
     output: f"data/old_data/{basename(glob('../webserver/data/orig2new_urls_and_id*.csv')[-1])}"
-    shell: "cp {input} {output}"
+    shell: "cp {input} data/old_data"
