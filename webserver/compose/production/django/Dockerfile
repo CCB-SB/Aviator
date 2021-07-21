@@ -55,6 +55,9 @@ USER django
 RUN cd /app &&\
     CELERY_BROKER_URL=dummy\
     REDIS_URL=dummy DATABASE_URL=dummy DJANGO_SECRET_KEY=dummy DJANGO_ADMIN_URL=dummy\
+    python /app/manage.py compress --settings config.settings.production &&\
+    CELERY_BROKER_URL=dummy\
+    REDIS_URL=dummy DATABASE_URL=dummy DJANGO_SECRET_KEY=dummy DJANGO_ADMIN_URL=dummy\
     python /app/manage.py collectstatic --settings config.settings.production --noinput
 
 
