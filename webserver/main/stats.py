@@ -26,7 +26,14 @@ def get_index_stats():
     context['offline_count'] = Website.objects.filter(status=WebsiteStatus.OFFLINE).count()
     return context
 
+# cache for same SQL query and same websitecall
+# that way, when we add new data we get a new key
+def get_all_statistics_args_rewrite(pub_queryset, curated=False):
+    return f"{str(pub_queryset.query)}{WebsiteCall.objects.last().id}{curated}"
 
+
+# cache for 12h
+@cache_memoize(12 * 60 * 60, args_rewrite=get_all_statistics_args_rewrite)
 def get_all_statistics(pub_queryset, curated=False):
     # website count
     # paper count

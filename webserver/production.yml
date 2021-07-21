@@ -44,6 +44,7 @@ services:
       - production_postgres_data_backups:/backups
     env_file:
       - ./.envs/.production/.postgres
+    command: postgres -c config_file=/etc/postgresql.conf
     restart: unless-stopped
 
   large_data_service:

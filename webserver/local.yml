@@ -36,6 +36,7 @@ services:
       - local_postgres_data_backups:/backups
     env_file:
       - ./.envs/.local/.postgres
+    command: postgres -c config_file=/etc/postgresql.conf
   redis:
     image: redis:5.0
 

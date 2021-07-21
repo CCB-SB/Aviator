@@ -1,6 +1,7 @@
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, render
 from django.views.decorators.cache import cache_page
+from django.utils.cache import add_never_cache_headers
 from .models import Website, WebsiteCall, Publication, Tag, CuratedWebsite, GlobalStatistics
 from datetime import timedelta
 import json
