@@ -173,3 +173,14 @@ LOGGING = {
 # ------------------------------------------------------------------------------
 RECAPTCHA_PUBLIC_KEY = env('RECAPTCHA_PUBLIC_KEY', default="")
 RECAPTCHA_PRIVATE_KEY = env('RECAPTCHA_PRIVATE_KEY', default="")
+
+COMPRESS_ENABLED = env.bool("COMPRESS_ENABLED", default=True)
+COMPRESS_OFFLINE = True
+COMPRESS_FILTERS = {
+    "css": [
+        "compressor.filters.css_default.CssAbsoluteFilter",
+        "compressor.filters.cssmin.rCSSMinFilter",
+    ],
+    "js": ["compressor.filters.jsmin.JSMinFilter"],
+}
+COMPRESS_URL = STATIC_URL
