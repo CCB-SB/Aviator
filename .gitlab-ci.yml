@@ -187,6 +187,7 @@ parsewebsitecalls-production:
     - docker-compose -f webserver/production.yml run --rm django python manage.py parsewebsitecalls ${TELEMETRY_PATH} ${FOLDERID_URL_PATH} ${FILTER_PATH}
     - docker-compose -f webserver/production.yml run --rm django python manage.py calculatestatistics
   <<: *manage_only_master_remote
+  allow_failure: false
 
 update_websitecalls_and_stats-staging:
   stage: managedb-staging
