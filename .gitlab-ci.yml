@@ -107,12 +107,12 @@ build:
     - *check_newer_commit
   tags:
     - deployment
+  needs: ["build"]
 
 deploy-staging:
   stage: deploy-staging
   <<: *deploy
   <<: *staging_vars
-  needs: ["build"]
   environment:
     name: staging
     url: https://anathema.cs.uni-saarland.de/aviator
