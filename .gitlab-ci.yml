@@ -30,6 +30,11 @@ before_script:
     DOCKER_CERT_PATH: "certs"
     COMPOSE_HTTP_TIMEOUT: "180"
 
+.staging_params: &staging_params
+  <<: *staging_vars
+  needs: ["deploy-staging"]
+
+
 .production_vars: &production_vars
   variables:
     DOCKER_TLS_VERIFY: "1"
@@ -37,6 +42,11 @@ before_script:
     DOCKER_CERT_PATH: "certs"
     IS_PROD: "1"
     COMPOSE_HTTP_TIMEOUT: "180"
+
+.production_params: &production_params
+  <<: *production_vars
+  needs: ["deploy-production"]
+
 
 .setup_docker_tls:
   - &setup_docker_tls
@@ -102,6 +112,7 @@ deploy-staging:
   stage: deploy-staging
   <<: *deploy
   <<: *staging_vars
+  needs: ["build"]
   environment:
     name: staging
     url: https://anathema.cs.uni-saarland.de/aviator
@@ -126,12 +137,12 @@ deploy-production:
 filldb-staging:
   stage: managedb-staging
   <<: *filldb
-  <<: *staging_vars
+  <<: *staging_params
 
 filldb-production:
   stage: managedb-production
   <<: *filldb
-  <<: *production_vars
+  <<: *production_params
 
 .migrate: &migrate
   script:
@@ -142,12 +153,12 @@ filldb-production:
 migrate-staging:
   stage: managedb-staging
   <<: *migrate
-  <<: *staging_vars
+  <<: *staging_params
 
 migrate-production:
   stage: managedb-production
   <<: *migrate
-  <<: *production_vars
+  <<: *production_params
 
 .parsekeywords: &parsekeywords
   script:
@@ -158,12 +169,12 @@ migrate-production:
 parsekeywords-staging:
   stage: managedb-staging
   <<: *parsekeywords
-  <<: *staging_vars
+  <<: *staging_params
 
 parsekeywords-production:
   stage: managedb-production
   <<: *parsekeywords
-  <<: *production_vars
+  <<: *production_params
 
 .parsewebsitecalls: &parsewebsitecalls
   script:
@@ -174,12 +185,12 @@ parsekeywords-production:
 parsewebsitecalls-staging:
   stage: managedb-staging
   <<: *parsewebsitecalls
-  <<: *staging_vars
+  <<: *staging_params
 
 parsewebsitecalls-production:
   stage: managedb-production
   <<: *parsewebsitecalls
-  <<: *production_vars
+  <<: *production_params
 
 .update_websitecalls_and_stats: &update_websitecalls_and_stats
   script:
@@ -192,12 +203,12 @@ parsewebsitecalls-production:
 update_websitecalls_and_stats-staging:
   stage: managedb-staging
   <<: *update_websitecalls_and_stats
-  <<: *staging_vars
+  <<: *staging_params
 
 update_websitecalls_and_stats-production:
   stage: managedb-production
   <<: *update_websitecalls_and_stats
-  <<: *production_vars
+  <<: *production_params
 
 .parsepaperdata: &parsepaperdata
   script:
@@ -208,12 +219,12 @@ update_websitecalls_and_stats-production:
 parsepaperdata-staging:
   stage: managedb-staging
   <<: *parsepaperdata
-  <<: *staging_vars
+  <<: *staging_params
 
 parsepaperdata-production:
   stage: managedb-production
   <<: *parsepaperdata
-  <<: *production_vars
+  <<: *production_params
 
 .parsecurated: &parsecurated
   script:
@@ -224,12 +235,12 @@ parsepaperdata-production:
 parsecurated-staging:
   stage: managedb-staging
   <<: *parsecurated
-  <<: *staging_vars
+  <<: *staging_params
 
 parsecurated-production:
   stage: managedb-production
   <<: *parsecurated
-  <<: *production_vars
+  <<: *production_params
 
 .calculatestatistics: &calculatestatistics
   script:
@@ -240,12 +251,12 @@ parsecurated-production:
 calculatestatistics-staging:
   stage: managedb-staging
   <<: *calculatestatistics
-  <<: *staging_vars
+  <<: *staging_params
 
 calculatestatistics-production:
   stage: managedb-production
   <<: *calculatestatistics
-  <<: *production_vars
+  <<: *production_params
 
 .parsebiotoolsid: &parsebiotoolsid
   script:
@@ -256,12 +267,12 @@ calculatestatistics-production:
 parsebiotoolsid-staging:
   stage: managedb-staging
   <<: *parsebiotoolsid
-  <<: *staging_vars
+  <<: *staging_params
 
 parsebiotoolsid-production:
   stage: managedb-production
   <<: *parsebiotoolsid
-  <<: *production_vars
+  <<: *production_params
 
 .updatedataset: &updatedataset
   script:
@@ -273,12 +284,12 @@ parsebiotoolsid-production:
 updatedataset-staging:
   stage: managedb-staging
   <<: *updatedataset
-  <<: *staging_vars
+  <<: *staging_params
 
 updatedataset-production:
   stage: managedb-production
   <<: *updatedataset
-  <<: *production_vars
+  <<: *production_params
   
 .removepublications: &removepublications
   script:
@@ -289,12 +300,12 @@ updatedataset-production:
 removepublications-staging:
   stage: managedb-staging
   <<: *removepublications
-  <<: *staging_vars
+  <<: *staging_params
 
 removepublications-production:
   stage: managedb-production
   <<: *removepublications
-  <<: *production_vars
+  <<: *production_params
 
 .reset_db: &reset_db
   script:
@@ -306,12 +317,12 @@ removepublications-production:
 reset_db-staging:
   stage: managedb-staging
   <<: *reset_db
-  <<: *staging_vars
+  <<: *staging_params
 
 reset_db-production:
   stage: managedb-production
   <<: *reset_db
-  <<: *production_vars
+  <<: *production_params
 
 .backup_db: &backup_db
   script:
@@ -322,12 +333,12 @@ reset_db-production:
 backup_db-staging:
   stage: managedb-staging
   <<: *backup_db
-  <<: *staging_vars
+  <<: *staging_params
 
 backup_db-production:
   stage: managedb-production
   <<: *backup_db
-  <<: *production_vars
+  <<: *production_params
 
 .create_superuser: &create_superuser
   script:
@@ -338,12 +349,12 @@ backup_db-production:
 create_superuser-staging:
   stage: managedb-staging
   <<: *create_superuser
-  <<: *staging_vars
+  <<: *staging_params
 
 create_superuser-production:
   stage: managedb-production
   <<: *create_superuser
-  <<: *production_vars
+  <<: *production_params
 
 .stop-environment: &stop-environment
   variables:
@@ -359,10 +370,10 @@ create_superuser-production:
 stop-staging:
   stage: manage-env-staging
   <<: *stop-environment
-  <<: *staging_vars
+  <<: *staging_params
 
 stop-production:
   stage: manage-env-production
   <<: *stop-environment
-  <<: *production_vars
+  <<: *production_params
 
