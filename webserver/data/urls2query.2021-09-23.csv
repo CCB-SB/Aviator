@@ -531,8 +531,8 @@ http://www.lifescienceweb.org/	http...www.lifescienceweb.org
 http://www.mutdb.org/	http...www.mutdb.org
 http://bioserv.rpbs.jussieu.fr/cgi-bin/PPG	http...bioserv.rpbs.jussieu.fr.cgi-bin.PPG
 http://www.scmbb.ulb.ac.be/pathfinding/	http...www.scmbb.ulb.ac.be.pathfinding
-http://bioinfo3d.cs.tau.ac.il/I2I-SiteEngine	http...bioinfo3d.cs.tau.ac.il.I2I-SiteEngine
 http://bioinfo3d.cs.tau.ac.il/SiteEngine	http...bioinfo3d.cs.tau.ac.il.SiteEngine
+http://bioinfo3d.cs.tau.ac.il/I2I-SiteEngine	http...bioinfo3d.cs.tau.ac.il.I2I-SiteEngine
 http://ibivu.cs.vu.nl/programs/popscompwww/	http...ibivu.cs.vu.nl.programs.popscompwww
 http://www.pdg.cnb.uam.es/eva/con/index.html	http...www.pdg.cnb.uam.es.eva.con.index.html
 http://cubic.bioc.columbia.edu/eva/con/index.html	http...cubic.bioc.columbia.edu.eva.con.index.html
@@ -1994,6 +1994,7 @@ http://www.datamonkey.org	http...www.datamonkey.org
 http://kokki.uku.fi/bioinformatics/varietas/	http...kokki.uku.fi.bioinformatics.varietas
 http://pfs.nus.edu.sg/	http...pfs.nus.edu.sg
 http://public.tgen.org/rulemonkey	http...public.tgen.org.rulemonkey
+http://www.mutationtaster.org/	http...www.mutationtaster.org
 http://www.imtech.res.in/raghava/rnapred/	http...www.imtech.res.in.raghava.rnapred
 http://protchem.hunnu.edu.cn/toxin	http...protchem.hunnu.edu.cn.toxin
 http://www.ebi.ac.uk/thornton-srv/databases/CoFactor	http...www.ebi.ac.uk.thornton-srv.databases.CoFactor
@@ -5270,8 +5271,8 @@ http://naoii.nig.ac.jp/mudi_top.html	http...naoii.nig.ac.jp.mudi_top.html
 http://quantitativeproteomics.org/normalyzer	http...quantitativeproteomics.org.normalyzer
 http://console.sanfordburnham.org	http...console.sanfordburnham.org
 http://rnapdbee.cs.put.poznan.pl	http...rnapdbee.cs.put.poznan.pl
-http://probes.pw.usda.gov/NetVenn	http...probes.pw.usda.gov.NetVenn
 http://wheat.pw.usda.gov/NetVenn	http...wheat.pw.usda.gov.NetVenn
+http://probes.pw.usda.gov/NetVenn	http...probes.pw.usda.gov.NetVenn
 http://imods.chaconlab.org	http...imods.chaconlab.org
 http://protegewiki.stanford.edu/wiki/WebProtege	http...protegewiki.stanford.edu.wiki.WebProtege
 http://csb.cse.yzu.edu.tw/RegPhos2/	http...csb.cse.yzu.edu.tw.RegPhos2
@@ -8350,6 +8351,7 @@ http://possum.erc.monash.edu/	http...possum.erc.monash.edu
 http://medicare.gov/hospitalcompare	http...medicare.gov.hospitalcompare
 https://tbportals.niaid.nih.gov/	https...tbportals.niaid.nih.gov
 http://fairbrother.biomed.brown.edu/spliceman2	http...fairbrother.biomed.brown.edu.spliceman2
+https://www.ccb.uni-saarland.de/mirmaster	https...www.ccb.uni-saarland.de.mirmaster
 http://CScape.biocompute.org.uk/	http...CScape.biocompute.org.uk
 http://www.cerealsdb.uk.net/cerealgenomics/CerealsDB/sequence_capture.php	http...www.cerealsdb.uk.net.cerealgenomics.CerealsDB.sequence_capture.php
 http://www.pemtb-amu.org	http...www.pemtb-amu.org
@@ -9784,6 +9786,7 @@ https://www.sense-cog.eu/	https...www.sense-cog.eu
 https://www.mocatest.org/	https...www.mocatest.org
 http://www.seizubraineac.org	http...www.seizubraineac.org
 http://psp.agu.edu.tr	http...psp.agu.edu.tr
+https://www.ccb.uni-saarland.de/asra	https...www.ccb.uni-saarland.de.asra
 http://saviclab.org/tb-lesion/	http...saviclab.org.tb-lesion
 http://dee2.io	http...dee2.io
 http://www.ncec-china.cn	http...www.ncec-china.cn
@@ -10532,6 +10535,7 @@ https://PACKMAN.bb.iastate.edu/	https...PACKMAN.bb.iastate.edu
 http://dna.cs.miami.edu/3DChrom/	http...dna.cs.miami.edu.3DChrom
 http://yanglab.nankai.edu.cn/CATHER/	http...yanglab.nankai.edu.cn.CATHER
 http://bio-bigdata.hrbmu.edu.cn/LncCASE/	http...bio-bigdata.hrbmu.edu.cn.LncCASE
+https://www.ccb.uni-saarland.de/mtguide	https...www.ccb.uni-saarland.de.mtguide
 https://drv.brc.hu	https...drv.brc.hu
 http://atb.uq.edu.au/asp/	http...atb.uq.edu.au.asp
 http://bionlp.bcgsc.ca/civicmine/	http...bionlp.bcgsc.ca.civicmine
@@ -11649,6 +11653,7 @@ https://joelarkman.shinyapps.io/PowerTools/	https...joelarkman.shinyapps.io.Powe
 https://omics.bjcancer.org/pina/	https...omics.bjcancer.org.pina
 http://www.lifeandlovewithhiv.ca	http...www.lifeandlovewithhiv.ca
 http://thegleelab.org/yORIpred	http...thegleelab.org.yORIpred
+https://www.ccb.uni-saarland.de/humir	https...www.ccb.uni-saarland.de.humir
 https://www.greenphyl.org	https...www.greenphyl.org
 https://repeatsdb.org/	https...repeatsdb.org
 https://mobidb.org/	https...mobidb.org
@@ -11726,6 +11731,8 @@ https://harp-leprosy.org	https...harp-leprosy.org
 http://www.fungi.guru	http...www.fungi.guru
 http://www.hmpdacc.org	http...www.hmpdacc.org
 https://proteinensemble.org	https...proteinensemble.org
+https://www.ccb.uni-saarland.de/mirtah	https...www.ccb.uni-saarland.de.mirtah
+https://www.ccb.uni-saarland.de/miratbase	https...www.ccb.uni-saarland.de.miratbase
 http://webtom.cabgrid.res.in/bpdrtdb/	http...webtom.cabgrid.res.in.bpdrtdb
 http://lmmd.ecust.edu.cn/metaadedb/	http...lmmd.ecust.edu.cn.metaadedb
 http://www.organchem.csdb.cn/scdb/NPBS	http...www.organchem.csdb.cn.scdb.NPBS

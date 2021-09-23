@@ -59,7 +59,7 @@ for(e in names(fixes)){
 }
 
 # remove clinical trials, removes many false positives, but also a tiny fraction of real web servers
-tbl = tbl[!grepl("clinical trial", abstract, ignore.case = T)]
+tbl = tbl[!grepl("clinical trial", abstract, ignore.case = T) | (PMID %in% manual_urls$PMID)]
 
 # filter URLs according to regex
 url_regex = "^(https?://(?:www\\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\\.[^\\s]{2,}|www\\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\\.[^\\s]{2,}|https?://(?:www\\.|(?!www))[a-zA-Z0-9]+\\.[^\\s]{2,}|www\\.[a-zA-Z0-9]+\\.[^\\s]{2,})"
@@ -164,6 +164,9 @@ tbl[, URL:=unlist(pblapply(strsplit(paste(URL_BRACKET, URL_XML, URL_Extractor, b
 
   paste(new_urls, collapse='; ')
 }, cl = snakemake@threads))]
+
+# ensure manually added URLs are kept
+tbl[URL == "" & URL_Manual != "", URL:=URL_Manual]
 
 tbl = tbl[URL != ""]
 tbl = tbl[!duplicated(tbl)]

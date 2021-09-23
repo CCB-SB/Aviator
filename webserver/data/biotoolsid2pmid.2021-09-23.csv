@@ -564,7 +564,6 @@ MS2PIP_Server	25990723
 MS2PIP_Server	24078703
 galaxy_australia	32479607
 swiss-model_repository	27899672
-FAIRDataPoint	134
 bio.tools	26538599
 bio.tools	29333231
 bio.tools	28402416
@@ -2958,9 +2957,10 @@ diana-mirgen	19850714
 diana-mirgen	17108354
 diana-lncbase	26612864
 diana-lncbase	23193281
-bcheck_rnpb	20626900
+1000genomes_id_history_converter	134
 1000genomes_id_history_converter	22543379
 1000genomes_id_history_converter	20459805
+bcheck_rnpb	20626900
 gesbap	19502494
 theme	22188791
 hemopi	26953092
@@ -3239,7 +3239,6 @@ cancerouspdomains	28814324
 crispor	27380939
 ntue	30135718
 bpac	28750606
-shinydiversity	134
 gac	29263780
 chromnet	27139377
 give	30016975
@@ -3247,6 +3246,7 @@ bystro	29409527
 casas	28928946
 mdd-carb	29322938
 expresso	28529706
+pssa	134
 nmrbox	28445744
 canvar	28105316
 metagenesense	28451381
@@ -4660,7 +4660,6 @@ cravat	23325621
 g-sqz	20605925
 torque	19491310
 rnacontext	20617199
-marbl	134
 rnsc	15180928
 cs23d	18515350
 pred-signal	18988691
