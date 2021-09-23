@@ -10,3 +10,10 @@ dependencies:
   - r-stringi=1.4
   - r-pbapply=1.4
   - r-stringr=1.4
+  - r-curl=4.3.2
+  - r-rjson=0.2.20
+  - r-yaml=2.2.1
+  - r-reshape2=1.4.4
+  - python=3.9
+  - pip:
+    - metapub==0.5.5

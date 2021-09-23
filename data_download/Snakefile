@@ -38,12 +38,14 @@ rule filter_biotools:
         biotools="results/biotools.json",
         doi2pmid="data/doi2pmid.csv"
     output: "results/biotools.filtered.csv"
+    conda: "envs/R.yml"
     script: "scripts/filter_biotools.R"
 
 rule dl_biotools:
     output: 
         pkl="results/biotools.pkl",
         json="results/biotools.json"
+    conda: "envs/biopython.yml"
     script: "scripts/download_biotools_web.py"
 
 rule get_biotools_pubmed_tbl:
@@ -60,6 +62,7 @@ rule get_biotoolsid2pmid:
         json="results/biotools.json"
     output:
         "results/biotoolsid2pmid.csv"
+    conda: "envs/R.yml"
     script: "scripts/add_biotools_id.R"
 
 rule get_nar_ws_and_db_pubmed_tbl:

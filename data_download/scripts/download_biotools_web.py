@@ -1,10 +1,8 @@
 import requests
-from urllib.parse import quote 
 from collections import defaultdict
 from time import sleep
 from tqdm import tqdm
 import pickle
-import pandas as pd
 import json
 
 terms = ["Web service", "Web API", "Web application"]

@@ -28,7 +28,7 @@ tbl[pmid == "" & doi != "", pmid:=unlist(lapply(doi, function(x) {
   paste(pmids, collapse=';')
 }))]
 
-conv_result = pblapply(unique(unlist(strsplit(tbl[pmid == "" & doi != ""]$doi, ';'))), function(x) lapply(x, function(e) system(sprintf('NCBI_API_KEY="2a26cfc6c7e92ad9eee8a2b29615e8a14209" /home/tobias/miniconda3/envs/metapub/bin/convert doi2pmid \'%s\'; sleep 1', e), intern=TRUE)), cl=5)
+conv_result = pblapply(unique(unlist(strsplit(tbl[pmid == "" & doi != ""]$doi, ';'))), function(x) lapply(x, function(e) system(sprintf('NCBI_API_KEY="2a26cfc6c7e92ad9eee8a2b29615e8a14209" convert doi2pmid \'%s\'; sleep 1', e), intern=TRUE)), cl=5)
 names(conv_result) = unique(unlist(strsplit(tbl[pmid == "" & doi != ""]$doi, ';')))
 
 # doi2pmid = unlist(lapply(names(conv_result), function(doi){
