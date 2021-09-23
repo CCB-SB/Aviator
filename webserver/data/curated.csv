@@ -29,3 +29,5 @@ Some use cases of DynaVenn are:
 - Select the most significant overlap between replicate experiments.
 - Analyze the overlap between related conditions."	Gene expression, RNA		Yes	3	2019	BMC Bioinformatics
 Andreas Keller	andreas.keller@ccb.uni-saarland.de	miRNACon	24987111	https://www.ccb.uni-saarland.de/mirnacon	https://www.ccb.uni-saarland.de/mirnacon/aviator_api.php	Backes C, Großmann T, Keller A	This tool determines the impact of age and gender on a set of miRNAs.	Gene expression, RNA		Yes	3	2014	Clin Chem
+Dominik Seelow	dominik.seelow@bih-charite.de	MutationTaster	20676075	http://www.mutationtaster.org/		Jana Marie Schwarz	MutationTaster evaluates the disease-causing potential of DNA variants.	Genetics, Genetic variation, Genotyping, DNA	Keywords 'variant prediction' and/or 'mutation prediction' are missing.	Yes	1	2010	Nat Methods
+Dominik Seelow	dominik.seelow@bih-charite.de	MutationTaster2	24681721	http://www.mutationtaster.org/		Jana Marie Schwarz	MutationTaster evaluates the disease-causing potential of DNA variants.	Genetics, Genetic variation, Genotyping, DNA		Yes	1	2014	Nat Methods
