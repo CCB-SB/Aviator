@@ -205,7 +205,7 @@ def details(request, pk):
     context = {}
     website = get_object_or_404(Website, pk=pk)
     show_for_x_days = 30
-    if "days" in request.POST:
+    if "days" in request.POST and request.POST["days"] != "undefined":
         show_for_x_days = int(request.POST["days"])
     show_for_x_days = min(show_for_x_days, 365)
     latest_time = website.calls.latest("datetime").datetime
