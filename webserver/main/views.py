@@ -207,15 +207,28 @@ def details(request, pk):
     show_for_x_days = 30
     if "days" in request.POST and request.POST["days"] != "undefined":
         show_for_x_days = int(request.POST["days"])
-    show_for_x_days = min(show_for_x_days, 365)
+    show_for_x_days = min(show_for_x_days, 360)
     latest_time = website.calls.latest("datetime").datetime
     first_call = website.calls.earliest("datetime").datetime
     context['days'] = show_for_x_days
     context['calls'] = website.calls.filter(datetime__date__gte=latest_time-timedelta(days=show_for_x_days)).order_by('-datetime')
     context['website'] = website
     context["first_call"] = first_call
+    day_states = {}
+    for call in context['calls']:
+        if call.datetime.date() in day_states:
+            day_states[call.datetime.date()] = True if ((call.ok and call.error == "" and call.code == 200) or day_states[call.datetime.date()]) else False
+        else:
+            day_states[call.datetime.date()] = call.ok and call.error == "" and call.code == 200
+    context["online"] = 0
+    context["offline"] = 0
+    for state in day_states.values():
+        if state:
+            context["online"] = context["online"] + 1
+        else:
+            context["offline"] = context["offline"] + 1
+    context["unknown"] = show_for_x_days - (context["online"] + context["offline"])
     return render(request, 'details.html', context)
-
 
 def publication(request, pk):
     context = {}
