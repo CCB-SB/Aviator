@@ -75,10 +75,10 @@ build:
     - *check_newer_commit
     - docker login -u gitlab-ci-token -p ${CI_JOB_TOKEN} ${CI_REGISTRY}
     - docker login -u s9pahirs -p ${DOCKERHUB_TOKEN}
-    - docker-compose -f webserver/production.yml pull --ignore-pull-failures
-    - docker-compose -f webserver/production.yml build
+    - docker-compose --project-name aviator -f webserver/production.yml pull --ignore-pull-failures
+    - docker-compose --project-name aviator -f webserver/production.yml build
     - *check_newer_commit
-    - docker-compose -f webserver/production.yml push
+    - docker-compose --project-name aviator -f webserver/production.yml push
   after_script:
     - docker logout ${CI_REGISTRY}
     - *check_newer_commit
@@ -93,12 +93,12 @@ build:
     - *setup_docker_tls
     - docker login -u gitlab-ci-token -p ${CI_JOB_TOKEN} ${CI_REGISTRY}
     - docker login -u s9pahirs -p ${DOCKERHUB_TOKEN}
-    - docker-compose -f webserver/production.yml down --rmi all --remove-orphans
+    - docker-compose --project-name aviator -f webserver/production.yml down --rmi all --remove-orphans
     - *check_newer_commit
-    - docker-compose -f webserver/production.yml pull $(docker-compose -f webserver/production.yml config --services | grep -v -e celery -e flower)
-    - docker-compose -f webserver/production.yml run --rm large_data_service /update_data
+    - docker-compose --project-name aviator -f webserver/production.yml pull $(docker-compose --project-name aviator -f webserver/production.yml config --services | grep -v -e celery -e flower)
+    - docker-compose --project-name aviator -f webserver/production.yml run --rm large_data_service /update_data
     - *check_newer_commit
-    - docker-compose -f webserver/production.yml up -d --force-recreate
+    - docker-compose --project-name aviator -f webserver/production.yml up -d --force-recreate
   only:
     - master
   after_script:
@@ -129,9 +129,9 @@ deploy-production:
 .filldb: &filldb
   script:
     - *setup_docker_tls
-    - docker-compose -f webserver/production.yml run --rm django python manage.py parsepaperdata ${PUBLICATIONS_PATH} ${FILTER_PATH} ${BIOTOOLSID_PATH}
-    - docker-compose -f webserver/production.yml run --rm django python manage.py parsecurated ${CURATED_PATH}
-    - docker-compose -f webserver/production.yml run --rm django python manage.py parsekeywords ${KEYWORDS_PATH}
+    - docker-compose --project-name aviator -f webserver/production.yml run --rm django python manage.py parsepaperdata ${PUBLICATIONS_PATH} ${FILTER_PATH} ${BIOTOOLSID_PATH}
+    - docker-compose --project-name aviator -f webserver/production.yml run --rm django python manage.py parsecurated ${CURATED_PATH}
+    - docker-compose --project-name aviator -f webserver/production.yml run --rm django python manage.py parsekeywords ${KEYWORDS_PATH}
   <<: *manage_only_master_remote
 
 filldb-staging:
@@ -147,7 +147,7 @@ filldb-production:
 .migrate: &migrate
   script:
     - *setup_docker_tls
-    - docker-compose -f webserver/production.yml run --rm django python manage.py migrate --noinput
+    - docker-compose --project-name aviator -f webserver/production.yml run --rm django python manage.py migrate --noinput
   <<: *manage_only_master_remote
 
 migrate-staging:
@@ -163,7 +163,7 @@ migrate-production:
 .parsekeywords: &parsekeywords
   script:
     - *setup_docker_tls
-    - docker-compose -f webserver/production.yml run --rm django python manage.py parsekeywords ${KEYWORDS_PATH}
+    - docker-compose --project-name aviator -f webserver/production.yml run --rm django python manage.py parsekeywords ${KEYWORDS_PATH}
   <<: *manage_only_master_remote
 
 parsekeywords-staging:
@@ -179,7 +179,7 @@ parsekeywords-production:
 .parsewebsitecalls: &parsewebsitecalls
   script:
     - *setup_docker_tls
-    - docker-compose -f webserver/production.yml run --rm django python manage.py parsewebsitecalls ${TELEMETRY_PATH} ${FOLDERID_URL_PATH} ${FILTER_PATH}
+    - docker-compose --project-name aviator -f webserver/production.yml run --rm django python manage.py parsewebsitecalls ${TELEMETRY_PATH} ${FOLDERID_URL_PATH} ${FILTER_PATH}
   <<: *manage_only_master_remote
 
 parsewebsitecalls-staging:
@@ -195,8 +195,8 @@ parsewebsitecalls-production:
 .update_websitecalls_and_stats: &update_websitecalls_and_stats
   script:
     - *setup_docker_tls
-    - docker-compose -f webserver/production.yml run --rm django python manage.py parsewebsitecalls ${TELEMETRY_PATH} ${FOLDERID_URL_PATH} ${FILTER_PATH}
-    - docker-compose -f webserver/production.yml run --rm django python manage.py calculatestatistics
+    - docker-compose --project-name aviator -f webserver/production.yml run --rm django python manage.py parsewebsitecalls ${TELEMETRY_PATH} ${FOLDERID_URL_PATH} ${FILTER_PATH}
+    - docker-compose --project-name aviator -f webserver/production.yml run --rm django python manage.py calculatestatistics
   <<: *manage_only_master_remote
   allow_failure: false
 
@@ -213,7 +213,7 @@ update_websitecalls_and_stats-production:
 .parsepaperdata: &parsepaperdata
   script:
     - *setup_docker_tls
-    - docker-compose -f webserver/production.yml run --rm django python manage.py parsepaperdata ${PUBLICATIONS_PATH} ${FILTER_PATH} ${BIOTOOLSID_PATH}
+    - docker-compose --project-name aviator -f webserver/production.yml run --rm django python manage.py parsepaperdata ${PUBLICATIONS_PATH} ${FILTER_PATH} ${BIOTOOLSID_PATH}
   <<: *manage_only_master_remote
 
 parsepaperdata-staging:
@@ -229,7 +229,7 @@ parsepaperdata-production:
 .parsecurated: &parsecurated
   script:
     - *setup_docker_tls
-    - docker-compose -f webserver/production.yml run --rm django python manage.py parsecurated ${CURATED_PATH}
+    - docker-compose --project-name aviator -f webserver/production.yml run --rm django python manage.py parsecurated ${CURATED_PATH}
   <<: *manage_only_master_remote
 
 parsecurated-staging:
@@ -245,7 +245,7 @@ parsecurated-production:
 .calculatestatistics: &calculatestatistics
   script:
     - *setup_docker_tls
-    - docker-compose -f webserver/production.yml run --rm django python manage.py calculatestatistics
+    - docker-compose --project-name aviator -f webserver/production.yml run --rm django python manage.py calculatestatistics
   <<: *manage_only_master_remote
 
 calculatestatistics-staging:
@@ -261,7 +261,7 @@ calculatestatistics-production:
 .parsebiotoolsid: &parsebiotoolsid
   script:
     - *setup_docker_tls
-    - docker-compose -f webserver/production.yml run --rm django python manage.py parsebiotoolsid ${BIOTOOLSID_PATH}
+    - docker-compose --project-name aviator -f webserver/production.yml run --rm django python manage.py parsebiotoolsid ${BIOTOOLSID_PATH}
   <<: *manage_only_master_remote
 
 parsebiotoolsid-staging:
@@ -277,8 +277,8 @@ parsebiotoolsid-production:
 .updatedataset: &updatedataset
   script:
     - *setup_docker_tls
-    - docker-compose -f webserver/production.yml run --rm django python manage.py updatewebsiteurls ${ORIG2NEW_PATH} ${NEW2ORIG_PREV_PATH}
-    - docker-compose -f webserver/production.yml run --rm django python manage.py parsepaperdata ${PUBLICATIONS_PATH} ${FILTER_PATH} ${BIOTOOLSID_PATH}
+    - docker-compose --project-name aviator -f webserver/production.yml run --rm django python manage.py updatewebsiteurls ${ORIG2NEW_PATH} ${NEW2ORIG_PREV_PATH}
+    - docker-compose --project-name aviator -f webserver/production.yml run --rm django python manage.py parsepaperdata ${PUBLICATIONS_PATH} ${FILTER_PATH} ${BIOTOOLSID_PATH}
   <<: *manage_only_master_remote
 
 updatedataset-staging:
@@ -294,7 +294,7 @@ updatedataset-production:
 .removepublications: &removepublications
   script:
     - *setup_docker_tls
-    - docker-compose -f webserver/production.yml run --rm django python manage.py removepublications
+    - docker-compose --project-name aviator -f webserver/production.yml run --rm django python manage.py removepublications
   <<: *manage_only_master_remote
 
 removepublications-staging:
@@ -310,8 +310,8 @@ removepublications-production:
 .reset_db: &reset_db
   script:
     - *setup_docker_tls
-    - docker-compose -f webserver/production.yml down --volumes
-    - docker-compose -f webserver/production.yml run --rm django python manage.py migrate --noinput
+    - docker-compose --project-name aviator -f webserver/production.yml down --volumes
+    - docker-compose --project-name aviator -f webserver/production.yml run --rm django python manage.py migrate --noinput
   <<: *manage_only_master_remote
 
 reset_db-staging:
@@ -327,7 +327,7 @@ reset_db-production:
 .backup_db: &backup_db
   script:
     - *setup_docker_tls
-    - docker-compose -f webserver/production.yml run --rm postgres backup
+    - docker-compose --project-name aviator -f webserver/production.yml run --rm postgres backup
   <<: *manage_only_master_remote
 
 backup_db-staging:
@@ -343,7 +343,7 @@ backup_db-production:
 .create_superuser: &create_superuser
   script:
     - *setup_docker_tls
-    - docker-compose -f webserver/production.yml run --rm django /create_superuser
+    - docker-compose --project-name aviator -f webserver/production.yml run --rm django /create_superuser
   <<: *manage_only_master_remote
 
 create_superuser-staging:
@@ -361,7 +361,7 @@ create_superuser-production:
     GIT_STRATEGY: none
   script:
     - *setup_docker_tls
-    - docker-compose -f webserver/production.yml down --remove-orphans
+    - docker-compose --project-name aviator -f webserver/production.yml down --remove-orphans
   <<: *manage_only_master_remote
   environment:
     name: stop-env

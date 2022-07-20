@@ -19,6 +19,7 @@ x-djangobase: &django-base
     - media_content:/app/aviator/media
     - /data/aviator_telemetry:/app/aviator_telemetry
   restart: unless-stopped
+  container_name: aviator_django_1
 
 
 services:
@@ -30,6 +31,7 @@ services:
       cache_from:
         - registry.ccb-gitlab.cs.uni-saarland.de/pascal/aviator/aviator_production_django:latest
     command: /start
+
 
 
   postgres:
@@ -46,6 +48,7 @@ services:
       - ./.envs/.production/.postgres
     command: postgres -c config_file=/etc/postgresql.conf
     restart: unless-stopped
+    container_name: aviator_postgres_1
 
   large_data_service:
     build:
@@ -75,21 +78,26 @@ services:
     restart: unless-stopped
     ports:
       - "11842:80"
+    container_name: aviator_nginx_1
 
   redis:
     image: redis:5.0
     restart: unless-stopped
+    container_name: aviator_redis_1
 
   celeryworker:
     <<: *django-base
     command: /start-celeryworker
+    container_name: aviator_celeryworker_1
 
   celerybeat:
     <<: *django-base
     command: /start-celerybeat
+    container_name: aviator_celerybeat_1
 
   flower:
     <<: *django-base
     ports:
       - "11843:5555"
     command: /start-flower
+    container_name: aviator_flower_1
