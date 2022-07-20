@@ -205,8 +205,12 @@ def details(request, pk):
     context = {}
     website = get_object_or_404(Website, pk=pk)
     show_for_x_days = 30
+    if "days" in request.POST:
+        show_for_x_days = request.POST["days"]
+    show_for_x_days = min(show_for_x_days, 365)
     latest_time = website.calls.latest("datetime").datetime
     first_call = website.calls.earliest("datetime").datetime
+    context['days'] = show_for_x_days
     context['calls'] = website.calls.filter(datetime__date__gte=latest_time-timedelta(days=show_for_x_days)).order_by('-datetime')
     context['website'] = website
     context["first_call"] = first_call

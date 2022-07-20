@@ -84,7 +84,29 @@
               <div class="dt-buttons btn-group">
                 <button class="btn btn-secondary" tabindex="0" aria-controls="table" type="button" onclick="download_table_as_csv('calls');">
                   <span><i class="fas fa-download"></i> CSV</span>
-                </button> 
+                </button>
+
+
+                <form action="" method="post" name="days_form">
+                  {% csrf_token %}
+                  <input id="days" type="hidden" name="days" value="{{ days }}">
+                  <div class="dropdown" style="height: 100%;">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownDaysButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="height: 100%;">
+                      {{ days }} Tage&nbsp;
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownDaysButton">
+
+
+                      <a class="dropdown-item" onclick="document.getElementById('days').value = this.value;document.days_form.submit();return false;" value="30">30 Tage</a>
+                      <a class="dropdown-item" onclick="document.getElementById('days').value = this.value;document.days_form.submit();return false;" value="60">60 Tage</a>
+                      <a class="dropdown-item" onclick="document.getElementById('days').value = this.value;document.days_form.submit();return false;" value="90">90 Tage</a>
+                      <a class="dropdown-item" onclick="document.getElementById('days').value = this.value;document.days_form.submit();return false;" value="120">120 Tage</a>
+                      <a class="dropdown-item" onclick="document.getElementById('days').value = this.value;document.days_form.submit();return false;" value="240">240 Tage</a>
+                      <a class="dropdown-item" onclick="document.getElementById('days').value = this.value;document.days_form.submit();return false;" value="360">360 Tage</a>
+                    </div>
+                  </div>
+                </form>
+
               </div>
             </div>
           </div>
