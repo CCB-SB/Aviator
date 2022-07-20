@@ -1,9 +1,9 @@
 ## Create/update the list of web servers
 
 1. ```bash
-   snakemake copy_old_ws_data
-   snakemake --use-conda
-   snakemake copy_to_app
+   snakemake copy_old_ws_data --cores 1
+   snakemake --use-conda --conda-frontend conda --cores 1
+   snakemake copy_to_app --cores 1
    ```
    
 2. Zip results 
