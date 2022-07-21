@@ -75,7 +75,7 @@ class Command(BaseCommand):
                     cw = CuratedWebsite(pubmed_id=i,
                                         authors=str(row["Authors"]).split(", "),
                                         title=row["Tool"],
-                                        description=row["Abstract"],
+                                        description=row["Description"],
                                         year=row["year"],
                                         journal=row["journal"],
                                         url=row["URL"],
