@@ -61,7 +61,7 @@ $(document).ready(function () {
                 }
             }, {
                 "data": "percentage", render: function (data) {
-                    return createCellText("<div style='display:none'>" + (data < 10 ? ("00" + data) : (data < 100 ? ("0" + data) : data)) + "</div>" + (data === null ? "No Data" : (parseFloat(data.toFixed(2)) + "% Online")), true);
+                    return createCellText("<div style='display:none'>" + (data < 10 ? ("00" + data) : (data < 100 ? ("0" + data) : data)) + "</div>" + (data === null || data == "" ?  "No Data" : (parseFloat(data.toFixed(2)) + "% Online")), true);
                 }
             }, {
                 "data": "authors", render: function (data) {
