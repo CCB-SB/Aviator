@@ -101,22 +101,10 @@ class Command(BaseCommand):
             #Calculate years online
             try:
                 last_call_online = website.calls.filter(ok=True).latest("datetime")
-                print("Error 1")
-                if last_call_online:
-                    print("Error 2")
-                    oldest_paper = website.papers.order_by('-year').first()
-                    print("Error 3")
-                    if oldest_paper:
-                        print("Error 4")
-                        print(last_call_online.datetime.year)
-                        print("Error 5")
-                        print(oldest_paper.year)
-                        print("Error 6")
-                        print(int(last_call_online.datetime.year - oldest_paper.year))
-                        print("Error 7")
-                        website.years_online = int(last_call_online.datetime.year - oldest_paper.year)
+                oldest_paper = website.papers.order_by('-year').first()
+                website.years_online = int(int(last_call_online.datetime.year) - int(oldest_paper.year))
             except:
-                print("Error while calculating years online")
+                website.years_online = -1
 
             website_updates.append(website)
 
