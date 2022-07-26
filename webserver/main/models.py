@@ -51,6 +51,7 @@ class Website(models.Model):
     states = ArrayField(models.BooleanField(null=True), default=list)
     percentage = models.FloatField(null=True, default=None)
     last_heap_size = models.IntegerField(default=0)
+    years_online = models.IntegerField(default=-1)
 
 
 class WebsiteCall(models.Model):

@@ -3,7 +3,7 @@ var numeric_cols = [2, 4];
 
 $(document).ready(function () {
     let cookie_name = "pubs_hidden_columns";
-    let standard_hidden_columns = [10, 12, 13, 14, 15];
+    let standard_hidden_columns = [10, 12, 13, 14, 15, 16];
     let save_days = 60;
 
     async function apply_foreign_filter() {
@@ -39,7 +39,7 @@ $(document).ready(function () {
         "columnDefs": [
             {'visible': false, 'targets': getHiddenColumns()},
             {'width': 50, 'targets': [1, 4, 14]},
-            {'width': 100, 'targets': [2, 5, 6, 7, 8, 15, 16]},
+            {'width': 100, 'targets': [2, 5, 6, 7, 8, 15, 16, 17]},
             {'width': 250, 'targets': [0]},
         ],
         deferRender: true,
@@ -224,6 +224,22 @@ $(document).ready(function () {
                 }
             },
             {
+                "data": "years_online", render: function (data) {
+                    var str = "";
+                    if (data != null) {
+                        var i = 0;
+                        for (i = 0; i < data.length; i++) {
+                            if (data[i] != null) {
+                                str += (i > 0 ? ", " : "") + (data[i] < 0 ? "Unknown": data[i]+" years");
+                            }
+                        }
+                    } else {
+                        str = "NA";
+                    }
+                    return createCellText(str);
+                }
+            },
+            {
                 data: "website_pks", render: function (data) {
                     var str = "";
                     if (data != null) {
@@ -262,7 +278,7 @@ $(document).ready(function () {
                         });
                 } else {
                     // websites
-                    if(i == 16){
+                    if(i == 17){
                         $('<p></p>').appendTo($(column.footer()).empty())
                         return;
                     }
@@ -411,7 +427,7 @@ $(document).ready(function () {
 
 function createTableSearchData(column) {
     data = {};
-    for (var i = 0; i <= 16; ++i) {
+    for (var i = 0; i <= 17; ++i) {
         if (numeric_cols.indexOf(i) !== -1 && $('#cs_from_' + i).val() != undefined) {
             data[i] = $('#cs_from_' + i).val() + ";" + $('#cs_to_' + i).val();
         } else if ($('#cs_' + i).val() != undefined) {

@@ -97,6 +97,17 @@ class Command(BaseCommand):
             if status == WebsiteStatus.OFFLINE and any(states[-settings.TEMP_OFFLINE_DAYS-1:]):
                 status = WebsiteStatus.TEMP_OFFLINE
             website.status = status
+
+            #Calculate years online
+            try:
+                last_call_online = website.calls.filter(ok=True).latest("datetime")
+                if last_call_online:
+                    oldest_paper = website.papers.latest("datetime").order_by('-year').first()
+                    if oldest_paper:
+                        website.years_online = last_call_online.datetime.year - oldest_paper.year
+            except:
+                print("Error while calculating years online")
+
             website_updates.append(website)
 
         Website.objects.bulk_update(website_updates, ["status", "states", "percentage", "last_heap_size"])
@@ -150,6 +161,7 @@ class Command(BaseCommand):
                         )
                     except Exception as e:
                         self.stdout.write(str(e))
+    
 
         #Check curated websites
         ssl._create_default_https_context = ssl._create_unverified_context
