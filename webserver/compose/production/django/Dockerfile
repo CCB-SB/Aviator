@@ -10,7 +10,7 @@ RUN groupadd -r django \
 # Requirements have to be pulled and installed here, otherwise caching won't work
 COPY ./requirements /requirements
 
-RUN pip install conda-merge==0.1.4 &&\
+RUN pip install conda-merge==0.2.0 &&\
 	conda-merge /requirements/base.yml /requirements/production.yml > /requirements/merged.yml &&\
 	pip uninstall --yes conda-merge
 
