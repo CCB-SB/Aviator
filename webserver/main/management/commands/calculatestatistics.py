@@ -108,7 +108,11 @@ class Command(BaseCommand):
                     print("Error 3")
                     if oldest_paper:
                         print("Error 4")
-                        website.years_online = last_call_online.datetime.year - oldest_paper.year
+                        print(last_call_online.datetime.year)
+                        print("Error 5")
+                        print(oldest_paper.year)
+                        print("Error 6")
+                        website.years_online = int(last_call_online.datetime.year) - oldest_paper.year
             except:
                 print("Error while calculating years online")
 
