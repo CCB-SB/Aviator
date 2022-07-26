@@ -207,11 +207,13 @@ def details(request, pk):
     show_for_x_days = 30
     if "days" in request.POST and request.POST["days"] != "undefined":
         show_for_x_days = int(request.POST["days"])
-    show_for_x_days = min(show_for_x_days, 360)
     latest_time = website.calls.latest("datetime").datetime
     first_call = website.calls.earliest("datetime").datetime
     context['days'] = show_for_x_days
-    context['calls'] = website.calls.filter(datetime__date__gte=latest_time-timedelta(days=show_for_x_days)).order_by('-datetime')
+    if show_for_x_days > 0:
+        context['calls'] = website.calls.filter(datetime__date__gte=latest_time-timedelta(days=show_for_x_days)).order_by('-datetime')
+    else:
+        context['calls'] = website.calls.order_by('-datetime')
     context['website'] = website
     context["first_call"] = first_call
     day_states = {}
