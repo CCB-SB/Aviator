@@ -108,7 +108,7 @@ class Command(BaseCommand):
 
             website_updates.append(website)
 
-        Website.objects.bulk_update(website_updates, ["status", "states", "percentage", "last_heap_size"])
+        Website.objects.bulk_update(website_updates, ["status", "states", "percentage", "last_heap_size", "years_online"])
 
         #weekday statistics
         new_weekdays_online = [0,0,0,0,0,0,0,0]
