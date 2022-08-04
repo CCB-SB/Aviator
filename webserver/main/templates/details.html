@@ -92,8 +92,7 @@
                   <input id="days" type="hidden" name="days" value="{{ days }}">
                   <div class="dropdown" style="height: 100%;">
                     <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownDaysButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="height: 100%;">
-                      {{ days }} days&nbsp;
-                      {% if days > 0 %}{{ days }}{% else %}All&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{% endif %}
+                      {% if days > 0 %}{{ days }}&nbsp;days&nbsp;{% else %}All&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{% endif %}
                     </button>
                     <div class="dropdown-menu" aria-labelledby="dropdownDaysButton">
 
