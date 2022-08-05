@@ -103,12 +103,14 @@ class Command(BaseCommand):
                 last_call_online = website.calls.filter(ok=True).latest("datetime")
                 oldest_paper = website.papers.order_by('-year').first()
                 website.years_online = int(int(last_call_online.datetime.year) - int(oldest_paper.year))
+                website.years_offline = int(int(date.today().year) - int(last_call_online.datetime.year))
             except:
                 website.years_online = -1
+                website.years_offline = -1
 
             website_updates.append(website)
 
-        Website.objects.bulk_update(website_updates, ["status", "states", "percentage", "last_heap_size", "years_online"])
+        Website.objects.bulk_update(website_updates, ["status", "states", "percentage", "last_heap_size", "years_online", "years_offline"])
 
         #weekday statistics
         new_weekdays_online = [0,0,0,0,0,0,0,0]

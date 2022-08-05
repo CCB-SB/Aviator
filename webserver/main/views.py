@@ -148,10 +148,11 @@ def publications(request):
                 ssl=ArrayAgg('websites__certificate_secure'),
                 heap_size=ArrayAgg('websites__last_heap_size'),
                 years_online=ArrayAgg('websites__years_online'),
+                years_offline=ArrayAgg('websites__years_offline'),
                 website_pks=ArrayAgg('websites__pk'))
             columns = ['title', 'status', 'percentage', 'authors', 'year', 'journal', 'pubmed_id', 'biotools_id',
                        'abstract', 'original_url', 'derived_url', 'contact_mail', 'user_kwds',
-                       'scripts', 'ssl', 'heap_size', 'years_online', 'website_pks']
+                       'scripts', 'ssl', 'heap_size', 'years_online', 'years_offline', 'website_pks']
             header = ['Publication Title', 'Status', 'Last 30 days', 'Authors', 'Year', 'Journal', 'PubMed ID', 'bio.tools ID',
                       'Abstract',
                       'Original URL', 'Derived URL', 'Contact E-Mail', 'Keywords',
@@ -321,10 +322,11 @@ def autocomplete(request):
             ssl=ArrayAgg('websites__certificate_secure'),
             heap_size=ArrayAgg('websites__last_heap_size'),
             years_online=ArrayAgg('websites__years_online'),
+            years_offline=ArrayAgg('websites__years_offline'),
             website_pks=ArrayAgg('websites'))
         columns = ['title', 'status', 'percentage', 'authors', 'year', 'journal', 'pubmed_id', 'biotools_id',
                    'abstract', 'original_url', 'derived_url', 'contact_mail', 'user_kwds',
-                   'scripts', 'ssl', 'heap_size', 'years_online', 'website_pks']
+                   'scripts', 'ssl', 'heap_size', 'years_online', 'years_offline', 'website_pks']
         email_fields = {"contact_mail"}
 
         filter_col2v = {k: request.GET[str(k)] for k in range(0, len(columns)) if
@@ -395,7 +397,7 @@ class Table(BaseDatatableView):
     model = Publication
     columns = ['title', 'status', 'percentage', 'authors', 'year', 'journal', 'pubmed_id', 'biotools_id',
                'abstract', 'original_url', 'derived_url', 'contact_mail', 'user_kwds',
-               'scripts', 'ssl', 'heap_size', 'years_online', 'website_pks']
+               'scripts', 'ssl', 'heap_size', 'years_online', 'years_offline', 'website_pks']
     max_display_length = 500
 
     escape_values = False
@@ -411,6 +413,7 @@ class Table(BaseDatatableView):
                 ssl=ArrayAgg('websites__certificate_secure'),
                 heap_size=ArrayAgg('websites__last_heap_size'),
                 years_online=ArrayAgg('websites__years_online'),
+                years_offline=ArrayAgg('websites__years_offline'),
                 website_pks=ArrayAgg('websites__pk'))
 
     def render_column(self, row, column):

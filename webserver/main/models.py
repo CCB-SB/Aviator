@@ -52,6 +52,7 @@ class Website(models.Model):
     percentage = models.FloatField(null=True, default=None)
     last_heap_size = models.IntegerField(default=0)
     years_online = models.IntegerField(default=-1)
+    years_offline = models.IntegerField(default=-1)
 
 
 class WebsiteCall(models.Model):
