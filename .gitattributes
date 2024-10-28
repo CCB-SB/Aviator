@@ -1,1 +1,2 @@
 * text=auto
+data_download/results.2022-07-20.zip filter=lfs diff=lfs merge=lfs -text
